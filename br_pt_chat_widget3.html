@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f4f4f0;color:#1a1a1a;min-height:100vh;}
+
+header{background:#1a3a2e;color:#fff;padding:18px 32px 14px;}
+header h1{font-size:1.35rem;font-weight:800;}
+header p{font-size:0.7rem;color:#8fbbaa;letter-spacing:1.4px;text-transform:uppercase;margin-top:2px;}
+
+.tab-bar{background:#1a3a2e;padding:0 32px 12px;display:flex;gap:6px;flex-wrap:wrap;}
+.tab{padding:5px 12px;border-radius:20px;border:1.5px solid #3a6a52;background:transparent;color:#aed4c0;font-size:0.72rem;font-weight:600;cursor:pointer;transition:all .18s;}
+.tab.active{background:#2e8b62;border-color:#2e8b62;color:#fff;}
+.tab:hover:not(.active){border-color:#6ab090;color:#d0eadf;}
+.tab.special{border-color:#7b5ea7;color:#c4a8e8;}
+.tab.special.active{background:#7b5ea7;border-color:#7b5ea7;color:#fff;}
+.tab.special:hover:not(.active){border-color:#a07ed0;color:#d8c4f4;}
+
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 32px;background:#f0ede8;border-bottom:1px solid #ddd;}
+.ctrl-group{display:flex;align-items:center;gap:7px;font-size:0.73rem;color:#555;font-weight:600;}
+.toggle{position:relative;width:36px;height:19px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:#bbb;border-radius:20px;cursor:pointer;transition:.2s;}
+.slider:before{content:'';position:absolute;width:13px;height:13px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;}
+input:checked+.slider{background:#2e8b62;}
+input:checked+.slider:before{transform:translateX(17px);}
+.mode-btn{padding:5px 14px;border-radius:16px;border:1.5px solid #2e8b62;background:transparent;color:#2e8b62;font-size:0.72rem;font-weight:700;cursor:pointer;transition:all .18s;}
+.mode-btn.active{background:#2e8b62;color:#fff;}
+.mode-btn.purple{border-color:#7b5ea7;color:#7b5ea7;}
+.mode-btn.purple.active{background:#7b5ea7;color:#fff;}
+
+/* API KEY BAR */
+.api-bar{display:flex;align-items:center;gap:8px;padding:8px 32px;background:#fff8e8;border-bottom:1px solid #f0e0b0;flex-wrap:wrap;}
+.api-bar label{font-size:0.72rem;font-weight:700;color:#7a5800;}
+.api-bar input{flex:1;min-width:200px;max-width:340px;padding:5px 10px;border-radius:10px;border:1.5px solid #e0c060;font-size:0.75rem;font-family:monospace;background:#fffdf0;}
+.api-bar input:focus{outline:none;border-color:#f0a800;}
+.api-save{padding:5px 14px;border-radius:12px;border:none;background:#e8a800;color:#fff;font-size:0.72rem;font-weight:700;cursor:pointer;transition:background .18s;}
+.api-save:hover{background:#c88a00;}
+.api-status{font-size:0.7rem;color:#888;font-style:italic;}
+.api-status.ok{color:#2e8b62;font-style:normal;font-weight:700;}
+.api-status.err{color:#c0392b;font-style:normal;font-weight:700;}
+
+main{max-width:820px;margin:0 auto;padding:26px 18px 48px;}
+
+.scene-header{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+.scene-icon{font-size:1.6rem;}
+.scene-header h2{font-size:1.15rem;font-weight:700;}
+.scene-desc{font-size:0.79rem;color:#888;font-style:italic;margin-bottom:18px;padding-left:10px;border-left:3px solid #c8ddd5;}
+.legend{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;}
+.legend.hidden{display:none;}
+.gtag{display:inline-block;font-size:0.58rem;font-weight:700;padding:1px 5px;border-radius:7px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.4px;}
+.gtag.pres{background:#e0f2ec;color:#1a6e45;}
+.gtag.past{background:#e8eaf6;color:#3949ab;}
+.gtag.imp{background:#fce4ec;color:#c2185b;}
+.gtag.fut{background:#fff8e1;color:#f57f17;}
+.gtag.cond{background:#f3e5f5;color:#7b1fa2;}
+.gtag.comp{background:#e0f7fa;color:#00838f;}
+.gtag.subj{background:#fbe9e7;color:#bf360c;}
+.tags-hidden .gtag{display:none;}
+
+.chat{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.msg-row{display:flex;flex-direction:column;}
+.msg-row.you{align-items:flex-end;}
+.msg-row.other{align-items:flex-start;}
+.speaker{font-size:0.65rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px;padding:0 4px;}
+
+.bubble-wrap{display:flex;align-items:flex-end;gap:6px;}
+.msg-row.you .bubble-wrap{flex-direction:row-reverse;}
+
+.bubble{max-width:64%;padding:9px 13px;border-radius:15px;line-height:1.5;position:relative;}
+.msg-row.other .bubble{background:#fff;border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+.msg-row.you .bubble{background:#d4ede3;border-bottom-right-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+.bubble.playing{outline:2px solid #2e8b62;outline-offset:1px;}
+.pt{display:block;font-size:0.86rem;font-weight:600;color:#111;}
+.en{display:block;font-size:0.74rem;color:#888;margin-top:3px;transition:opacity .15s,max-height .2s;}
+.en.hidden{opacity:0;max-height:0;overflow:hidden;margin-top:0;}
+
+.audio-btn{width:28px;height:28px;border-radius:50%;border:none;background:#e8f5ee;color:#2e8b62;font-size:0.8rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+.audio-btn:hover{background:#2e8b62;color:#fff;}
+.audio-btn.loading{background:#f0f0f0;color:#aaa;cursor:default;animation:pulse 1s infinite;}
+.audio-btn.playing{background:#2e8b62;color:#fff;}
+.audio-btn.no-key{background:#f5f5f5;color:#ccc;cursor:not-allowed;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.quiz-cover{background:#e0dbd4;border-radius:15px;padding:9px 13px;font-size:0.8rem;color:#999;font-style:italic;cursor:pointer;max-width:64%;border:1.5px dashed #bbb;transition:background .15s;}
+.quiz-cover:hover{background:#d5d0c9;}
+.msg-row.you .quiz-cover{align-self:flex-end;}
+.msg-row.other .quiz-cover{align-self:flex-start;}
+
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.panel{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.panel-title{font-size:0.62rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#2e8b62;margin-bottom:12px;}
+.vocab-item{margin-bottom:9px;}
+.vocab-pt{font-size:0.83rem;font-weight:700;}
+.vocab-en{font-size:0.73rem;color:#888;}
+.chunk{background:#f0faf5;border-left:3px solid #2e8b62;padding:5px 9px;border-radius:0 6px 6px 0;margin-bottom:7px;font-size:0.77rem;}
+.chunk strong{color:#1a6e45;}
+.note{font-size:0.76rem;color:#555;margin-bottom:9px;line-height:1.55;padding-left:9px;border-left:2px solid #c8ddd5;}
+.note:last-child{margin-bottom:0;}
+
+/* FLASHCARD */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.fc-scene-select{font-size:0.78rem;color:#555;}
+.fc-scene-select select{margin-left:8px;padding:4px 8px;border-radius:8px;border:1px solid #ccc;font-size:0.78rem;}
+.fc-card{width:320px;height:190px;perspective:600px;cursor:pointer;}
+.fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .4s;}
+.fc-card.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;backface-visibility:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.fc-front{background:#1a3a2e;color:#fff;}
+.fc-back{background:#d4ede3;color:#1a1a1a;transform:rotateY(180deg);}
+.fc-pt{font-size:1.1rem;font-weight:700;text-align:center;}
+.fc-hint{font-size:0.7rem;color:#8fbbaa;margin-top:8px;}
+.fc-en{font-size:0.95rem;font-weight:600;text-align:center;color:#1a3a2e;}
+.fc-ctx{font-size:0.7rem;color:#555;margin-top:6px;text-align:center;font-style:italic;}
+.fc-controls{display:flex;gap:12px;}
+.fc-btn{padding:8px 22px;border-radius:20px;border:none;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all .18s;}
+.fc-btn.prev{background:#eee;color:#555;}
+.fc-btn.prev:hover{background:#ddd;}
+.fc-btn.next{background:#2e8b62;color:#fff;}
+.fc-btn.next:hover{background:#1e7a52;}
+.fc-progress{font-size:0.75rem;color:#888;}
+.fc-flip-hint{font-size:0.72rem;color:#aaa;}
+
+/* VERBS */
+.verbs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.verb-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.verb-name{font-size:1rem;font-weight:800;color:#1a3a2e;margin-bottom:2px;}
+.verb-meaning{font-size:0.75rem;color:#888;margin-bottom:12px;}
+.conj-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.ctab{padding:3px 10px;border-radius:12px;border:1px solid #ccc;background:transparent;font-size:0.68rem;font-weight:700;cursor:pointer;color:#666;transition:all .15s;}
+.ctab.active{background:#2e8b62;border-color:#2e8b62;color:#fff;}
+.conj-table{width:100%;border-collapse:collapse;font-size:0.78rem;}
+.conj-table td{padding:4px 6px;border-bottom:1px solid #f0f0f0;}
+.conj-table td:first-child{color:#888;width:38%;}
+.conj-table td:last-child{font-weight:600;color:#111;}
+.conj-table tr:last-child td{border-bottom:none;}
+.irreg{color:#c2185b!important;}
+
+@media(max-width:580px){
+  .panels{grid-template-columns:1fr;}
+  .bubble,.quiz-cover{max-width:88%;}
+  header,.tab-bar,.controls,.api-bar{padding-left:12px;padding-right:12px;}
+  .verbs-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Português Brasileiro</h1>
+  <p>15 diálogos · chunks · gramática · áudio · flashcards · verbos</p>
+</header>
+<div class="tab-bar" id="tabs"></div>
+<div class="api-bar">
+  <label>🔑 Google TTS Key:</label>
+  <input type="password" id="apiKeyInput" placeholder="Paste your API key here..." autocomplete="off"/>
+  <button class="api-save" onclick="saveKey()">Save</button>
+  <span class="api-status" id="apiStatus">No key set — audio disabled</span>
+</div>
+<div class="controls" id="controls">
+  <div class="ctrl-group">🇬🇧 English <label class="toggle"><input type="checkbox" id="engToggle" checked onchange="toggleEng()"><span class="slider"></span></label></div>
+  <div class="ctrl-group">🏷️ Tags <label class="toggle"><input type="checkbox" id="tagToggle" checked onchange="toggleTags()"><span class="slider"></span></label></div>
+  <button class="mode-btn" id="quizBtn" onclick="toggleQuiz()">📝 Quiz Mode</button>
+  <button class="mode-btn purple" id="fcBtn" onclick="goFlash()">🃏 Flashcards</button>
+</div>
+<main id="main"></main>
+
+<script>
+let showEng=true,showTags=true,quizMode=false,curScene=0,curView='dialogue';
+let fcScene=0,fcIdx=0,fcFlipped=false;
+let apiKey='';
+const audioCache={};
+let currentAudio=null;
+
+function saveKey(){
+  const val=document.getElementById('apiKeyInput').value.trim();
+  if(!val){document.getElementById('apiStatus').textContent='No key set — audio disabled';document.getElementById('apiStatus').className='api-status';apiKey='';return;}
+  apiKey=val;
+  document.getElementById('apiStatus').textContent='✓ Key saved — tap 🔊 on any line';
+  document.getElementById('apiStatus').className='api-status ok';
+  document.getElementById('apiKeyInput').value='';
+}
+
+async function playText(text,btnEl){
+  if(!apiKey){
+    document.getElementById('apiStatus').textContent='⚠ Paste your API key first';
+    document.getElementById('apiStatus').className='api-status err';
+    return;
+  }
+  const clean=text.replace(/\s+/g,' ').trim();
+  console.log('TTS sending:', clean);
+  if(!clean) return;
+
+  // stop any currently playing audio
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  document.querySelectorAll('.audio-btn.playing').forEach(b=>{b.classList.remove('playing');b.textContent='🔊';});
+
+  // check cache
+  if(audioCache[clean]){
+    playBlob(audioCache[clean],btnEl);
+    return;
+  }
+
+  btnEl.classList.add('loading');
+  btnEl.textContent='⏳';
+
+  try{
+    const resp=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        input:{text:clean},
+        voice:{languageCode:'pt-BR',name:'pt-BR-Neural2-B'},
+        audioConfig:{audioEncoding:'MP3',speakingRate:0.9,pitch:0}
+      })
+    });
+    if(!resp.ok){
+      const err=await resp.json();
+      throw new Error(err.error?.message||'API error');
+    }
+    const data=await resp.json();
+    const bytes=atob(data.audioContent);
+    const arr=new Uint8Array(bytes.length);
+    for(let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
+    const blob=new Blob([arr],{type:'audio/mp3'});
+    audioCache[clean]=blob;
+    btnEl.classList.remove('loading');
+    playBlob(blob,btnEl);
+  } catch(e){
+    btnEl.classList.remove('loading');
+    btnEl.textContent='🔊';
+    document.getElementById('apiStatus').textContent='⚠ Error: '+e.message;
+    document.getElementById('apiStatus').className='api-status err';
+  }
+}
+
+function playBlob(blob,btnEl){
+  const url=URL.createObjectURL(blob);
+  const audio=new Audio(url);
+  currentAudio=audio;
+  btnEl.classList.add('playing');
+  btnEl.textContent='⏸';
+  audio.play();
+  audio.onended=()=>{
+    btnEl.classList.remove('playing');
+    btnEl.textContent='🔊';
+    currentAudio=null;
+    URL.revokeObjectURL(url);
+  };
+}
+
+const T=(type,label)=>`<span class="gtag ${type}">${label}</span>`;
+
+const scenes=[
+{tab:"🍽️ Restaurante",icon:"🍽️",title:"At a Restaurant",
+desc:"You arrive at a casual boteco in Vila Madalena. A long dinner unfolds.",
+messages:[
+{s:"Garçom",side:"other",pt:`Boa noite! Bem-vindo! <b>Tem</b> reserva ou vai sentar direto?${T('pres','ter·pres')}`,en:"Good evening! Welcome! Do you have a reservation or will you sit directly?"},
+{s:"Você",side:"you",pt:`Não <b>tenho</b> reserva. <b>Tem</b> mesa pra dois?${T('pres','ter·pres')}`,en:"I don't have a reservation. Do you have a table for two?"},
+{s:"Garçom",side:"other",pt:`<b>Tem</b> sim! Por aqui, por favor. Aqui <b>está</b> o cardápio.${T('pres','ter·pres')} ${T('pres','estar·pres')}`,en:"Yes! This way please. Here is the menu."},
+{s:"Você",side:"you",pt:`Obrigado. Já <b>sei</b> que <b>quero</b> uma cerveja gelada. O que vocês <b>têm</b> de chope?${T('pres','saber·pres')} ${T('pres','querer·pres')}`,en:"Thank you. I already know I want a cold beer. What do you have on draft?"},
+{s:"Garçom",side:"other",pt:`<b>Temos</b> Brahma e Original. O Original <b>é</b> mais encorpado do que a Brahma.${T('comp','comparative')}`,en:"We have Brahma and Original. The Original is fuller-bodied than the Brahma."},
+{s:"Você",side:"you",pt:`Me <b>dá</b> um Original então. E o que você recomenda pra comer?${T('pres','dar·pres')}`,en:"Give me an Original then. And what do you recommend to eat?"},
+{s:"Garçom",side:"other",pt:`O nosso bolinho de bacalhau <b>é</b> o mais pedido da casa. E o frango na brasa <b>é</b> melhor do que tudo que já <b>servi</b>.${T('comp','superlative')} ${T('past','servir·past')}`,en:"Our codfish croquette is the most ordered in the house. And the grilled chicken is better than anything I've ever served."},
+{s:"Você",side:"you",pt:`<b>Vou querer</b> o bolinho pra entrada e o frango como prato principal.${T('fut','ir+inf')}`,en:"I'll have the croquette as a starter and the chicken as the main."},
+{s:"Garçom",side:"other",pt:`Ótima escolha. Alguma restrição alimentar?`,en:"Great choice. Any dietary restrictions?"},
+{s:"Você",side:"you",pt:`Não <b>como</b> glúten. <b>Tem</b> alguma opção sem trigo?${T('pres','pres')} ${T('pres','ter·pres')}`,en:"I don't eat gluten. Do you have any wheat-free option?"},
+{s:"Garçom",side:"other",pt:`<b>Tem</b> sim. Posso substituir o bolinho por pastéis de queijo que <b>são</b> sem glúten.${T('pres','ter·pres')} ${T('pres','ser·pres')}`,en:"Yes. I can substitute the croquette for cheese pastéis that are gluten-free."},
+{s:"Você",side:"you",pt:`Perfeito. E a sobremesa mais famosa de vocês, qual <b>é</b>?${T('comp','superlative')}`,en:"Perfect. And your most famous dessert, what is it?"},
+{s:"Garçom",side:"other",pt:`O pudim de leite condensado. <b>É</b> mais cremoso do que qualquer pudim que você já <b>comeu</b>.${T('comp','comparative')} ${T('past','comer·past')}`,en:"The condensed milk pudding. It's creamier than any pudding you've ever eaten."},
+{s:"Você",side:"you",pt:`<b>Vou pensar</b>. A conta, pode <b>vir</b> só no final?${T('fut','ir+inf')} ${T('pres','vir·pres')}`,en:"I'll think about it. The bill, can it come only at the end?"},
+{s:"Garçom",side:"other",pt:`Claro, sem problema. <b>Diz</b> quando quiser!${T('pres','dizer·pres')}`,en:"Of course, no problem. Just say when you're ready!"},
+],
+vocab:[{pt:"o chope",en:"draft beer"},{pt:"encorpado/a",en:"full-bodied"},{pt:"o bolinho de bacalhau",en:"codfish croquette"},{pt:"a restrição alimentar",en:"dietary restriction"},{pt:"sem trigo/glúten",en:"wheat/gluten-free"},{pt:"o pudim de leite condensado",en:"condensed milk pudding"}],
+chunks:[{pt:"Me dá um/uma...",en:"Give me a... (natural way to order)"},{pt:"O mais pedido da casa",en:"The most ordered in the house"},{pt:"Pode vir só no final?",en:"Can it come only at the end?"},{pt:"É melhor do que tudo que já...",en:"It's better than anything I've ever..."}],
+notes:['"Ter" plural: têm (they have) vs tem (there is) — same spelling, different accent.','Superlatives: o/a mais + adjective — o mais pedido = the most ordered.','Diz quando quiser = say when you want — future subjunctive in everyday speech.']},
+
+{tab:"🥘 Comida",icon:"🥘",title:"Food & Culture",
+desc:"A local friend takes you through Brazilian food culture over coffee.",
+messages:[
+{s:"Amiga",side:"other",pt:`Você já <b>comeu</b> acarajé?${T('past','perf.past')}`,en:"Have you eaten acarajé yet?"},
+{s:"Você",side:"you",pt:`Ainda não, mas <b>tenho vontade</b> de experimentar. <b>Dizem</b> que <b>é</b> incrível.${T('pres','ter·pres')} ${T('pres','dizer·pres')}`,en:"Not yet, but I really want to try it. They say it's incredible."},
+{s:"Amiga",side:"other",pt:`<b>É</b> melhor do que qualquer coisa que você já <b>comeu</b>. <b>É</b> mais saboroso do que parece.${T('comp','comparative')} ${T('past','comer·past')}`,en:"It's better than anything you've eaten. It's tastier than it looks."},
+{s:"Você",side:"you",pt:`Quando <b>fui</b> à Bahia, não <b>consegui</b> encontrar um bom. <b>Fui</b> no lugar errado.${T('past','ir·past')}`,en:"When I went to Bahia, I couldn't find a good one. I went to the wrong place."},
+{s:"Amiga",side:"other",pt:`Que pena! Da próxima vez que <b>for</b> lá, me <b>fala</b> que eu <b>dou</b> o endereço certo.${T('subj','fut.subj')} ${T('pres','dar·pres')}`,en:"What a shame! Next time you go there, tell me and I'll give you the right address."},
+{s:"Você",side:"you",pt:`Boa! A comida brasileira <b>é</b> muito mais variada do que eu <b>imaginava</b>. Eu <b>achava</b> que tudo <b>era</b> churrasco e feijoada.${T('comp','comparative')} ${T('imp','imperf.')}`,en:"Nice! Brazilian food is much more varied than I imagined. I thought everything was barbecue and feijoada."},
+{s:"Amiga",side:"other",pt:`Cada região <b>tem</b> uma culinária completamente diferente. O Norte <b>é</b> menos conhecido mas <b>tem</b> os pratos mais únicos do país.${T('pres','ter·pres')} ${T('comp','superlative')}`,en:"Each region has a completely different cuisine. The North is less well-known but has the most unique dishes."},
+{s:"Você",side:"you",pt:`Qual é a diferença mais importante entre a comida do Norte e do Sudeste?${T('comp','superlative')}`,en:"What's the most important difference between Northern and Southeastern food?"},
+{s:"Amiga",side:"other",pt:`No Norte usam muito mais o tucupi e o jambu. <b>São</b> ingredientes que não <b>existem</b> em mais nenhum lugar do mundo.${T('comp','comparative')} ${T('pres','ser·pres')}`,en:"In the North they use much more tucupi and jambu. They are ingredients that don't exist anywhere else in the world."},
+{s:"Você",side:"you",pt:`Incrível. E qual <b>é</b> o prato que você mais <b>gosta</b> de fazer em casa?${T('pres','pres')}`,en:"Incredible. And what's the dish you most like to make at home?"},
+{s:"Amiga",side:"other",pt:`Moqueca baiana, sem dúvida. Minha mãe me <b>ensinou</b> quando eu <b>era</b> criança. <b>Leva</b> tempo mas <b>vale</b> cada minuto.${T('past','ensinar·past')} ${T('imp','imperf.')}`,en:"Bahian moqueca, without a doubt. My mother taught me when I was a child. It takes time but is worth every minute."},
+{s:"Você",side:"you",pt:`Você <b>poderia</b> me ensinar um dia? <b>Adoraria</b> aprender.${T('cond','cond.')}`,en:"Could you teach me one day? I would love to learn."},
+{s:"Amiga",side:"other",pt:`Claro que sim! <b>Seria</b> um prazer. Quando você <b>tiver</b> um dia livre, a gente <b>combina</b>.${T('cond','cond.')} ${T('subj','fut.subj')}`,en:"Of course! It would be a pleasure. When you have a free day, we'll arrange it."},
+{s:"Você",side:"you",pt:`Combinado! <b>Diz</b> o que eu preciso levar.${T('pres','dizer·pres')}`,en:"Deal! Tell me what I need to bring."},
+{s:"Amiga",side:"other",pt:`Não precisa levar nada. Só <b>vem</b> com vontade de aprender!${T('pres','vir·pres')}`,en:"You don't need to bring anything. Just come with the desire to learn!"},
+],
+vocab:[{pt:"saboroso/a",en:"tasty, flavourful"},{pt:"a culinária",en:"cuisine / cookery"},{pt:"ensinar",en:"to teach"},{pt:"combinar",en:"to arrange / to agree on"},{pt:"sem dúvida",en:"without a doubt"},{pt:"com vontade de",en:"eager to / with the desire to"}],
+chunks:[{pt:"Tenho vontade de experimentar.",en:"I really want to try it."},{pt:"É melhor do que...",en:"It's better than..."},{pt:"Muito mais ... do que eu imaginava",en:"Much more ... than I imagined"},{pt:"Poderia me ensinar?",en:"Could you teach me? (polite conditional)"},{pt:"Quando tiver um dia livre...",en:"When you have a free day... (fut. subj.)"}],
+notes:['Future subjunctive: quando for, quando tiver, quando vier — critical in spoken BR Portuguese.','Imperfect (era, imaginava, achava) describes past states or habits.','Consegui = managed to — often more natural than pude in many contexts.']},
+
+{tab:"🧗 Escalada",icon:"🧗",title:"Rock Climbing",
+desc:"You meet a local climber at a bouldering gym in São Paulo.",
+messages:[
+{s:"Climber",side:"other",pt:`Fala! Você <b>já veio</b> nessa academia antes?${T('past','vir·past')}`,en:"Hey! Have you come to this gym before?"},
+{s:"Você",side:"you",pt:`Não, é a primeira vez. <b>Vim</b> porque ouvi que <b>tem</b> as melhores vias de boulder da cidade.${T('past','vir·past')} ${T('comp','superlative')}`,en:"No, it's my first time. I came because I heard it has the best bouldering routes in the city."},
+{s:"Climber",side:"other",pt:`Verdade! <b>Fazemos</b> escalada aqui há três anos. <b>É</b> melhor do que qualquer outra academia que já <b>frequentei</b>.${T('comp','comparative')} ${T('past','perf.past')}`,en:"True! We've been climbing here for three years. It's better than any other gym I've ever attended."},
+{s:"Você",side:"you",pt:`<b>Sabe</b> onde <b>posso</b> encontrar boa escalada ao ar livre perto de SP?${T('pres','saber·pres')} ${T('pres','poder·pres')}`,en:"Do you know where I can find good outdoor climbing near SP?"},
+{s:"Climber",side:"other",pt:`Pedra Baú <b>é</b> a mais famosa. Mas Serra do Cipó no Minas também <b>vale</b> muito. <b>Fui</b> lá no mês passado.${T('comp','superlative')} ${T('past','ir·past')}`,en:"Pedra Baú is the most famous. But Serra do Cipó in Minas is also very worth it. I went there last month."},
+{s:"Você",side:"you",pt:`E como <b>foi</b>? A escalada <b>estava</b> boa?${T('past','ir·past')} ${T('imp','imperf.')}`,en:"And how was it? Was the climbing good?"},
+{s:"Climber",side:"other",pt:`Fantástico. As vias <b>eram</b> mais técnicas do que eu <b>esperava</b> mas não <b>desisti</b> de nenhuma.${T('imp','imperf.')} ${T('comp','comparative')}`,en:"Fantastic. The routes were more technical than I expected but I didn't give up on any."},
+{s:"Você",side:"you",pt:`<b>Faço</b> escalada há quatro anos. <b>Consigo</b> fazer 6b mas ainda <b>estou</b> desenvolvendo técnica em placas.${T('pres','fazer·pres')} ${T('pres','estar·pres')}`,en:"I've been climbing for four years. I can do 6b but I'm still developing technique on slabs."},
+{s:"Climber",side:"other",pt:`Placas <b>são</b> as mais difíceis pra quem <b>vem</b> do boulder. Você precisa confiar mais no pé.${T('comp','superlative')} ${T('pres','vir·pres')}`,en:"Slabs are the hardest for those coming from bouldering. You need to trust your feet more."},
+{s:"Você",side:"you",pt:`Exato. Tem algum treino específico que você <b>faz</b> pra melhorar o equilíbrio?${T('pres','fazer·pres')}`,en:"Exactly. Is there any specific training you do to improve balance?"},
+{s:"Climber",side:"other",pt:`<b>Faço</b> muito slackline. Também <b>vejo</b> vídeos dos melhores escaladores do mundo e tento imitar o movimento.${T('pres','fazer·pres')} ${T('pres','ver·pres')}`,en:"I do a lot of slackline. I also watch videos of the best climbers in the world and try to imitate the movement."},
+{s:"Você",side:"you",pt:`<b>Posso</b> te perguntar — qual <b>é</b> a via mais difícil que você já <b>fez</b>?${T('pres','poder·pres')} ${T('comp','superlative')} ${T('past','fazer·past')}`,en:"Can I ask you — what's the hardest route you've ever done?"},
+{s:"Climber",side:"other",pt:`Uma 7c+ em Pedra Riscada. Levou dois dias de tentativas. Quando finalmente <b>subi</b>, <b>chorei</b> de emoção.${T('past','subir·past')}`,en:"A 7c+ at Pedra Riscada. It took two days of attempts. When I finally topped it, I cried with emotion."},
+{s:"Você",side:"you",pt:`Que demais! Eu <b>quero</b> chegar nesse nível algum dia.${T('pres','querer·pres')}`,en:"That's amazing! I want to reach that level someday."},
+{s:"Climber",side:"other",pt:`<b>Vai chegar</b> sim. Com consistência, você <b>vai</b> além do que imagina.${T('fut','ir+inf')}`,en:"You will get there. With consistency, you'll go further than you imagine."},
+],
+vocab:[{pt:"ao ar livre",en:"outdoors / in the open air"},{pt:"a via / o boulder",en:"climbing route / bouldering"},{pt:"a placa",en:"slab (climbing style)"},{pt:"desistir de",en:"to give up on"},{pt:"confiar",en:"to trust"},{pt:"a tentativa",en:"the attempt"}],
+chunks:[{pt:"Faço X há [tempo].",en:"I've been doing X for [time]."},{pt:"É a mais ... que já fiz.",en:"It's the hardest ... I've ever done."},{pt:"Vai além do que imagina.",en:"You'll go further than you imagine."},{pt:"Levou dois dias de tentativas.",en:"It took two days of attempts."}],
+notes:['"Desistir de" = to give up on something.','Past narrative: mix preterite (subi, chorei) for completed events and imperfect (eram, esperava) for background.','Consigo fazer (I can manage) vs posso fazer (I am allowed/able) — subtle but important.']},
+
+{tab:"🤿 Mergulho",icon:"🤿",title:"Scuba Diving",
+desc:"At a dive shop near São Sebastião. Planning a shipwreck dive.",
+messages:[
+{s:"Instrutor",side:"other",pt:`Bom dia! Você <b>tem</b> certificação de mergulho?${T('pres','ter·pres')}`,en:"Good morning! Do you have a diving certification?"},
+{s:"Você",side:"you",pt:`<b>Tenho</b> sim. <b>Sou</b> PADI Open Water. Já <b>mergulhei</b> em umas quinze locações diferentes.${T('pres','ter·pres')} ${T('pres','ser·pres')} ${T('past','perf.past')}`,en:"Yes I do. I'm PADI Open Water. I've dived in about fifteen different locations."},
+{s:"Instrutor",side:"other",pt:`Que bacana! O passeio amanhã <b>vai ser</b> num naufrágio a 22 metros. Você <b>se sente</b> confortável com essa profundidade?${T('fut','ir+inf')}`,en:"How cool! The tour tomorrow will be on a shipwreck at 22 metres. Do you feel comfortable with that depth?"},
+{s:"Você",side:"you",pt:`<b>Sinto</b> sim. Qual <b>é</b> o naufrágio mais interessante que vocês <b>têm</b> na região?${T('comp','superlative')} ${T('pres','ter·pres')}`,en:"Yes I do. What's the most interesting shipwreck you have in the region?"},
+{s:"Instrutor",side:"other",pt:`O navio Príncipe de Astúrias. <b>Afundou</b> em 1916 e <b>é</b> considerado o Titanic brasileiro. Nunca <b>vi</b> nada mais impressionante.${T('past','afundar·past')} ${T('past','ver·past')} ${T('comp','superlative')}`,en:"The Príncipe de Astúrias. It sank in 1916 and is considered the Brazilian Titanic. I've never seen anything more impressive."},
+{s:"Você",side:"you",pt:`Como <b>estava</b> a visibilidade quando você <b>foi</b> lá pela última vez?${T('imp','imperf.')} ${T('past','ir·past')}`,en:"How was the visibility when you last went there?"},
+{s:"Instrutor",side:"other",pt:`<b>Estava</b> em torno de 15 metros — muito melhor do que a média. Hoje a corrente <b>está</b> mais fraca do que ontem.${T('imp','imperf.')} ${T('comp','comparative')}`,en:"It was around 15 metres — much better than average. Today the current is weaker than yesterday."},
+{s:"Você",side:"you",pt:`Perfeito. <b>Posso</b> alugar equipamento completo aqui?${T('pres','poder·pres')}`,en:"Perfect. Can I rent full equipment here?"},
+{s:"Instrutor",side:"other",pt:`<b>Pode</b> sim. <b>Temos</b> o equipamento mais moderno da costa paulista.${T('pres','poder·pres')} ${T('comp','superlative')}`,en:"Yes you can. We have the most modern equipment on the São Paulo coast."},
+{s:"Você",side:"you",pt:`Quanto <b>vai custar</b> o pacote completo?${T('fut','ir+inf')}`,en:"How much will the full package cost?"},
+{s:"Instrutor",side:"other",pt:`O mergulho mais o aluguel <b>sai</b> por trezentos reais. <b>É</b> mais barato do que qualquer operadora da região.${T('comp','comparative')}`,en:"The dive plus rental comes to three hundred reais. It's cheaper than any operator in the region."},
+{s:"Você",side:"you",pt:`Fechado! A que horas a gente <b>sai</b> amanhã?${T('pres','pres')}`,en:"Deal! What time do we leave tomorrow?"},
+{s:"Instrutor",side:"other",pt:`A gente <b>vai sair</b> às seis e meia. <b>Vem</b> aqui às seis — dá tempo de checar o equipamento.${T('fut','ir+inf')} ${T('pres','vir·pres')}`,en:"We'll leave at six thirty. Come here at six — there'll be time to check the equipment."},
+{s:"Você",side:"you",pt:`Tem alguma coisa que eu <b>devo</b> saber antes do mergulho?${T('pres','dever·pres')}`,en:"Is there anything I should know before the dive?"},
+{s:"Instrutor",side:"other",pt:`Não <b>faça</b> refeição pesada antes. E <b>diz</b> se <b>sentir</b> qualquer desconforto — segurança sempre <b>vem</b> primeiro.${T('pres','fazer·pres')} ${T('pres','dizer·pres')} ${T('pres','vir·pres')}`,en:"Don't eat a heavy meal before. And say if you feel any discomfort — safety always comes first."},
+],
+vocab:[{pt:"o naufrágio",en:"the shipwreck"},{pt:"a profundidade",en:"the depth"},{pt:"afundar",en:"to sink"},{pt:"a corrente",en:"the current (water)"},{pt:"sair por [preço]",en:"to come to [price]"},{pt:"a segurança vem primeiro",en:"safety comes first"}],
+chunks:[{pt:"A gente vai sair às...",en:"We'll leave at..."},{pt:"É mais barato do que...",en:"It's cheaper than..."},{pt:"Nunca vi nada mais impressionante.",en:"I've never seen anything more impressive."},{pt:"Diz se sentir qualquer...",en:"Say if you feel any..."}],
+notes:['Sair por = to come to a price: sai por trezentos reais — essential for shopping/services.','A gente as "we" — treat as 3rd person singular: a gente vai not a gente vamos.','Negated imperative: não faça — uses subjunctive form.']},
+
+{tab:"🗣️ Idioma",icon:"🗣️",title:"Language Learning",
+desc:"A Brazilian friend at a café asks about your language learning journey.",
+messages:[
+{s:"Amigo",side:"other",pt:`Seu português <b>está</b> ficando muito bom! Há quanto tempo você <b>está</b> estudando?${T('pres','estar·pres')}`,en:"Your Portuguese is getting really good! How long have you been studying?"},
+{s:"Você",side:"you",pt:`<b>Estou</b> estudando há uns oito meses. Mas <b>acho</b> que ainda <b>falo</b> com muito sotaque.${T('pres','estar·pres')}`,en:"I've been studying for about eight months. But I think I still speak with a strong accent."},
+{s:"Amigo",side:"other",pt:`Sotaque não importa! O que importa <b>é</b> que as pessoas <b>entendem</b> você.`,en:"Accent doesn't matter! What matters is that people understand you."},
+{s:"Você",side:"you",pt:`<b>Aprendo</b> principalmente através de diálogos reais. <b>Acho</b> que <b>é</b> mais eficiente do que decorar listas de vocabulário.${T('comp','comparative')}`,en:"I mainly learn through real dialogues. I think it's more efficient than memorizing vocabulary lists."},
+{s:"Amigo",side:"other",pt:`<b>Faz</b> todo o sentido. Eu nunca <b>estudei</b> inglês formalmente mas <b>aprendi</b> vendo séries. <b>Vi</b> Friends umas cinco vezes.${T('pres','fazer·pres')} ${T('past','perf.past')} ${T('past','ver·past')}`,en:"That makes total sense. I never formally studied English but learned by watching series. I watched Friends about five times."},
+{s:"Você",side:"you",pt:`Aprender chunks inteiros <b>é</b> mais poderoso do que aprender gramática isolada. Quando você <b>sabe</b> uma frase inteira, não precisa mais pensar.${T('comp','comparative')} ${T('pres','saber·pres')}`,en:"Learning whole chunks is more powerful than isolated grammar. When you know a whole phrase, you don't need to think anymore."},
+{s:"Amigo",side:"other",pt:`Concordo. Como se <b>diz</b> "language acquisition" em português?${T('pres','dizer·pres')}`,en:"I agree. How do you say 'language acquisition' in Portuguese?"},
+{s:"Você",side:"you",pt:`<b>Diz</b> "aquisição de linguagem". Mas eu <b>sei</b> isso e ainda não <b>consigo</b> aplicar o conceito!${T('pres','dizer·pres')} ${T('pres','saber·pres')}`,en:"You say 'aquisição de linguagem'. But I know that and still can't apply the concept!"},
+{s:"Amigo",side:"other",pt:`Haha! Você <b>sabia</b> que o cérebro adulto <b>pode</b> aprender idiomas tão bem quanto o de uma criança?${T('past','saber·past')} ${T('pres','poder·pres')}`,en:"Haha! Did you know that the adult brain can learn languages just as well as a child's?"},
+{s:"Você",side:"you",pt:`<b>Sabia</b> sim. Desde que a pessoa <b>tenha</b> input suficiente e não <b>tenha</b> medo de errar.${T('past','saber·past')} ${T('subj','subj – desde que')}`,en:"I did know. As long as the person has sufficient input and isn't afraid of making mistakes."},
+{s:"Amigo",side:"other",pt:`Você <b>tem</b> medo de falar?${T('pres','ter·pres')}`,en:"Are you afraid of speaking?"},
+{s:"Você",side:"you",pt:`<b>Tinha</b> muito mais medo antes. Agora <b>tento</b> falar mesmo quando <b>sei</b> que vou errar.${T('imp','imperf.')} ${T('comp','comparative')} ${T('pres','saber·pres')}`,en:"I used to be much more afraid. Now I try to speak even when I know I'll make mistakes."},
+{s:"Amigo",side:"other",pt:`Essa <b>é</b> a chave. Os brasileiros <b>são</b> os mais pacientes do mundo com quem <b>tenta</b> falar português.${T('comp','superlative')}`,en:"That's the key. Brazilians are the most patient in the world with those who try to speak Portuguese."},
+{s:"Você",side:"you",pt:`<b>Posso</b> te perguntar — qual <b>é</b> o erro mais comum que estrangeiros <b>cometem</b>?${T('pres','poder·pres')} ${T('comp','superlative')}`,en:"Can I ask you — what's the most common mistake foreigners make?"},
+{s:"Amigo",side:"other",pt:`<b>Dizer</b> "eu sou bem". O certo <b>é</b> "eu estou bem" — <b>ser</b> é permanente, <b>estar</b> é temporário.${T('pres','dizer·pres')} ${T('pres','ser·pres')} ${T('pres','estar·pres')}`,en:"Saying 'eu sou bem'. The correct form is 'eu estou bem' — ser is permanent, estar is temporary."},
+],
+vocab:[{pt:"o sotaque",en:"the accent"},{pt:"decorar",en:"to memorize by heart"},{pt:"a aquisição de linguagem",en:"language acquisition"},{pt:"a chave",en:"the key (figurative)"},{pt:"cometer erros",en:"to make mistakes"},{pt:"o input",en:"input (used in BR too)"}],
+chunks:[{pt:"Como se diz...?",en:"How do you say...?"},{pt:"Aprendo através de...",en:"I learn through..."},{pt:"Faz todo o sentido.",en:"That makes total sense."},{pt:"Tinha muito mais medo antes.",en:"I used to be much more afraid. (imperfect)"},{pt:"Desde que + subjunctive",en:"As long as... (subjunctive trigger)"}],
+notes:['Ser vs Estar: sou bem ❌ → estou bem ✓ — the most common foreigner mistake.','Subjunctive trigger: desde que always triggers subjunctive: desde que tenha.','Imperfect for past habits: tinha medo = I used to be afraid.']},
+
+{tab:"💻 Nômade",icon:"💻",title:"Digital Nomad Life",
+desc:"Someone at a coworking space in Pinheiros asks what you do.",
+messages:[
+{s:"Colega",side:"other",pt:`Com o que você <b>trabalha</b>? Vi você aqui ontem também.${T('pres','pres')}`,en:"What do you do for work? I saw you here yesterday too."},
+{s:"Você",side:"you",pt:`<b>Sou</b> professor de matemática online. <b>Dou</b> aulas pelo Zoom pra alunos em vários países. E <b>sou</b> nômade digital.${T('pres','ser·pres')} ${T('pres','dar·pres')}`,en:"I'm an online maths teacher. I give classes over Zoom to students in several countries. And I'm a digital nomad."},
+{s:"Colega",side:"other",pt:`Que estilo de vida incrível! Há quanto tempo você <b>faz</b> isso?${T('pres','fazer·pres')}`,en:"What an incredible lifestyle! How long have you been doing this?"},
+{s:"Você",side:"you",pt:`<b>Faço</b> isso há dois anos. Antes eu <b>trabalhava</b> num escritório e nunca <b>imaginava</b> que <b>ia</b> viver assim.${T('pres','fazer·pres')} ${T('imp','imperf.')}`,en:"I've been doing this for two years. Before I worked in an office and never imagined I would live like this."},
+{s:"Colega",side:"other",pt:`O que te <b>fez</b> mudar?${T('past','fazer·past')}`,en:"What made you change?"},
+{s:"Você",side:"you",pt:`A pandemia. Quando tudo <b>fechou</b>, <b>percebi</b> que <b>podia</b> trabalhar de qualquer lugar. <b>Foi</b> a melhor coisa que aconteceu pra mim.${T('past','ir·past')} ${T('imp','imperf.')} ${T('comp','superlative')}`,en:"The pandemic. When everything closed, I realised I could work from anywhere. It was the best thing that happened to me."},
+{s:"Colega",side:"other",pt:`E qual <b>é</b> a parte mais difícil de ser nômade?${T('comp','superlative')}`,en:"And what's the hardest part of being a nomad?"},
+{s:"Você",side:"you",pt:`O fuso horário. Às vezes <b>tenho</b> que dar aula de madrugada. E também <b>é</b> mais solitário do que parece.${T('pres','ter·pres')} ${T('comp','comparative')}`,en:"The time zone. Sometimes I have to teach in the middle of the night. And it's also lonelier than it seems."},
+{s:"Colega",side:"other",pt:`Mas a liberdade <b>vale</b> mais do que qualquer salário fixo, né?${T('comp','comparative')}`,en:"But the freedom is worth more than any fixed salary, right?"},
+{s:"Você",side:"you",pt:`Com certeza. Hoje <b>posso</b> trabalhar de uma praia ou de um café — isso <b>é</b> melhor do que qualquer coisa que eu <b>tinha</b> antes.${T('pres','poder·pres')} ${T('comp','comparative')} ${T('imp','imperf.')}`,en:"For sure. Today I can work from a beach or a café — that's better than anything I had before."},
+{s:"Colega",side:"other",pt:`E matemática online <b>tem</b> muita demanda?${T('pres','ter·pres')}`,en:"And is there much demand for online maths?"},
+{s:"Você",side:"you",pt:`Muita! A demanda <b>é</b> maior do que eu <b>consigo</b> atender às vezes.${T('comp','comparative')}`,en:"A lot! The demand is greater than I can handle sometimes."},
+{s:"Colega",side:"other",pt:`Você <b>pretende</b> continuar assim?${T('pres','pres')}`,en:"Do you intend to continue like this?"},
+{s:"Você",side:"you",pt:`<b>Quero</b> continuar pelo maior tempo possível. Quando eu <b>for</b> mais velho, talvez <b>mude</b>. Mas agora, não <b>vejo</b> razão pra mudar.${T('pres','querer·pres')} ${T('subj','fut.subj')} ${T('pres','ver·pres')}`,en:"I want to continue for as long as possible. When I'm older, maybe I'll change. But now, I don't see a reason to change."},
+{s:"Colega",side:"other",pt:`Faz sentido. Se eu <b>pudesse</b>, <b>faria</b> o mesmo!${T('cond','cond.')}`,en:"Makes sense. If I could, I would do the same!"},
+],
+vocab:[{pt:"o fuso horário",en:"time zone"},{pt:"de madrugada",en:"in the middle of the night"},{pt:"a demanda",en:"the demand"},{pt:"atender",en:"to handle / to serve"},{pt:"pretender",en:"to intend / to plan to"},{pt:"a estabilidade",en:"stability"}],
+chunks:[{pt:"Com o que você trabalha?",en:"What do you do? (most natural way)"},{pt:"Faço isso há [tempo].",en:"I've been doing this for [time]."},{pt:"Nunca imaginava que ia...",en:"I never imagined I would..."},{pt:"Se pudesse, faria o mesmo.",en:"If I could, I would do the same."},{pt:"Pelo maior tempo possível.",en:"For as long as possible."}],
+notes:['"Com o que você trabalha?" — the most natural way to ask someone\'s job in BR Portuguese.','Conditional: se pudesse + faria — imperfect subjunctive + conditional.','Percebi que podia — "I realised I could" — reporting past ability uses imperfect.']},
+
+{tab:"🥾 Trilha",icon:"🥾",title:"Hiking & Nature",
+desc:"Asking about trails at the entrance of a state park near São Paulo.",
+messages:[
+{s:"Guarda",side:"other",pt:`Bom dia! Posso ajudar?`,en:"Good morning! Can I help?"},
+{s:"Você",side:"you",pt:`Bom dia! <b>Quero</b> fazer uma trilha hoje. Qual <b>é</b> a mais bonita e desafiadora daqui?${T('pres','querer·pres')} ${T('comp','superlative')}`,en:"Good morning! I want to do a hike today. Which is the most beautiful and challenging from here?"},
+{s:"Guarda",side:"other",pt:`A trilha do Pico <b>é</b> a mais desafiadora mas também a mais recompensadora. Você já <b>fez</b> trilhas longas antes?${T('comp','superlative')} ${T('past','fazer·past')}`,en:"The Pico trail is the most challenging but also the most rewarding. Have you done long hikes before?"},
+{s:"Você",side:"you",pt:`<b>Fiz</b> sim, várias. <b>Sou</b> acostumado com trilhas difíceis. Mas nunca <b>vim</b> nesse parque.${T('past','fazer·past')} ${T('pres','ser·pres')} ${T('past','vir·past')}`,en:"Yes I have, several. I'm used to difficult trails. But I've never come to this park."},
+{s:"Guarda",side:"other",pt:`Então <b>vai</b> adorar. Quanto tempo você <b>tem</b> hoje?${T('fut','ir+inf')} ${T('pres','ter·pres')}`,en:"Then you'll love it. How much time do you have today?"},
+{s:"Você",side:"you",pt:`<b>Tenho</b> o dia todo. <b>Posso</b> sair daqui às oito?${T('pres','ter·pres')} ${T('pres','poder·pres')}`,en:"I have the whole day. Can I leave here at eight?"},
+{s:"Guarda",side:"other",pt:`<b>Pode</b> sim, mas <b>é</b> melhor voltar antes das cinco. O sol <b>vai se pôr</b> cedo e a trilha de volta <b>é</b> mais perigosa no escuro.${T('comp','comparative')} ${T('fut','ir+inf')}`,en:"Yes you can, but it's better to return before five. The sun will set early and the return trail is more dangerous in the dark."},
+{s:"Você",side:"you",pt:`Entendido. Quanto tempo <b>leva</b> até o topo?${T('pres','pres')}`,en:"Understood. How long does it take to the top?"},
+{s:"Guarda",side:"other",pt:`Umas três horas pra subir. A descida <b>é</b> mais rápida — umas duas horas. <b>Depende</b> do seu ritmo.${T('comp','comparative')}`,en:"About three hours to go up. The descent is faster — about two hours. Depends on your pace."},
+{s:"Você",side:"you",pt:`Preciso levar algo especial? <b>Tenho</b> água e protetor solar.${T('pres','ter·pres')}`,en:"Do I need to bring anything special? I have water and sunscreen."},
+{s:"Guarda",side:"other",pt:`Leve pelo menos dois litros. Hoje <b>vai fazer</b> mais calor do que ontem — <b>é</b> o dia mais quente da semana.${T('fut','ir+inf')} ${T('comp','superlative')}`,en:"Bring at least two litres. Today will be hotter than yesterday — it's the hottest day of the week."},
+{s:"Você",side:"you",pt:`E <b>posso</b> <b>ver</b> animais silvestres na trilha?${T('pres','poder·pres')} ${T('pres','ver·pres')}`,en:"And can I see wild animals on the trail?"},
+{s:"Guarda",side:"other",pt:`<b>Pode</b> sim! Macacos e tucanos <b>são</b> bem comuns. Quanto mais você alimenta, menos eles <b>têm</b> medo dos humanos.${T('pres','poder·pres')} ${T('comp','comparative')}`,en:"Yes you can! Monkeys and toucans are very common. The more you feed them, the less afraid of humans they become."},
+{s:"Você",side:"you",pt:`<b>Posso</b> <b>ver</b> o mapa da trilha?${T('pres','poder·pres')} ${T('pres','ver·pres')}`,en:"Can I see the trail map?"},
+{s:"Guarda",side:"other",pt:`Aqui <b>está</b>. Se <b>tiver</b> qualquer dúvida no caminho, nos <b>diga</b> pelo rádio. Boa trilha!${T('pres','estar·pres')} ${T('subj','fut.subj')} ${T('pres','dizer·pres')}`,en:"Here it is. If you have any doubt on the way, tell us on the radio. Happy hiking!"},
+],
+vocab:[{pt:"a trilha / o topo",en:"the trail / the summit"},{pt:"a descida",en:"the descent"},{pt:"o ritmo",en:"the pace / rhythm"},{pt:"silvestres",en:"wild (animals)"},{pt:"alimentar",en:"to feed"},{pt:"escurecer",en:"to get dark"}],
+chunks:[{pt:"Sou acostumado/a com...",en:"I'm used to..."},{pt:"Vai fazer mais calor do que...",en:"It will be hotter than..."},{pt:"Quanto tempo leva até...?",en:"How long does it take to...?"},{pt:"Quanto mais ... menos ...",en:"The more ... the less ..."},{pt:"Se tiver qualquer dúvida...",en:"If you have any doubt... (fut. subjunctive)"}],
+notes:['Fazer for weather: vai fazer calor, faz frio — never "é quente" for weather.','Quanto mais ... menos — correlative comparatives — extremely common in speech.','Future subjunctive after se (if) and quando (when): se tiver, quando chegar.']},
+
+{tab:"✈️ Viagem",icon:"✈️",title:"Travel Talk",
+desc:"Chatting with travellers in a hostel common room.",
+messages:[
+{s:"Viajante",side:"other",pt:`Quantos países você já <b>visitou</b>?${T('past','perf.past')}`,en:"How many countries have you visited?"},
+{s:"Você",side:"you",pt:`Acho que uns vinte e tantos. O que importa não <b>é</b> o número — <b>é</b> o quanto você <b>mergulha</b> na cultura.`,en:"I think around twenty-something. What matters isn't the number — it's how much you immerse in the culture."},
+{s:"Viajante",side:"other",pt:`Concordo totalmente. Qual <b>foi</b> o lugar que mais te <b>surpreendeu</b>?${T('past','ir·past')}`,en:"I totally agree. What was the place that surprised you the most?"},
+{s:"Você",side:"you",pt:`O Brasil. Eu <b>sabia</b> que <b>ia ser</b> bom, mas a realidade <b>foi</b> muito melhor do que eu <b>esperava</b>.${T('imp','imperf.')} ${T('comp','comparative')} ${T('past','ir·past')}`,en:"Brazil. I knew it was going to be good, but reality was much better than I expected."},
+{s:"Viajante",side:"other",pt:`É o seu primeiro vez aqui?`,en:"Is this your first time here?"},
+{s:"Você",side:"you",pt:`<b>É</b> sim. E já <b>posso</b> dizer que <b>é</b> o país mais acolhedor que já <b>visitei</b>.${T('pres','poder·pres')} ${T('comp','superlative')} ${T('past','perf.past')}`,en:"Yes it is. And I can already say it's the most welcoming country I've ever visited."},
+{s:"Viajante",side:"other",pt:`Você <b>prefere</b> viajar sozinho ou acompanhado?${T('pres','pres')}`,en:"Do you prefer travelling alone or with company?"},
+{s:"Você",side:"you",pt:`<b>Prefiro</b> sozinho porque <b>tenho</b> mais liberdade. Mas às vezes <b>é</b> mais solitário do que eu <b>gostaria</b>.${T('comp','comparative')} ${T('cond','cond.')}`,en:"I prefer alone because I have more freedom. But sometimes it's lonelier than I would like."},
+{s:"Viajante",side:"other",pt:`Se você <b>pudesse</b> morar em qualquer lugar, onde <b>seria</b>?${T('cond','cond.')}`,en:"If you could live anywhere, where would it be?"},
+{s:"Você",side:"you",pt:`Talvez Florianópolis. <b>Tem</b> praia, natureza, surf. E as pessoas <b>são</b> as mais acolhedoras que já <b>conheci</b>.${T('pres','ter·pres')} ${T('comp','superlative')} ${T('past','conhecer·past')}`,en:"Maybe Florianópolis. It has beach, nature, surf. And the people are the most welcoming I've ever met."},
+{s:"Viajante",side:"other",pt:`Quanto tempo você <b>pretende</b> ficar no Brasil?${T('pres','pres')}`,en:"How long do you intend to stay in Brazil?"},
+{s:"Você",side:"you",pt:`Originalmente <b>planejei</b> seis semanas mas agora <b>estou pensando</b> em ficar mais. <b>Quero</b> <b>ver</b> o Nordeste ainda.${T('past','planejar·past')} ${T('pres','estar·pres')} ${T('pres','querer·pres')} ${T('pres','ver·pres')}`,en:"Originally I planned six weeks but now I'm thinking about staying longer. I still want to see the Northeast."},
+{s:"Viajante",side:"other",pt:`O Nordeste <b>é</b> ainda mais lindo do que o Sul. Bahia <b>é</b> a região mais vibrante do país.${T('comp','comparative')} ${T('comp','superlative')}`,en:"The Northeast is even more beautiful than the South. Bahia is the most vibrant region in the country."},
+{s:"Você",side:"you",pt:`<b>Dizem</b> isso mesmo. Você já <b>foi</b>?${T('pres','dizer·pres')} ${T('past','ir·past')}`,en:"That's what they say. Have you been?"},
+{s:"Viajante",side:"other",pt:`<b>Fui</b> duas vezes e cada vez que <b>vou</b>, <b>vejo</b> algo novo. <b>É</b> impossível <b>ver</b> tudo em uma visita só.${T('past','ir·past')} ${T('pres','ir·pres')} ${T('pres','ver·pres')}`,en:"I went twice and every time I go, I see something new. It's impossible to see everything in just one visit."},
+],
+vocab:[{pt:"acolhedor/a",en:"welcoming / warm"},{pt:"ainda mais",en:"even more (stronger comparative)"},{pt:"mergulhar na cultura",en:"to immerse in the culture"},{pt:"planejar",en:"to plan"},{pt:"vibrante",en:"vibrant"},{pt:"cada vez que",en:"every time that"}],
+chunks:[{pt:"Muito melhor do que eu esperava.",en:"Much better than I expected."},{pt:"As pessoas são as mais ... que já conheci.",en:"The people are the most ... I've ever met."},{pt:"Se pudesse, onde seria?",en:"If you could, where would it be?"},{pt:"Cada vez que vou, vejo...",en:"Every time I go, I see..."},{pt:"Ainda mais lindo do que...",en:"Even more beautiful than..."}],
+notes:['Ainda mais intensifies comparatives: ainda mais bonito = even more beautiful.','Conditional sentences: se pudesse + seria — imperfect subjunctive + conditional.','Tenho feito — present perfect expresses recent repeated action.']},
+
+{tab:"🏖️ Praia",icon:"🏖️",title:"At the Beach",
+desc:"Your first time at a Brazilian beach — Ubatuba on the São Paulo coast.",
+messages:[
+{s:"Você",side:"you",pt:`Nossa, que praia linda! <b>É</b> a mais bonita que já <b>vi</b> na vida.${T('comp','superlative')} ${T('past','ver·past')}`,en:"Wow, what a beautiful beach! It's the most beautiful I've ever seen in my life."},
+{s:"Local",side:"other",pt:`Bem-vindo a Ubatuba! <b>É</b> sua primeira vez aqui?${T('pres','ser·pres')}`,en:"Welcome to Ubatuba! Is it your first time here?"},
+{s:"Você",side:"you",pt:`Primeira vez no Brasil até! Nunca <b>vim</b> antes. Mas já <b>quero</b> voltar.${T('past','vir·past')} ${T('pres','querer·pres')}`,en:"First time in Brazil even! I never came before. But I already want to come back."},
+{s:"Local",side:"other",pt:`Todo mundo que <b>vem</b> aqui <b>diz</b> isso. O mar <b>é</b> muito mais quente do que eu <b>imaginava</b>.${T('pres','vir·pres')} ${T('pres','dizer·pres')} ${T('comp','comparative')} ${T('imp','imperf.')}`,en:"Everyone who comes here says that. The sea is much warmer than I imagined."},
+{s:"Você",side:"you",pt:`Tem ondas boas pra surfar? Ainda não <b>sei</b> surfar mas <b>tenho</b> vontade de aprender.${T('pres','saber·pres')} ${T('pres','ter·pres')}`,en:"Are there good waves for surfing? I still don't know how to surf but I want to learn."},
+{s:"Local",side:"other",pt:`<b>Tem</b> sim! A praia do Itamambuca <b>é</b> a melhor pra quem <b>está</b> aprendendo. As ondas <b>são</b> mais tranquilas do que em Maresias.${T('pres','ter·pres')} ${T('comp','superlative')} ${T('comp','comparative')}`,en:"Yes there are! Itamambuca beach is the best for those who are learning. The waves are calmer than at Maresias."},
+{s:"Você",side:"you",pt:`Tem aula de surf aqui? <b>Quero</b> tentar antes de ir embora.${T('pres','querer·pres')}`,en:"Are there surf lessons here? I want to try before leaving."},
+{s:"Local",side:"other",pt:`<b>Tem</b> várias escolas. A mais barata <b>fica</b> ali no canto — umas cem reais por hora.${T('comp','superlative')}`,en:"There are several schools. The cheapest one is over there at the corner — about a hundred reais per hour."},
+{s:"Você",side:"you",pt:`E <b>posso</b> nadar aqui? A corrente <b>está</b> forte hoje?${T('pres','poder·pres')} ${T('pres','estar·pres')}`,en:"And can I swim here? Is the current strong today?"},
+{s:"Local",side:"other",pt:`<b>Pode</b> sim. Hoje <b>está</b> mais calmo do que ontem. Mas <b>vê</b> a bandeira — verde <b>é</b> livre, vermelha <b>é</b> perigoso.${T('pres','poder·pres')} ${T('comp','comparative')} ${T('pres','ver·pres')}`,en:"Yes you can. Today is calmer than yesterday. But look at the flag — green is free, red is dangerous."},
+{s:"Você",side:"you",pt:`Que sistema inteligente. Todo mundo aqui <b>sabe</b> nadar?${T('pres','saber·pres')}`,en:"What a smart system. Does everyone here know how to swim?"},
+{s:"Local",side:"other",pt:`Haha, não exatamente! Mas os brasileiros <b>são</b> os mais à vontade no mar do mundo.${T('comp','superlative')}`,en:"Haha, not exactly! But Brazilians are the most comfortable in the sea in the world."},
+{s:"Você",side:"you",pt:`Acredito! <b>Quero</b> tomar uma água de coco. Tem bar aqui?${T('pres','querer·pres')}`,en:"I believe it! I want to drink a coconut water. Is there a bar here?"},
+{s:"Local",side:"other",pt:`<b>Tem</b> vários! O mais famoso <b>fica</b> bem ali. <b>Fazem</b> a caipirinha mais gostosa da praia.${T('comp','superlative')} ${T('pres','fazer·pres')}`,en:"There are several! The most famous one is right there. They make the tastiest caipirinha on the beach."},
+{s:"Você",side:"you",pt:`<b>Vou</b> direto pra lá! Muito obrigado pela ajuda.${T('fut','ir+inf')}`,en:"I'll go straight there! Thank you very much for the help."},
+],
+vocab:[{pt:"a onda",en:"the wave"},{pt:"a corrente",en:"the current"},{pt:"a bandeira",en:"the flag"},{pt:"à vontade",en:"comfortable / at ease"},{pt:"a água de coco",en:"coconut water"},{pt:"a caipirinha",en:"Brazil's national cocktail"}],
+chunks:[{pt:"É a mais bonita que já vi na vida.",en:"It's the most beautiful I've ever seen in my life."},{pt:"Tenho vontade de aprender.",en:"I want to learn / I feel like learning."},{pt:"A mais barata fica ali.",en:"The cheapest one is over there."},{pt:"Vê a bandeira.",en:"Look at the flag. (informal imperative of ver)"}],
+notes:['Saber + infinitive = to know how to do something: sei nadar, sei cozinhar.','Informal imperative: vê (look), faz (do), vai (go) — very common in spoken BR.','Fica for location: a escola fica ali = the school is over there (more natural than está).']},
+
+{tab:"🛒 Mercado",icon:"🛒",title:"Shopping at Mercadão",
+desc:"You visit São Paulo's famous Mercado Municipal.",
+messages:[
+{s:"Vendedor",side:"other",pt:`Oi! Quer experimentar? <b>É</b> de graça!${T('pres','ser·pres')}`,en:"Hi! Want to try some? It's free!"},
+{s:"Você",side:"you",pt:`Claro, obrigado! O que <b>é</b> isso?${T('pres','ser·pres')}`,en:"Sure, thanks! What is this?"},
+{s:"Vendedor",side:"other",pt:`<b>É</b> mortadela defumada. A mais famosa do Mercadão. Já <b>viu</b> o sanduíche nas fotos?${T('comp','superlative')} ${T('past','ver·past')}`,en:"It's smoked mortadella. The most famous at Mercadão. Have you seen the sandwich in photos?"},
+{s:"Você",side:"you",pt:`<b>Vi</b> sim! <b>Vim</b> aqui especialmente pra isso. Quanto <b>custa</b>?${T('past','ver·past')} ${T('past','vir·past')} ${T('pres','pres')}`,en:"Yes I have! I came here especially for this. How much does it cost?"},
+{s:"Vendedor",side:"other",pt:`O sanduíche grande <b>sai</b> por vinte e cinco reais. <b>É</b> mais barato do que qualquer lanchonete da cidade.${T('comp','comparative')}`,en:"The large sandwich comes to twenty-five reais. It's cheaper than any snack bar in the city."},
+{s:"Você",side:"you",pt:`Aceita cartão? Não <b>tenho</b> muito dinheiro em espécie.${T('pres','ter·pres')}`,en:"Do you take card? I don't have much cash."},
+{s:"Vendedor",side:"other",pt:`<b>Aceitamos</b> sim. Débito <b>é</b> melhor do que crédito porque não <b>tem</b> taxa.${T('comp','comparative')}`,en:"Yes we take card. Debit is better than credit because there's no fee."},
+{s:"Você",side:"you",pt:`Então me <b>dá</b> um grande. E o que mais você recomenda?${T('pres','dar·pres')}`,en:"Then give me a large one. And what else do you recommend?"},
+{s:"Vendedor",side:"other",pt:`As frutas exóticas lá no fundo <b>são</b> as mais frescas do mercado.${T('comp','superlative')}`,en:"The exotic fruits at the back are the freshest in the market."},
+{s:"Você",side:"you",pt:`Que frutas você <b>tem</b>? Nunca <b>vi</b> tanta variedade.${T('pres','ter·pres')} ${T('past','ver·past')}`,en:"What fruits do you have? I've never seen such variety."},
+{s:"Vendedor",side:"other",pt:`<b>Temos</b> jabuticaba, cupuaçu, graviola... <b>são</b> frutas que você não <b>vai ver</b> fora do Brasil.${T('fut','ir+inf')} ${T('pres','ser·pres')}`,en:"We have jabuticaba, cupuaçu, soursop... they're fruits you won't see outside of Brazil."},
+{s:"Você",side:"you",pt:`<b>Posso</b> experimentar antes de comprar?${T('pres','poder·pres')}`,en:"Can I try before buying?"},
+{s:"Vendedor",side:"other",pt:`<b>Pode</b> sim, à vontade! A jabuticaba <b>é</b> a mais doce agora — <b>é</b> a época dela.${T('pres','poder·pres')} ${T('comp','superlative')}`,en:"Yes you can, go ahead! The jabuticaba is the sweetest right now — it's its season."},
+{s:"Você",side:"you",pt:`Deliciosa! Nunca comi nada assim. Me <b>dá</b> meio quilo.${T('pres','dar·pres')}`,en:"Delicious! I've never eaten anything like it. Give me half a kilo."},
+],
+vocab:[{pt:"em espécie",en:"in cash"},{pt:"a taxa",en:"the fee / charge"},{pt:"exótico/a",en:"exotic"},{pt:"fresco/a",en:"fresh"},{pt:"a época",en:"the season (of a fruit)"},{pt:"à vontade",en:"go ahead / feel free"}],
+chunks:[{pt:"Me dá [quantidade].",en:"Give me [quantity]."},{pt:"São frutas que você não vai ver...",en:"They're fruits you won't see..."},{pt:"É mais barato do que...",en:"It's cheaper than..."},{pt:"Posso experimentar antes de comprar?",en:"Can I try before buying?"}],
+notes:['Sair por = to cost: sai por vinte reais.','Negative future: não vai ver = won\'t see — Brazilians almost always use ir+infinitive for future.','É a época dela = it\'s its season — useful pattern for fresh produce.']},
+
+{tab:"🏨 Hotel",icon:"🏨",title:"Hotel Check-in",
+desc:"Arriving at your hotel in São Paulo after a long journey.",
+messages:[
+{s:"Você",side:"you",pt:`Boa noite! <b>Tenho</b> uma reserva no nome de [seu nome].${T('pres','ter·pres')}`,en:"Good evening! I have a reservation under [your name]."},
+{s:"Recepcionista",side:"other",pt:`Boa noite! Deixa eu verificar... <b>Encontrei</b> sim. O senhor <b>vai ficar</b> quantas noites?${T('past','encontrar·past')} ${T('fut','ir+inf')}`,en:"Good evening! Let me check... Found it. How many nights will you be staying?"},
+{s:"Você",side:"you",pt:`Cinco noites. <b>Vim</b> de Bogotá — <b>foi</b> o voo mais longo que já <b>fiz</b>.${T('past','vir·past')} ${T('comp','superlative')} ${T('past','fazer·past')}`,en:"Five nights. I came from Bogotá — it was the longest flight I've ever done."},
+{s:"Recepcionista",side:"other",pt:`Nossa! O café da manhã <b>está</b> incluso e <b>é</b> o mais completo do bairro. <b>Serve</b> das sete às dez.${T('pres','estar·pres')} ${T('comp','superlative')}`,en:"Wow! Breakfast is included and it's the most complete in the neighbourhood. Served from seven to ten."},
+{s:"Você",side:"you",pt:`Que ótimo. <b>Tem</b> Wi-Fi no quarto? Preciso trabalhar amanhã cedo.${T('pres','ter·pres')}`,en:"Great. Is there Wi-Fi in the room? I need to work early tomorrow."},
+{s:"Recepcionista",side:"other",pt:`<b>Tem</b> sim. A velocidade <b>é</b> mais rápida do que a maioria dos hotéis da cidade.${T('pres','ter·pres')} ${T('comp','comparative')}`,en:"Yes there is. The speed is faster than most hotels in the city."},
+{s:"Você",side:"you",pt:`<b>Posso</b> pedir um quarto mais silencioso? <b>Fui</b> colocado de frente pra rua.${T('pres','poder·pres')} ${T('past','ir·past')}`,en:"Can I request a quieter room? I was placed facing the street."},
+{s:"Recepcionista",side:"other",pt:`Claro! <b>Temos</b> um quarto no fundo muito mais silencioso. <b>Posso</b> trocar sem custo adicional.${T('pres','ter·pres')} ${T('comp','comparative')} ${T('pres','poder·pres')}`,en:"Of course! We have a room in the back that's much quieter. I can change it at no extra cost."},
+{s:"Você",side:"you",pt:`Muito obrigado, <b>seria</b> ótimo. Tem serviço de quarto?${T('cond','cond.')}`,en:"Thank you very much, that would be great. Is there room service?"},
+{s:"Recepcionista",side:"other",pt:`<b>Tem</b> até meia-noite. Posso <b>dizer</b> que a pizza <b>é</b> a mais pedida.${T('comp','superlative')} ${T('pres','dizer·pres')}`,en:"Until midnight. I can tell you the pizza is the most ordered."},
+{s:"Você",side:"you",pt:`Tem academia? Quero <b>fazer</b> uma sessão amanhã cedo.${T('pres','fazer·pres')}`,en:"Is there a gym? I want to do a session early tomorrow."},
+{s:"Recepcionista",side:"other",pt:`<b>Tem</b> sim, no segundo andar. <b>Abre</b> às seis. <b>É</b> a academia mais bem equipada da categoria.${T('comp','superlative')}`,en:"Yes, on the second floor. It opens at six. It's the best equipped gym in its category."},
+{s:"Você",side:"you",pt:`Excelente. <b>Sabe</b> me indicar um bom restaurante aqui perto?${T('pres','saber·pres')}`,en:"Excellent. Do you know how to recommend a good restaurant nearby?"},
+{s:"Recepcionista",side:"other",pt:`<b>Sei</b> sim! O Spot na Oscar Freire <b>é</b> o mais famoso do bairro. <b>Dizem</b> que <b>é</b> o melhor da Jardins.${T('pres','saber·pres')} ${T('comp','superlative')} ${T('pres','dizer·pres')}`,en:"Yes I do! Spot on Oscar Freire is the most famous in the neighbourhood. They say it's the best in Jardins."},
+],
+vocab:[{pt:"o serviço de quarto",en:"room service"},{pt:"a academia",en:"the gym"},{pt:"equipado/a",en:"equipped"},{pt:"de frente pra",en:"facing / in front of"},{pt:"sem custo adicional",en:"at no extra cost"},{pt:"indicar",en:"to recommend / to point out"}],
+chunks:[{pt:"Posso pedir um quarto mais...?",en:"Can I request a more... room?"},{pt:"Seria ótimo.",en:"That would be great. (polite conditional)"},{pt:"Sabe me indicar...?",en:"Do you know how to recommend...?"},{pt:"Dizem que é o melhor...",en:"They say it's the best..."}],
+notes:['Seria (conditional) for polite responses: seria ótimo = that would be great.','Sabe me indicar? — very natural soft request using saber + infinitive.','Vai ficar — future with ir+infinitive is always more natural than future tense in spoken BR.']},
+
+{tab:"👥 Terceiros",icon:"👥",title:"Talking About Others",
+desc:"You and a Brazilian friend chat about mutual friends — third person practice.",
+messages:[
+{s:"Amiga",side:"other",pt:`Você <b>conheceu</b> o Rafael ontem?${T('past','conhecer·past')}`,en:"Did you meet Rafael yesterday?"},
+{s:"Você",side:"you",pt:`<b>Conheci</b> sim. <b>É</b> o seu amigo que <b>faz</b> escalada, né? <b>Parece</b> ser muito gente boa.${T('past','conhecer·past')} ${T('pres','fazer·pres')}`,en:"Yes I did. He's your friend who climbs, right? He seems to be a really good person."},
+{s:"Amiga",side:"other",pt:`<b>É</b> sim! Ele e a namorada dele <b>viajam</b> o Brasil inteiro. <b>São</b> os melhores viajantes que eu <b>conheço</b>.${T('comp','superlative')} ${T('pres','conhecer·pres')}`,en:"He is! He and his girlfriend travel all over Brazil. They're the best travellers I know."},
+{s:"Você",side:"you",pt:`O que ele <b>faz</b> da vida?${T('pres','fazer·pres')}`,en:"What does he do for a living?"},
+{s:"Amiga",side:"other",pt:`Ele <b>é</b> fotógrafo. <b>Vende</b> as fotos que <b>tira</b> nas viagens. <b>Dizem</b> que ele <b>ganha</b> muito bem.${T('pres','ser·pres')} ${T('pres','dizer·pres')}`,en:"He's a photographer. He sells the photos he takes on trips. They say he earns very well."},
+{s:"Você",side:"you",pt:`E a namorada dele, o que ela <b>faz</b>?${T('pres','fazer·pres')}`,en:"And his girlfriend, what does she do?"},
+{s:"Amiga",side:"other",pt:`Ela <b>é</b> professora de yoga online. <b>Tem</b> uma comunidade enorme. Ela <b>trabalha</b> de qualquer lugar, igual a você!${T('pres','ser·pres')} ${T('pres','ter·pres')}`,en:"She's an online yoga teacher. She has a huge community. She works from anywhere, just like you!"},
+{s:"Você",side:"you",pt:`Que coincidência! E eles <b>estão</b> juntos há muito tempo?${T('pres','estar·pres')}`,en:"What a coincidence! And have they been together for a long time?"},
+{s:"Amiga",side:"other",pt:`<b>Estão</b> juntos há cinco anos. Antes ela <b>vivia</b> em SP e ele <b>morava</b> no Rio. Quando <b>se conheceram</b>, tudo mudou.${T('imp','imperf.')} ${T('past','conhecer·past')}`,en:"They've been together for five years. Before she used to live in SP and he in Rio. When they met, everything changed."},
+{s:"Você",side:"you",pt:`Que história bonita. Você <b>conhece</b> alguém interessante assim que eu <b>deveria</b> conhecer?${T('pres','conhecer·pres')} ${T('cond','cond.')}`,en:"What a beautiful story. Do you know someone interesting like that who I should meet?"},
+{s:"Amiga",side:"other",pt:`<b>Conheço</b> uma mulher incrível — a Priya. Ela <b>veio</b> da Índia há dez anos e <b>fala</b> português melhor do que muitos brasileiros. <b>É</b> a pessoa mais resiliente que já <b>conheci</b>.${T('past','vir·past')} ${T('comp','superlative')} ${T('past','conhecer·past')}`,en:"I know an incredible woman — Priya. She came from India ten years ago and speaks Portuguese better than many Brazilians. She's the most resilient person I've ever met."},
+{s:"Você",side:"you",pt:`Como ela <b>aprendeu</b> assim?${T('past','aprender·past')}`,en:"How did she learn like that?"},
+{s:"Amiga",side:"other",pt:`Ela <b>dizia</b> que nunca <b>teve</b> medo de errar. Ela <b>falava</b> com todo mundo desde o primeiro dia. <b>É</b> o método mais eficaz que existe.${T('imp','imperf.')} ${T('past','ter·past')} ${T('comp','superlative')}`,en:"She used to say she was never afraid of making mistakes. She spoke with everyone from day one. It's the most effective method there is."},
+{s:"Você",side:"you",pt:`<b>Quero</b> conhecê-la. Você <b>pode</b> nos apresentar?${T('pres','querer·pres')} ${T('pres','poder·pres')}`,en:"I want to meet her. Can you introduce us?"},
+{s:"Amiga",side:"other",pt:`<b>Posso</b> sim! Ela normalmente <b>vem</b> ao nosso encontro às quintas. <b>Diz</b> que a gente <b>vai combinar</b>.${T('pres','poder·pres')} ${T('pres','vir·pres')} ${T('pres','dizer·pres')} ${T('fut','ir+inf')}`,en:"Yes I can! She usually comes to our gathering on Thursdays. Say that we'll arrange it."},
+],
+vocab:[{pt:"gente boa",en:"good person / great guy or gal"},{pt:"sustentar",en:"to sustain / support financially"},{pt:"a comunidade",en:"the community"},{pt:"se conheceram",en:"they met each other (reflexive)"},{pt:"apresentar",en:"to introduce"},{pt:"o encontro",en:"the gathering / meetup"}],
+chunks:[{pt:"O que ele/ela faz da vida?",en:"What does he/she do for a living?"},{pt:"Estão juntos há [tempo].",en:"They've been together for [time]."},{pt:"Dizia que nunca teve medo de...",en:"She used to say she was never afraid of..."},{pt:"É a pessoa mais ... que já conheci.",en:"He/She is the most ... person I've ever met."}],
+notes:['Third person irregular: ele tem, ele vem, ela faz, eles são — all irregular in present.','Reflexive for mutual action: se conheceram = they met each other.','Imperfect for reported speech: ela dizia que... = she used to say that...']},
+
+{tab:"🚌 Transporte",icon:"🚌",title:"Getting to a New City",
+desc:"At the rodoviária in São Paulo, heading to the coast.",
+messages:[
+{s:"Você",side:"you",pt:`Com licença! <b>Sabe</b> me dizer qual ônibus <b>vai</b> pra Ubatuba?${T('pres','saber·pres')} ${T('pres','ir·pres')}`,en:"Excuse me! Do you know which bus goes to Ubatuba?"},
+{s:"Passageira",side:"other",pt:`<b>Sei</b> sim. <b>É</b> o guichê número oito. As passagens mais baratas <b>são</b> da Litorânea.${T('pres','saber·pres')} ${T('comp','superlative')}`,en:"Yes I do. It's counter number eight. The cheapest tickets are from Litorânea."},
+{s:"Você",side:"you",pt:`E quanto tempo <b>leva</b> pra chegar lá?${T('pres','pres')}`,en:"And how long does it take to get there?"},
+{s:"Passageira",side:"other",pt:`Depende do trânsito. Normalmente umas quatro horas mas no fim de semana <b>pode</b> levar muito mais.${T('pres','poder·pres')}`,en:"Depends on the traffic. Normally about four hours but on weekends it can take much longer."},
+{s:"Você",side:"you",pt:`<b>Tem</b> ônibus direto ou preciso fazer baldeação?${T('pres','ter·pres')}`,en:"Is there a direct bus or do I need to change?"},
+{s:"Passageira",side:"other",pt:`<b>Tem</b> direto sim. O mais rápido <b>sai</b> às duas da tarde.${T('pres','ter·pres')} ${T('comp','superlative')}`,en:"Yes there's a direct one. The fastest one leaves at two in the afternoon."},
+{s:"Você",side:"you",pt:`[no guichê] Boa tarde! <b>Quero</b> uma passagem pra Ubatuba no ônibus das duas.${T('pres','querer·pres')}`,en:"[at the counter] Good afternoon! I want a ticket to Ubatuba on the two o'clock bus."},
+{s:"Atendente",side:"other",pt:`Boa tarde! <b>Temos</b> convencional e executivo. O executivo <b>é</b> mais caro mas muito mais confortável.${T('comp','comparative')}`,en:"Good afternoon! We have conventional and executive. The executive is more expensive but much more comfortable."},
+{s:"Você",side:"you",pt:`Qual <b>é</b> a diferença de preço?${T('pres','ser·pres')}`,en:"What's the price difference?"},
+{s:"Atendente",side:"other",pt:`O convencional <b>sai</b> por oitenta e o executivo por cento e vinte. O executivo <b>tem</b> ar condicionado e poltrona reclinável.${T('pres','ter·pres')}`,en:"The conventional comes to eighty and the executive to a hundred and twenty. The executive has air conditioning and reclining seats."},
+{s:"Você",side:"you",pt:`<b>Vou</b> de executivo. A viagem <b>vai ser</b> muito mais agradável assim.${T('fut','ir+inf')} ${T('comp','comparative')}`,en:"I'll take the executive. The journey will be much more pleasant like that."},
+{s:"Atendente",side:"other",pt:`Ótima escolha! <b>Tem</b> preferência de lugar? Janela <b>é</b> melhor do que corredor pra <b>ver</b> a paisagem.${T('pres','ter·pres')} ${T('comp','comparative')} ${T('pres','ver·pres')}`,en:"Great choice! Do you have a seat preference? Window is better than aisle to see the scenery."},
+{s:"Você",side:"you",pt:`Janela com certeza. Nunca <b>vi</b> o litoral paulista — <b>quero</b> aproveitar cada quilômetro.${T('past','ver·past')} ${T('pres','querer·pres')}`,en:"Window for sure. I've never seen the São Paulo coast — I want to enjoy every kilometre."},
+{s:"Atendente",side:"other",pt:`Aqui <b>está</b> sua passagem. O ônibus <b>vai sair</b> da plataforma doze. Boa viagem!${T('pres','estar·pres')} ${T('fut','ir+inf')}`,en:"Here is your ticket. The bus will leave from platform twelve. Have a good trip!"},
+],
+vocab:[{pt:"a rodoviária",en:"bus terminal"},{pt:"o guichê",en:"the counter / ticket window"},{pt:"a baldeação",en:"the transfer / change"},{pt:"a poltrona reclinável",en:"reclining seat"},{pt:"a paisagem",en:"the scenery / landscape"},{pt:"a plataforma",en:"the platform"}],
+chunks:[{pt:"Sabe me dizer...?",en:"Do you know how to tell me...? (soft question)"},{pt:"Tem direto ou preciso fazer baldeação?",en:"Is there a direct one or do I need to change?"},{pt:"Qual é a diferença de preço?",en:"What's the price difference?"},{pt:"Sai por [preço].",en:"It comes to [price]."}],
+notes:['Sabe me dizer — much softer than me diz — use it when asking strangers.','Vai sair da plataforma — future with ir+inf is universal in spoken BR Portuguese.','Sair por = to cost: sai por oitenta reais.']},
+
+{tab:"💭 Subjuntivo",icon:"💭",title:"Subjunctive in Context",
+desc:"Everyday conversations packed with the most common subjunctive constructions.",
+messages:[
+{s:"Amigo",side:"other",pt:`<b>Espero que</b> você <b>esteja</b> gostando do Brasil!${T('subj','subj – espero que')}`,en:"I hope you're enjoying Brazil!"},
+{s:"Você",side:"you",pt:`<b>Estou</b> adorando! Mas <b>tomara que</b> a chuva <b>passe</b> até amanhã.${T('pres','estar·pres')} ${T('subj','subj – tomara que')}`,en:"I'm loving it! But hopefully the rain passes by tomorrow."},
+{s:"Amigo",side:"other",pt:`<b>Tomara</b>! <b>É importante que</b> você <b>vá</b> à Ubatuba antes de ir embora.${T('subj','subj – é importante que')}`,en:"Hopefully! It's important that you go to Ubatuba before leaving."},
+{s:"Você",side:"you",pt:`Já <b>sei</b>. Mas antes, <b>quero que</b> você me <b>diga</b> os melhores lugares.${T('pres','saber·pres')} ${T('subj','subj – quero que')}`,en:"I know. But first, I want you to tell me the best places."},
+{s:"Amigo",side:"other",pt:`Com prazer! <b>Recomendo que</b> você <b>fique</b> pelo menos dois dias. <b>É essencial que</b> você <b>vá</b> ao Saco do Céu.${T('subj','subj – recomendo que')} ${T('subj','subj – é essencial que')}`,en:"With pleasure! I recommend you stay at least two days. It's essential that you go to Saco do Céu."},
+{s:"Você",side:"you",pt:`<b>É possível que</b> eu <b>consiga</b> um carro alugado barato?${T('subj','subj – é possível que')}`,en:"Is it possible that I can get a cheap rental car?"},
+{s:"Amigo",side:"other",pt:`<b>É possível</b> sim, <b>desde que</b> você <b>reserve</b> com antecedência. No fim de semana fica mais caro.${T('subj','subj – desde que')} ${T('comp','comparative')}`,en:"It's possible, as long as you book in advance. On weekends it gets more expensive."},
+{s:"Você",side:"you",pt:`<b>Preciso que</b> você me <b>ajude</b>? Ou <b>é melhor que</b> eu <b>faça</b> sozinho online?${T('subj','subj – preciso que')} ${T('subj','subj – é melhor que')}`,en:"Do I need you to help me? Or is it better for me to do it alone online?"},
+{s:"Amigo",side:"other",pt:`<b>É melhor que</b> você <b>faça</b> pelo app — <b>é</b> mais rápido do que por telefone.${T('subj','subj – é melhor que')} ${T('comp','comparative')}`,en:"It's better for you to do it through the app — it's faster than by phone."},
+{s:"Você",side:"you",pt:`Ok. <b>Mesmo que</b> <b>seja</b> difícil encontrar vaga, vou tentar.${T('subj','subj – mesmo que')}`,en:"OK. Even if it's hard to find availability, I'll try."},
+{s:"Amigo",side:"other",pt:`<b>Não acho que seja</b> difícil durante a semana. Os fins de semana <b>são</b> os mais concorridos.${T('subj','subj – não acho que')} ${T('comp','superlative')}`,en:"I don't think it will be hard during the week. Weekends are the most competitive."},
+{s:"Você",side:"you",pt:`<b>Espero que</b> tudo <b>dê</b> certo. Seja lá como <b>for</b>, vou aproveitar ao máximo.${T('subj','subj – espero que')} ${T('subj','subj – seja lá como for')}`,en:"I hope everything works out. Whatever happens, I'll make the most of it."},
+{s:"Amigo",side:"other",pt:`Com certeza! <b>Qualquer que seja</b> o plano, o Brasil sempre <b>surpreende</b>.${T('subj','subj – qualquer que seja')}`,en:"For sure! Whatever the plan is, Brazil always surprises."},
+],
+vocab:[{pt:"com antecedência",en:"in advance"},{pt:"a vaga",en:"availability / vacancy"},{pt:"concorrido/a",en:"competitive / busy"},{pt:"aproveitar ao máximo",en:"to make the most of"},{pt:"seja lá como for",en:"whatever happens"},{pt:"qualquer que seja",en:"whatever it may be"}],
+chunks:[{pt:"Espero que + subj.",en:"I hope that..."},{pt:"Tomara que + subj.",en:"Hopefully..."},{pt:"É importante/essencial que + subj.",en:"It's important/essential that..."},{pt:"Quero/Preciso que + subj.",en:"I want/need you to..."},{pt:"Desde que + subj.",en:"As long as..."},{pt:"Mesmo que + subj.",en:"Even if..."},{pt:"Não acho que + subj.",en:"I don't think that..."},{pt:"Seja lá como for",en:"Whatever happens (fixed chunk)"}],
+notes:['Subjunctive triggers: hope/wish (espero que), impersonal expressions (é importante que), volition (quero que), conjunctions (desde que, mesmo que).','Não acho que seja — negated belief triggers subjunctive. Positive: acho que é (indicative).','Seja lá como for — fixed chunk. Extremely common in spoken BR. Learn it whole.']},
+
+{tab:"🤝 Amizade",icon:"🤝",title:"Making Friends",
+desc:"You're at a social gathering in Belo Horizonte meeting someone new.",
+messages:[
+{s:"Você",side:"you",pt:`Oi! Você <b>veio</b> com alguém ou <b>está</b> sozinho também?${T('past','vir·past')} ${T('pres','estar·pres')}`,en:"Hi! Did you come with someone or are you alone too?"},
+{s:"Bruno",side:"other",pt:`<b>Vim</b> sozinho! <b>Sou</b> Bruno. Você <b>é</b> estrangeiro, né? Seu português <b>está</b> ótimo!${T('past','vir·past')} ${T('pres','ser·pres')} ${T('pres','estar·pres')}`,en:"I came alone! I'm Bruno. You're a foreigner, right? Your Portuguese is great!"},
+{s:"Você",side:"you",pt:`Obrigado! <b>Estou</b> aprendendo há oito meses. Ainda <b>tenho</b> muito a melhorar mas <b>faço</b> o possível.${T('pres','estar·pres')} ${T('pres','ter·pres')} ${T('pres','fazer·pres')}`,en:"Thank you! I've been learning for eight months. I still have a lot to improve but I do my best."},
+{s:"Bruno",side:"other",pt:`Fazer o possível <b>é</b> o que mais importa. De onde você <b>é</b>?${T('pres','ser·pres')}`,en:"Doing your best is what matters most. Where are you from?"},
+{s:"Você",side:"you",pt:`<b>Sou</b> da Colômbia mas <b>vivo</b> viajando. <b>Sou</b> nômade digital. E você, <b>é</b> daqui de BH?${T('pres','ser·pres')}`,en:"I'm from Colombia but I live travelling. I'm a digital nomad. And you, are you from BH?"},
+{s:"Bruno",side:"other",pt:`<b>Sou</b> sim, nasci e cresci aqui. BH <b>é</b> a cidade mais aconchegante do Brasil. <b>É</b> mais tranquila do que SP mas mais animada do que o interior.${T('pres','ser·pres')} ${T('comp','superlative')} ${T('comp','comparative')}`,en:"Yes I am, born and raised here. BH is the most cosy city in Brazil. It's calmer than SP but livelier than the countryside."},
+{s:"Você",side:"you",pt:`Adorei o que <b>vi</b> até agora. As pessoas <b>são</b> as mais simpáticas que já <b>encontrei</b>.${T('past','ver·past')} ${T('comp','superlative')} ${T('past','encontrar·past')}`,en:"I loved what I've seen so far. The people are the friendliest I've found."},
+{s:"Bruno",side:"other",pt:`Isso <b>diz</b> muito. Você já <b>foi</b> à Savassi?${T('pres','dizer·pres')} ${T('past','ir·past')}`,en:"That says a lot. Have you been to Savassi?"},
+{s:"Você",side:"you",pt:`Ainda não. <b>Quero</b> <b>ir</b> amanhã. <b>Sabe</b> algum bar mais autêntico, menos turístico?${T('pres','querer·pres')} ${T('pres','ir·pres')} ${T('pres','saber·pres')} ${T('comp','comparative')}`,en:"Not yet. I want to go tomorrow. Do you know a more authentic, less touristy bar?"},
+{s:"Bruno",side:"other",pt:`<b>Sei</b> vários! O mais autêntico de todos <b>fica</b> numa ruinha pequenininha. Só os locais <b>vão</b> lá.${T('pres','saber·pres')} ${T('comp','superlative')} ${T('pres','ir·pres')}`,en:"I know several! The most authentic of all is on a tiny street. Only locals go there."},
+{s:"Você",side:"you",pt:`Que demais! <b>Você poderia</b> me acompanhar amanhã? <b>Seria</b> muito melhor do que ir sozinho.${T('cond','cond.')} ${T('comp','comparative')}`,en:"How amazing! Could you come with me tomorrow? It would be much better than going alone."},
+{s:"Bruno",side:"other",pt:`<b>Seria</b> um prazer! Nunca <b>tive</b> um amigo colombiano. <b>Quero</b> te <b>fazer</b> umas perguntas sobre a Colômbia.${T('cond','cond.')} ${T('past','ter·past')} ${T('pres','querer·pres')} ${T('pres','fazer·pres')}`,en:"It would be a pleasure! I've never had a Colombian friend. I want to ask you some questions about Colombia."},
+{s:"Você",side:"you",pt:`Claro! E eu quero aprender mais sobre BH. O que você mais <b>gosta</b> de <b>fazer</b> aqui?${T('pres','fazer·pres')}`,en:"Of course! And I want to learn more about BH. What do you most like to do here?"},
+{s:"Bruno",side:"other",pt:`<b>Gosto</b> de ir às cachoeiras e fazer trilhas. Mas o que <b>faço</b> mais <b>é</b> descobrir bares novos. BH <b>tem</b> a melhor cena de bares do Brasil.${T('pres','gostar·pres')} ${T('pres','fazer·pres')} ${T('comp','superlative')}`,en:"I like going to waterfalls and hiking. But what I do most is discover new bars. BH has the best bar scene in Brazil."},
+{s:"Bruno",side:"other",pt:`Que bom que você <b>veio</b>! Amanhã <b>vai ser</b> o melhor dia da sua viagem, pode apostar.${T('past','vir·past')} ${T('fut','ir+inf')} ${T('comp','superlative')}`,en:"How good that you came! Tomorrow will be the best day of your trip, you can bet on it."},
+],
+vocab:[{pt:"aconchegante",en:"cosy / warm / welcoming"},{pt:"animado/a",en:"lively / fun / exciting"},{pt:"a cachoeira",en:"the waterfall"},{pt:"descobrir",en:"to discover"},{pt:"a cena",en:"the scene (cultural/social)"},{pt:"pode apostar",en:"you can bet on it"}],
+chunks:[{pt:"Faço o possível.",en:"I do my best."},{pt:"Nasci e cresci aqui.",en:"Born and raised here."},{pt:"Você poderia me acompanhar?",en:"Could you come with me? (polite conditional)"},{pt:"Seria um prazer.",en:"It would be a pleasure."},{pt:"Que bom que você veio!",en:"How good that you came!"}],
+notes:['Que bom que + verb — exclamative structure: que bom que você veio, que pena que foi embora.','Conditional for politeness: você poderia (could you) is softer than você pode (can you).','Vivo viajando = I live travelling — gerund after viver expresses a continuous lifestyle habit.']},
+];
+
+const verbs=[
+{name:"SER",meaning:"to be (permanent)",tenses:{Presente:[[`eu <span class="irreg">sou</span>`,"I am"],[`você <span class="irreg">é</span>`,"you are"],[`ele/ela <span class="irreg">é</span>`,"he/she is"],[`a gente <span class="irreg">é</span>`,"we are"],[`vocês <span class="irreg">são</span>`,"you (pl.) are"],[`eles <span class="irreg">são</span>`,"they are"]],Perfeito:[[`eu <span class="irreg">fui</span>`,"I was"],[`você <span class="irreg">foi</span>`,"you were"],[`ele <span class="irreg">foi</span>`,"he/she was"],[`a gente <span class="irreg">foi</span>`,"we were"],[`vocês <span class="irreg">foram</span>`,"you were"],[`eles <span class="irreg">foram</span>`,"they were"]],Imperfeito:[[`eu <span class="irreg">era</span>`,"I used to be"],[`você <span class="irreg">era</span>`,"you used to be"],[`ele <span class="irreg">era</span>`,"he used to be"],[`a gente <span class="irreg">era</span>`,"we used to be"],[`vocês <span class="irreg">eram</span>`,"you used to be"],[`eles <span class="irreg">eram</span>`,"they used to be"]],Subjuntivo:[[`que eu <span class="irreg">seja</span>`,"that I be"],[`que você <span class="irreg">seja</span>`,"that you be"],[`que ele <span class="irreg">seja</span>`,"that he be"],[`quando eu <span class="irreg">for</span>`,"when I am (fut.)"],[`quando você <span class="irreg">for</span>`,"when you are (fut.)"],["",""]]}},
+{name:"ESTAR",meaning:"to be (temporary/location)",tenses:{Presente:[[`eu <span class="irreg">estou</span>`,"I am"],[`você <span class="irreg">está</span>`,"you are"],[`ele <span class="irreg">está</span>`,"he/she is"],[`a gente <span class="irreg">está</span>`,"we are"],[`vocês <span class="irreg">estão</span>`,"you (pl.) are"],[`eles <span class="irreg">estão</span>`,"they are"]],Perfeito:[[`eu <span class="irreg">estive</span>`,"I was"],[`você <span class="irreg">esteve</span>`,"you were"],[`ele <span class="irreg">esteve</span>`,"he was"],[`a gente <span class="irreg">esteve</span>`,"we were"],[`vocês <span class="irreg">estiveram</span>`,"you were"],[`eles <span class="irreg">estiveram</span>`,"they were"]],Imperfeito:[[`eu <span class="irreg">estava</span>`,"I was"],[`você <span class="irreg">estava</span>`,"you were"],[`ele <span class="irreg">estava</span>`,"he was"],[`a gente <span class="irreg">estava</span>`,"we were"],[`vocês <span class="irreg">estavam</span>`,"you were"],[`eles <span class="irreg">estavam</span>`,"they were"]],Subjuntivo:[[`que eu <span class="irreg">esteja</span>`,"that I be"],[`que você <span class="irreg">esteja</span>`,"that you be"],[`que ele <span class="irreg">esteja</span>`,"that he be"],[`quando eu <span class="irreg">estiver</span>`,"when I am (fut.)"],[`quando você <span class="irreg">estiver</span>`,"when you are (fut.)"],["",""]]}},
+{name:"TER",meaning:"to have",tenses:{Presente:[[`eu <span class="irreg">tenho</span>`,"I have"],[`você <span class="irreg">tem</span>`,"you have"],[`ele <span class="irreg">tem</span>`,"he/she has"],[`a gente <span class="irreg">tem</span>`,"we have"],[`vocês <span class="irreg">têm</span>`,"you (pl.) have"],[`eles <span class="irreg">têm</span>`,"they have"]],Perfeito:[[`eu <span class="irreg">tive</span>`,"I had"],[`você <span class="irreg">teve</span>`,"you had"],[`ele <span class="irreg">teve</span>`,"he had"],[`a gente <span class="irreg">teve</span>`,"we had"],[`vocês <span class="irreg">tiveram</span>`,"you had"],[`eles <span class="irreg">tiveram</span>`,"they had"]],Imperfeito:[[`eu <span class="irreg">tinha</span>`,"I had/used to have"],[`você <span class="irreg">tinha</span>`,"you had"],[`ele <span class="irreg">tinha</span>`,"he had"],[`a gente <span class="irreg">tinha</span>`,"we had"],[`vocês <span class="irreg">tinham</span>`,"you had"],[`eles <span class="irreg">tinham</span>`,"they had"]],Subjuntivo:[[`que eu <span class="irreg">tenha</span>`,"that I have"],[`que você <span class="irreg">tenha</span>`,"that you have"],[`que ele <span class="irreg">tenha</span>`,"that he have"],[`quando eu <span class="irreg">tiver</span>`,"when I have (fut.)"],[`quando você <span class="irreg">tiver</span>`,"when you have (fut.)"],["",""]]}},
+{name:"IR",meaning:"to go",tenses:{Presente:[[`eu <span class="irreg">vou</span>`,"I go/I'm going"],[`você <span class="irreg">vai</span>`,"you go"],[`ele <span class="irreg">vai</span>`,"he/she goes"],[`a gente <span class="irreg">vai</span>`,"we go"],[`vocês <span class="irreg">vão</span>`,"you (pl.) go"],[`eles <span class="irreg">vão</span>`,"they go"]],Perfeito:[[`eu <span class="irreg">fui</span>`,"I went"],[`você <span class="irreg">foi</span>`,"you went"],[`ele <span class="irreg">foi</span>`,"he went"],[`a gente <span class="irreg">foi</span>`,"we went"],[`vocês <span class="irreg">foram</span>`,"you went"],[`eles <span class="irreg">foram</span>`,"they went"]],Imperfeito:[[`eu <span class="irreg">ia</span>`,"I was going/used to go"],[`você <span class="irreg">ia</span>`,"you were going"],[`ele <span class="irreg">ia</span>`,"he was going"],[`a gente <span class="irreg">ia</span>`,"we were going"],[`vocês <span class="irreg">iam</span>`,"you were going"],[`eles <span class="irreg">iam</span>`,"they were going"]],Subjuntivo:[[`que eu <span class="irreg">vá</span>`,"that I go"],[`que você <span class="irreg">vá</span>`,"that you go"],[`que ele <span class="irreg">vá</span>`,"that he go"],[`quando eu <span class="irreg">for</span>`,"when I go (fut.)"],[`quando você <span class="irreg">for</span>`,"when you go (fut.)"],["",""]]}},
+{name:"FAZER",meaning:"to do / to make",tenses:{Presente:[[`eu <span class="irreg">faço</span>`,"I do/make"],[`você <span class="irreg">faz</span>`,"you do/make"],[`ele <span class="irreg">faz</span>`,"he does/makes"],[`a gente <span class="irreg">faz</span>`,"we do/make"],[`vocês <span class="irreg">fazem</span>`,"you (pl.) do"],[`eles <span class="irreg">fazem</span>`,"they do"]],Perfeito:[[`eu <span class="irreg">fiz</span>`,"I did/made"],[`você <span class="irreg">fez</span>`,"you did/made"],[`ele <span class="irreg">fez</span>`,"he did/made"],[`a gente <span class="irreg">fez</span>`,"we did/made"],[`vocês <span class="irreg">fizeram</span>`,"you did"],[`eles <span class="irreg">fizeram</span>`,"they did"]],Imperfeito:[[`eu <span class="irreg">fazia</span>`,"I used to do"],[`você <span class="irreg">fazia</span>`,"you used to do"],[`ele <span class="irreg">fazia</span>`,"he used to do"],[`a gente <span class="irreg">fazia</span>`,"we used to do"],[`vocês <span class="irreg">faziam</span>`,"you used to do"],[`eles <span class="irreg">faziam</span>`,"they used to do"]],Subjuntivo:[[`que eu <span class="irreg">faça</span>`,"that I do"],[`que você <span class="irreg">faça</span>`,"that you do"],[`que ele <span class="irreg">faça</span>`,"that he do"],[`quando eu <span class="irreg">fizer</span>`,"when I do (fut.)"],[`quando você <span class="irreg">fizer</span>`,"when you do (fut.)"],["",""]]}},
+{name:"PODER",meaning:"to be able to / can",tenses:{Presente:[[`eu <span class="irreg">posso</span>`,"I can"],[`você <span class="irreg">pode</span>`,"you can"],[`ele <span class="irreg">pode</span>`,"he/she can"],[`a gente <span class="irreg">pode</span>`,"we can"],[`vocês <span class="irreg">podem</span>`,"you (pl.) can"],[`eles <span class="irreg">podem</span>`,"they can"]],Perfeito:[[`eu <span class="irreg">pude</span>`,"I could (managed)"],[`você <span class="irreg">pôde</span>`,"you could"],[`ele <span class="irreg">pôde</span>`,"he could"],[`a gente <span class="irreg">pôde</span>`,"we could"],[`vocês <span class="irreg">puderam</span>`,"you could"],[`eles <span class="irreg">puderam</span>`,"they could"]],Imperfeito:[[`eu <span class="irreg">podia</span>`,"I could/was able to"],[`você <span class="irreg">podia</span>`,"you could"],[`ele <span class="irreg">podia</span>`,"he could"],[`a gente <span class="irreg">podia</span>`,"we could"],[`vocês <span class="irreg">podiam</span>`,"you could"],[`eles <span class="irreg">podiam</span>`,"they could"]],Condicional:[[`eu <span class="irreg">poderia</span>`,"I could/would be able"],[`você <span class="irreg">poderia</span>`,"you could"],[`ele <span class="irreg">poderia</span>`,"he could"],[`a gente <span class="irreg">poderia</span>`,"we could"],[`vocês <span class="irreg">poderiam</span>`,"you could"],[`eles <span class="irreg">poderiam</span>`,"they could"]]}},
+{name:"QUERER",meaning:"to want",tenses:{Presente:[[`eu <span class="irreg">quero</span>`,"I want"],[`você <span class="irreg">quer</span>`,"you want"],[`ele <span class="irreg">quer</span>`,"he/she wants"],[`a gente <span class="irreg">quer</span>`,"we want"],[`vocês <span class="irreg">querem</span>`,"you (pl.) want"],[`eles <span class="irreg">querem</span>`,"they want"]],Perfeito:[[`eu <span class="irreg">quis</span>`,"I wanted"],[`você <span class="irreg">quis</span>`,"you wanted"],[`ele <span class="irreg">quis</span>`,"he wanted"],[`a gente <span class="irreg">quis</span>`,"we wanted"],[`vocês <span class="irreg">quiseram</span>`,"you wanted"],[`eles <span class="irreg">quiseram</span>`,"they wanted"]],Imperfeito:[[`eu <span class="irreg">queria</span>`,"I wanted/used to want"],[`você <span class="irreg">queria</span>`,"you wanted"],[`ele <span class="irreg">queria</span>`,"he wanted"],[`a gente <span class="irreg">queria</span>`,"we wanted"],[`vocês <span class="irreg">queriam</span>`,"you wanted"],[`eles <span class="irreg">queriam</span>`,"they wanted"]],Condicional:[[`eu <span class="irreg">queria</span>`,"I would like (queria doubles as cond.)"],[`você <span class="irreg">queria</span>`,"you would like"],[`ele <span class="irreg">queria</span>`,"he would like"],["",""],["",""],["",""]]}},
+{name:"SABER",meaning:"to know (facts/how to)",tenses:{Presente:[[`eu <span class="irreg">sei</span>`,"I know"],[`você <span class="irreg">sabe</span>`,"you know"],[`ele <span class="irreg">sabe</span>`,"he/she knows"],[`a gente <span class="irreg">sabe</span>`,"we know"],[`vocês <span class="irreg">sabem</span>`,"you (pl.) know"],[`eles <span class="irreg">sabem</span>`,"they know"]],Perfeito:[[`eu <span class="irreg">soube</span>`,"I found out/knew"],[`você <span class="irreg">soube</span>`,"you knew"],[`ele <span class="irreg">soube</span>`,"he knew"],[`a gente <span class="irreg">soube</span>`,"we knew"],[`vocês <span class="irreg">souberam</span>`,"you knew"],[`eles <span class="irreg">souberam</span>`,"they knew"]],Imperfeito:[[`eu <span class="irreg">sabia</span>`,"I knew"],[`você <span class="irreg">sabia</span>`,"you knew"],[`ele <span class="irreg">sabia</span>`,"he knew"],[`a gente <span class="irreg">sabia</span>`,"we knew"],[`vocês <span class="irreg">sabiam</span>`,"you knew"],[`eles <span class="irreg">sabiam</span>`,"they knew"]],Subjuntivo:[[`que eu <span class="irreg">saiba</span>`,"that I know"],[`que você <span class="irreg">saiba</span>`,"that you know"],[`que ele <span class="irreg">saiba</span>`,"that he know"],[`quando eu <span class="irreg">souber</span>`,"when I know (fut.)"],[`quando você <span class="irreg">souber</span>`,"when you know (fut.)"],["",""]]}},
+{name:"VIR",meaning:"to come",tenses:{Presente:[[`eu <span class="irreg">venho</span>`,"I come"],[`você <span class="irreg">vem</span>`,"you come"],[`ele <span class="irreg">vem</span>`,"he/she comes"],[`a gente <span class="irreg">vem</span>`,"we come"],[`vocês <span class="irreg">vêm</span>`,"you (pl.) come"],[`eles <span class="irreg">vêm</span>`,"they come"]],Perfeito:[[`eu <span class="irreg">vim</span>`,"I came"],[`você <span class="irreg">veio</span>`,"you came"],[`ele <span class="irreg">veio</span>`,"he came"],[`a gente <span class="irreg">veio</span>`,"we came"],[`vocês <span class="irreg">vieram</span>`,"you came"],[`eles <span class="irreg">vieram</span>`,"they came"]],Imperfeito:[[`eu <span class="irreg">vinha</span>`,"I used to come"],[`você <span class="irreg">vinha</span>`,"you used to come"],[`ele <span class="irreg">vinha</span>`,"he used to come"],[`a gente <span class="irreg">vinha</span>`,"we used to come"],[`vocês <span class="irreg">vinham</span>`,"you used to come"],[`eles <span class="irreg">vinham</span>`,"they used to come"]],Subjuntivo:[[`que eu <span class="irreg">venha</span>`,"that I come"],[`que você <span class="irreg">venha</span>`,"that you come"],[`que ele <span class="irreg">venha</span>`,"that he come"],[`quando eu <span class="irreg">vier</span>`,"when I come (fut.)"],[`quando você <span class="irreg">vier</span>`,"when you come (fut.)"],["",""]]}},
+{name:"VER",meaning:"to see",tenses:{Presente:[[`eu <span class="irreg">vejo</span>`,"I see"],[`você <span class="irreg">vê</span>`,"you see"],[`ele <span class="irreg">vê</span>`,"he/she sees"],[`a gente <span class="irreg">vê</span>`,"we see"],[`vocês <span class="irreg">veem</span>`,"you (pl.) see"],[`eles <span class="irreg">veem</span>`,"they see"]],Perfeito:[[`eu <span class="irreg">vi</span>`,"I saw"],[`você <span class="irreg">viu</span>`,"you saw"],[`ele <span class="irreg">viu</span>`,"he saw"],[`a gente <span class="irreg">viu</span>`,"we saw"],[`vocês <span class="irreg">viram</span>`,"you saw"],[`eles <span class="irreg">viram</span>`,"they saw"]],Imperfeito:[[`eu <span class="irreg">via</span>`,"I used to see"],[`você <span class="irreg">via</span>`,"you used to see"],[`ele <span class="irreg">via</span>`,"he used to see"],[`a gente <span class="irreg">via</span>`,"we used to see"],[`vocês <span class="irreg">viam</span>`,"you used to see"],[`eles <span class="irreg">viam</span>`,"they used to see"]],Subjuntivo:[[`que eu <span class="irreg">veja</span>`,"that I see"],[`que você <span class="irreg">veja</span>`,"that you see"],[`que ele <span class="irreg">veja</span>`,"that he see"],[`quando eu <span class="irreg">vir</span>`,"when I see (fut.)"],[`quando você <span class="irreg">vir</span>`,"when you see (fut.)"],["",""]]}},
+{name:"DAR",meaning:"to give",tenses:{Presente:[[`eu <span class="irreg">dou</span>`,"I give"],[`você <span class="irreg">dá</span>`,"you give"],[`ele <span class="irreg">dá</span>`,"he/she gives"],[`a gente <span class="irreg">dá</span>`,"we give"],[`vocês <span class="irreg">dão</span>`,"you (pl.) give"],[`eles <span class="irreg">dão</span>`,"they give"]],Perfeito:[[`eu <span class="irreg">dei</span>`,"I gave"],[`você <span class="irreg">deu</span>`,"you gave"],[`ele <span class="irreg">deu</span>`,"he gave"],[`a gente <span class="irreg">deu</span>`,"we gave"],[`vocês <span class="irreg">deram</span>`,"you gave"],[`eles <span class="irreg">deram</span>`,"they gave"]],Imperfeito:[[`eu <span class="irreg">dava</span>`,"I used to give"],[`você <span class="irreg">dava</span>`,"you used to give"],[`ele <span class="irreg">dava</span>`,"he used to give"],[`a gente <span class="irreg">dava</span>`,"we used to give"],[`vocês <span class="irreg">davam</span>`,"you used to give"],[`eles <span class="irreg">davam</span>`,"they used to give"]],Subjuntivo:[[`que eu <span class="irreg">dê</span>`,"that I give"],[`que você <span class="irreg">dê</span>`,"that you give"],[`que ele <span class="irreg">dê</span>`,"that he give"],[`quando eu <span class="irreg">der</span>`,"when I give (fut.)"],[`quando você <span class="irreg">der</span>`,"when you give (fut.)"],["",""]]}},
+{name:"DIZER",meaning:"to say / to tell",tenses:{Presente:[[`eu <span class="irreg">digo</span>`,"I say"],[`você <span class="irreg">diz</span>`,"you say"],[`ele <span class="irreg">diz</span>`,"he/she says"],[`a gente <span class="irreg">diz</span>`,"we say"],[`vocês <span class="irreg">dizem</span>`,"you (pl.) say"],[`eles <span class="irreg">dizem</span>`,"they say"]],Perfeito:[[`eu <span class="irreg">disse</span>`,"I said"],[`você <span class="irreg">disse</span>`,"you said"],[`ele <span class="irreg">disse</span>`,"he said"],[`a gente <span class="irreg">disse</span>`,"we said"],[`vocês <span class="irreg">disseram</span>`,"you said"],[`eles <span class="irreg">disseram</span>`,"they said"]],Imperfeito:[[`eu <span class="irreg">dizia</span>`,"I used to say"],[`você <span class="irreg">dizia</span>`,"you used to say"],[`ele <span class="irreg">dizia</span>`,"he used to say"],[`a gente <span class="irreg">dizia</span>`,"we used to say"],[`vocês <span class="irreg">diziam</span>`,"you used to say"],[`eles <span class="irreg">diziam</span>`,"they used to say"]],Subjuntivo:[[`que eu <span class="irreg">diga</span>`,"that I say"],[`que você <span class="irreg">diga</span>`,"that you say"],[`que ele <span class="irreg">diga</span>`,"that he say"],[`quando eu <span class="irreg">disser</span>`,"when I say (fut.)"],[`quando você <span class="irreg">disser</span>`,"when you say (fut.)"],["",""]]}},
+];
+
+const verbTenseState={};
+verbs.forEach(v=>{verbTenseState[v.name]=Object.keys(v.tenses)[0];});
+
+function getAllCards(){
+  let cards=[];
+  scenes.forEach(s=>{
+    (s.vocab||[]).forEach(v=>cards.push({pt:v.pt,en:v.en,scene:s.tab}));
+    (s.chunks||[]).forEach(c=>cards.push({pt:c.pt,en:c.en,scene:s.tab+'·chunk'}));
+  });
+  return cards;
+}
+function getSceneCards(si){
+  if(si===-1) return getAllCards();
+  const s=scenes[si];
+  let cards=[];
+  (s.vocab||[]).forEach(v=>cards.push({pt:v.pt,en:v.en,scene:s.tab}));
+  (s.chunks||[]).forEach(c=>cards.push({pt:c.pt,en:c.en,scene:s.tab+'·chunk'}));
+  return cards;
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=
+    scenes.map((s,i)=>`<button class="tab ${curView==='dialogue'&&curScene===i?'active':''}" onclick="goScene(${i})">${s.tab}</button>`).join('')+
+    `<button class="tab special ${curView==='flash'?'active':''}" onclick="goFlash()">🃏 Flashcards</button>`+
+    `<button class="tab special ${curView==='verbs'?'active':''}" onclick="goVerbs()">📚 Verbos</button>`;
+}
+
+function renderDialogue(){
+  const s=scenes[curScene];
+  const legendHtml=`<div class="legend" id="legend">
+    <span class="gtag pres">pres</span><span style="font-size:.65rem;color:#777"> present &nbsp;</span>
+    <span class="gtag past">past</span><span style="font-size:.65rem;color:#777"> perfect &nbsp;</span>
+    <span class="gtag imp">imp</span><span style="font-size:.65rem;color:#777"> imperfect &nbsp;</span>
+    <span class="gtag fut">fut</span><span style="font-size:.65rem;color:#777"> future &nbsp;</span>
+    <span class="gtag cond">cond</span><span style="font-size:.65rem;color:#777"> conditional &nbsp;</span>
+    <span class="gtag comp">comp</span><span style="font-size:.65rem;color:#777"> comp/superl. &nbsp;</span>
+    <span class="gtag subj">subj</span><span style="font-size:.65rem;color:#777"> subjunctive</span>
+  </div>`;
+
+  let msgs='';
+  s.messages.forEach((m,idx)=>{
+    const tmp=document.createElement('div');tmp.innerHTML=m.pt;tmp.querySelectorAll('.gtag').forEach(el=>el.remove());
+    const cleanPt=tmp.textContent.replace(/\s+/g,' ').trim();
+    const audioBtn=`<button class="audio-btn ${apiKey?'':'no-key'}" id="abtn-${idx}" data-text="${cleanPt.replace(/"/g,'&quot;')}" onclick="playText(this.dataset.text,this)" title="${apiKey?'Play audio':'Paste API key to enable audio'}">🔊</button>`;
+    if(quizMode){
+      msgs+=`<div class="msg-row ${m.side}">
+        <div class="speaker">${m.s}</div>
+        <div class="quiz-cover" id="cover-${idx}" onclick="revealMsg(${idx})">Tap to reveal ${m.side==='you'?'your':'their'} line →</div>
+        <div class="bubble-wrap" id="wrap-${idx}" style="display:none">
+          ${m.side==='you'?audioBtn:''}
+          <div class="bubble" id="bub-${idx}">
+            <span class="pt">${m.pt}</span>
+            <span class="en${showEng?'':' hidden'}">${m.en}</span>
+          </div>
+          ${m.side==='other'?audioBtn:''}
+        </div>
+      </div>`;
+    } else {
+      msgs+=`<div class="msg-row ${m.side}">
+        <div class="speaker">${m.s}</div>
+        <div class="bubble-wrap">
+          ${m.side==='you'?audioBtn:''}
+          <div class="bubble">
+            <span class="pt">${m.pt}</span>
+            <span class="en${showEng?'':' hidden'}">${m.en}</span>
+          </div>
+          ${m.side==='other'?audioBtn:''}
+        </div>
+      </div>`;
+    }
+  });
+
+  const vocab=(s.vocab||[]).map(v=>`<div class="vocab-item"><div class="vocab-pt">${v.pt}</div><div class="vocab-en">${v.en}</div></div>`).join('');
+  const chunks=(s.chunks||[]).map(c=>`<div class="chunk"><strong>${c.pt}</strong><br>${c.en}</div>`).join('');
+  const notes=(s.notes||[]).map(n=>`<div class="note">${n}</div>`).join('');
+
+  document.getElementById('main').innerHTML=`
+    <div class="scene-header"><span class="scene-icon">${s.icon}</span><h2>${s.title}</h2></div>
+    <div class="scene-desc">${s.desc}</div>
+    ${legendHtml}
+    <div class="chat">${msgs}</div>
+    <div class="panels">
+      <div class="panel">
+        <div class="panel-title">Vocabulário</div>${vocab}
+        <div style="margin-top:14px"><div class="panel-title">Chunks · Frases-chave</div>${chunks}</div>
+      </div>
+      <div class="panel"><div class="panel-title">Notas Culturais & Gramática</div>${notes}</div>
+    </div>`;
+
+  if(!showTags) document.getElementById('main').classList.add('tags-hidden');
+  const lg=document.getElementById('legend');
+  if(lg&&!showTags) lg.classList.add('hidden');
+  document.getElementById('controls').style.display='flex';
+}
+
+function revealMsg(idx){
+  document.getElementById('cover-'+idx).style.display='none';
+  document.getElementById('wrap-'+idx).style.display='flex';
+}
+
+function renderFlash(){
+  document.getElementById('controls').style.display='none';
+  let cards=getSceneCards(fcScene);
+  if(!cards.length){document.getElementById('main').innerHTML='<p style="text-align:center;color:#888;margin-top:40px">No cards for this scene.</p>';return;}
+  fcIdx=Math.min(fcIdx,cards.length-1);
+  const c=cards[fcIdx];
+  const opts=`<option value="-1" ${fcScene===-1?'selected':''}>All scenes</option>`+scenes.map((s,i)=>`<option value="${i}" ${fcScene===i?'selected':''}>${s.tab}</option>`).join('');
+  document.getElementById('main').innerHTML=`
+    <div class="fc-wrap">
+      <div class="fc-scene-select">Scene: <select onchange="fcChangeScene(this.value)">${opts}</select></div>
+      <div class="fc-flip-hint">Tap the card to flip</div>
+      <div class="fc-card" id="fcCard" onclick="fcFlip()">
+        <div class="fc-inner">
+          <div class="fc-face fc-front"><div class="fc-pt">${c.pt}</div><div class="fc-hint">${c.scene}</div></div>
+          <div class="fc-face fc-back"><div class="fc-en">${c.en}</div><div class="fc-ctx">${c.pt}</div></div>
+        </div>
+      </div>
+      <div class="fc-progress">${fcIdx+1} / ${cards.length}</div>
+      <div class="fc-controls">
+        <button class="fc-btn prev" onclick="fcNav(-1)">← Prev</button>
+        <button class="fc-btn next" onclick="fcNav(1)">Next →</button>
+      </div>
+    </div>`;
+}
+
+function fcFlip(){fcFlipped=!fcFlipped;const c=document.getElementById('fcCard');if(c)c.classList.toggle('flipped',fcFlipped);}
+function fcNav(dir){const cards=getSceneCards(fcScene);fcIdx=(fcIdx+dir+cards.length)%cards.length;fcFlipped=false;renderFlash();}
+function fcChangeScene(val){fcScene=parseInt(val);fcIdx=0;fcFlipped=false;renderFlash();}
+
+function renderVerbs(){
+  document.getElementById('controls').style.display='none';
+  const cards=verbs.map(v=>{
+    const tenseNames=Object.keys(v.tenses);
+    const active=verbTenseState[v.name]||tenseNames[0];
+    const rows=v.tenses[active].map(r=>r[0]?`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`:'').join('');
+    const ctabs=tenseNames.map(t=>`<button class="ctab ${t===active?'active':''}" onclick="setTense('${v.name}','${t}')">${t}</button>`).join('');
+    return `<div class="verb-card"><div class="verb-name">${v.name}</div><div class="verb-meaning">${v.meaning}</div><div class="conj-tabs">${ctabs}</div><table class="conj-table">${rows}</table></div>`;
+  }).join('');
+  document.getElementById('main').innerHTML=`<p style="font-size:.78rem;color:#888;margin-bottom:16px">Irregular forms in <span style="color:#c2185b;font-weight:700">pink</span>. Tap tense tabs to switch.</p><div class="verbs-grid">${cards}</div>`;
+}
+function setTense(name,tense){verbTenseState[name]=tense;renderVerbs();}
+
+function goScene(i){curScene=i;curView='dialogue';quizMode=false;document.getElementById('quizBtn').classList.remove('active');renderTabs();renderDialogue();}
+function goFlash(){curView='flash';fcFlipped=false;renderTabs();renderFlash();}
+function goVerbs(){curView='verbs';renderTabs();renderVerbs();}
+function toggleEng(){showEng=document.getElementById('engToggle').checked;document.querySelectorAll('.en').forEach(el=>el.classList.toggle('hidden',!showEng));}
+function toggleTags(){showTags=document.getElementById('tagToggle').checked;const m=document.getElementById('main');m.classList.toggle('tags-hidden',!showTags);const lg=document.getElementById('legend');if(lg)lg.classList.toggle('hidden',!showTags);}
+function toggleQuiz(){quizMode=!quizMode;document.getElementById('quizBtn').classList.toggle('active',quizMode);renderDialogue();}
+
+renderTabs();renderDialogue();
+</script>
+</body>
+</html>

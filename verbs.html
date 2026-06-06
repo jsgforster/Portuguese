@@ -99,6 +99,24 @@ code,tag{font-family:'IBM Plex Mono',monospace}
 .api-bar input:focus{border-color:#2c7a3a}
 .api-bar span{font-size:.72rem;color:#b0a898}
 .empty{text-align:center;padding:3rem;color:#aaa;grid-column:1/-1}
+.view-toggle{display:flex;gap:.4rem;margin-left:auto}
+.view-btn{background:#fff;border:1px solid #d8d0c4;border-radius:6px;padding:.3rem .6rem;cursor:pointer;font-size:.9rem;color:#7a7060;transition:all .15s}
+.view-btn.active{background:#2c7a3a;border-color:#2c7a3a;color:#fff}
+.list-view{padding:.75rem 2rem 2rem;display:flex;flex-direction:column;gap:.4rem}
+.list-row{background:#fff;border:1px solid #e8e2d8;border-radius:8px;padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:background .15s}
+.list-row:hover{background:#f5f0e8}
+.list-row.learned .list-verb{text-decoration:line-through;opacity:.7}
+.list-num{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#bbb;min-width:28px}
+.list-verb{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;min-width:130px}
+.list-verb.irr{color:#d47a1a}
+.list-verb.reg{color:#2c7a3a}
+.list-meaning{font-size:.82rem;color:#4a4538;flex:1}
+.list-es{font-size:.78rem;min-width:100px}
+.list-es.identical{color:#2c7a3a}
+.list-es.similar{color:#2a6eaa}
+.list-es.different{color:#9a6020}
+.list-tags{display:flex;gap:.3rem;margin-left:auto}
+.list-learned{font-size:.65rem;font-family:'IBM Plex Mono',monospace;background:#2c7a3a;color:#fff;padding:.15rem .4rem;border-radius:4px}
 @media(max-width:600px){
   .pat-grid{grid-template-columns:1fr}
   .controls,.grid,.stats{padding-left:1rem;padding-right:1rem}
@@ -214,6 +232,13 @@ code,tag{font-family:'IBM Plex Mono',monospace}
 </div>
 
 <div class="stats" id="stats"></div>
+<div style="padding:0 2rem .5rem;display:flex;align-items:center">
+  <small style="font-size:.78rem;color:#7a7060">View:</small>
+  <div class="view-toggle" style="margin-left:.5rem">
+    <button class="view-btn active" onclick="setView('grid',this)" title="Grid">⊞</button>
+    <button class="view-btn" onclick="setView('list',this)" title="List">≡</button>
+  </div>
+</div>
 <div class="grid" id="grid"></div>
 
 <div class="overlay" id="overlay" onclick="closeModal(event)">
@@ -1554,6 +1579,14 @@ function getFiltered(){
   });
 }
 
+let viewMode='grid';
+function setView(mode,el){
+  viewMode=mode;
+  document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
 function render(){
   const filtered=getFiltered();
   const grid=document.getElementById('grid');
@@ -1576,8 +1609,35 @@ function render(){
 
   if(!filtered.length){
     grid.innerHTML='<div class="empty">No verbs match your filters.</div>';
+    grid.style.display='grid';
     return;
   }
+
+  if(viewMode==='list'){
+    grid.style.display='none';
+    let listEl=document.getElementById('list-view');
+    if(!listEl){listEl=document.createElement('div');listEl.id='list-view';listEl.className='list-view';grid.parentNode.insertBefore(listEl,grid);}
+    listEl.style.display='flex';
+    listEl.innerHTML=filtered.map(vb=>{
+      const isL=learned.has(vb.n);
+      return `<div class="list-row${isL?' learned':''}" onclick="openModal(${vb.n})">
+        <span class="list-num">#${vb.n}</span>
+        <span class="list-verb ${vb.irr?'irr':'reg'}">${vb.v}</span>
+        <span class="list-meaning">${vb.m}</span>
+        <span class="list-es ${simColor(vb.sim)}">${vb.es}</span>
+        <div class="list-tags">
+          <span class="tag ${vb.irr?'irr':'reg'}">${vb.irr?'IRR':'REG'}</span>
+          <span class="tag ${simColor(vb.sim)}">${simLabel(vb.sim)}</span>
+          ${isL?'<span class="list-learned">✓</span>':''}
+        </div>
+      </div>`;
+    }).join('');
+    return;
+  }
+
+  const listEl=document.getElementById('list-view');
+  if(listEl)listEl.style.display='none';
+  grid.style.display='grid';
 
   grid.innerHTML=filtered.map(vb=>{
     const isL=learned.has(vb.n);

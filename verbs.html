@@ -87,8 +87,17 @@ code,tag{font-family:'IBM Plex Mono',monospace}
 .sents{margin-top:1.25rem}
 .sents h4{font-size:.85rem;font-family:'IBM Plex Mono',monospace;color:#7a7060;margin-bottom:.6rem;font-weight:500}
 .sent{margin-bottom:.75rem;padding:.7rem .9rem;background:#faf7f2;border-radius:7px;border-left:3px solid #e8e2d8}
-.sent p{font-size:.85rem;color:#2c2a25;margin-bottom:.2rem;font-style:italic}
+.sent-top{display:flex;align-items:flex-start;gap:.5rem}
+.sent p{font-size:.85rem;color:#2c2a25;margin-bottom:.2rem;font-style:italic;flex:1}
 .sent small{font-size:.78rem;color:#7a7060}
+.speak-btn{background:none;border:1px solid #d8d0c4;border-radius:6px;cursor:pointer;font-size:.85rem;padding:.2rem .45rem;color:#7a7060;transition:all .15s;flex-shrink:0;line-height:1}
+.speak-btn:hover{background:#2c7a3a;border-color:#2c7a3a;color:#fff}
+.speak-btn.loading{opacity:.5;cursor:wait}
+.api-bar{background:#f5f0e8;border-bottom:1px solid #e8e2d8;padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.api-bar label{font-size:.75rem;font-family:'IBM Plex Mono',monospace;color:#7a7060;white-space:nowrap}
+.api-bar input{flex:1;min-width:200px;padding:.35rem .7rem;border:1px solid #d8d0c4;border-radius:6px;font-size:.8rem;font-family:'IBM Plex Mono',monospace;background:#fff;color:#2c2a25;outline:none}
+.api-bar input:focus{border-color:#2c7a3a}
+.api-bar span{font-size:.72rem;color:#b0a898}
 .empty{text-align:center;padding:3rem;color:#aaa;grid-column:1/-1}
 @media(max-width:600px){
   .pat-grid{grid-template-columns:1fr}
@@ -110,6 +119,11 @@ code,tag{font-family:'IBM Plex Mono',monospace}
   <p>Click any card to study conjugations & examples</p>
 </div>
 
+<div class="api-bar">
+  <label>🔑 Google TTS API Key</label>
+  <input type="password" id="api-key" placeholder="Paste your API key here…">
+  <span>Key is never stored — enter each session</span>
+</div>
 <div class="patterns">
   <div class="patterns-header" onclick="togglePatterns()">
     <h3>📋 Regular Verb Conjugation Patterns</h3>
@@ -1622,7 +1636,13 @@ function openModal(n){
     </div>
     <div class="sents">
       <h4>Example Sentences</h4>
-      ${vb.sentences.map(s=>`<div class="sent"><p>${s.pt}</p><small>${s.en}</small></div>`).join('')}
+      ${vb.sentences.map((s,i)=>`<div class="sent">
+        <div class="sent-top">
+          <p>${s.pt}</p>
+          <button class="speak-btn" onclick="speak(this,'${s.pt.replace(/'/g,"\\'")}',${vb.n},${i})" title="Listen">🔊</button>
+        </div>
+        <small>${s.en}</small>
+      </div>`).join('')}
     </div>
   `;
   document.getElementById('overlay').classList.add('open');
@@ -1647,6 +1667,33 @@ function toggleLearned(n){
     btn.textContent=learned.has(n)?'✓ Learned':'Mark as Learned';
   }
   render();
+}
+
+async function speak(btn, text, verbN, sentI){
+  const key = document.getElementById('api-key').value.trim();
+  if(!key){ alert('Please enter your Google TTS API key at the top of the page.'); return; }
+  btn.classList.add('loading');
+  btn.textContent='⏳';
+  try{
+    const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        input:{text},
+        voice:{languageCode:'pt-BR',name:'pt-BR-Wavenet-A'},
+        audioConfig:{audioEncoding:'MP3'}
+      })
+    });
+    const data = await res.json();
+    if(data.error){ alert('API error: '+data.error.message); return; }
+    const audio = new Audio('data:audio/mp3;base64,'+data.audioContent);
+    audio.play();
+  } catch(e){
+    alert('Error: '+e.message);
+  } finally{
+    btn.classList.remove('loading');
+    btn.textContent='🔊';
+  }
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});

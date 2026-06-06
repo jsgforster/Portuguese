@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>200 Verbos Portugueses</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:#faf7f2;color:#2c2a25;min-height:100vh}
+h1,h2,h3{font-family:'Playfair Display',serif}
+code,tag{font-family:'IBM Plex Mono',monospace}
+.header{background:#fff;border-bottom:1px solid #e8e2d8;padding:1.5rem 2rem;text-align:center}
+.header h1{font-size:2rem;color:#2c2a25;margin:.25rem 0}
+.header p{color:#7a7060;font-size:.95rem}
+.patterns{background:#fff;margin:1rem 2rem;border-radius:12px;border:1px solid #e8e2d8;overflow:hidden}
+.patterns-header{padding:.85rem 1.25rem;background:#f5f0e8;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.patterns-header h3{font-size:1rem;color:#2c2a25;font-family:'IBM Plex Sans',sans-serif;font-weight:500}
+.patterns-body{padding:1.25rem;display:none}
+.patterns-body.open{display:block}
+.pat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.pat-card{background:#faf7f2;border-radius:8px;padding:1rem;border:1px solid #e8e2d8}
+.pat-card h4{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:#2c7a3a;margin-bottom:.5rem;font-weight:500}
+.pat-table{width:100%;font-size:.78rem;border-collapse:collapse}
+.pat-table td{padding:2px 6px;color:#4a4538}
+.pat-table td:first-child{color:#7a7060;font-size:.75rem;white-space:nowrap}
+.controls{padding:1rem 2rem;display:flex;flex-direction:column;gap:.6rem}
+.search-wrap{position:relative}
+.search-wrap input{width:100%;padding:.65rem 1rem .65rem 2.5rem;border:1px solid #d8d0c4;border-radius:8px;font-family:'IBM Plex Sans',sans-serif;font-size:.95rem;background:#fff;outline:none;color:#2c2a25}
+.search-wrap input:focus{border-color:#2c7a3a}
+.search-icon{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:#aaa;font-size:1rem}
+.filter-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.filter-row label{font-size:.78rem;color:#7a7060;min-width:70px;font-family:'IBM Plex Mono',monospace}
+.filter-row button{padding:.3rem .75rem;border:1px solid #d8d0c4;border-radius:20px;background:#fff;font-size:.78rem;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;color:#4a4538;transition:all .15s}
+.filter-row button.active{background:#2c7a3a;color:#fff;border-color:#2c7a3a}
+.stats{padding:.5rem 2rem;display:flex;flex-wrap:wrap;gap:.75rem}
+.stat{background:#fff;border:1px solid #e8e2d8;border-radius:8px;padding:.4rem .85rem;font-size:.78rem;color:#4a4538}
+.stat span{font-weight:500;color:#2c2a25}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.85rem;padding:.75rem 2rem 2rem}
+.card{background:#fff;border-radius:10px;border:1px solid #e8e2d8;padding:.85rem 1rem;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative}
+.card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08);border-color:#c8c0b4}
+.card.irr{border-left:3px solid #d47a1a}
+.card.reg{border-left:3px solid #2c7a3a}
+.card-num{font-size:.7rem;color:#aaa;font-family:'IBM Plex Mono',monospace;margin-bottom:.2rem}
+.card-verb{font-size:1.05rem;font-family:'Playfair Display',serif;font-weight:700;margin-bottom:.2rem}
+.card-verb.irr{color:#d47a1a}
+.card-verb.reg{color:#2c7a3a}
+.card-meaning{font-size:.78rem;color:#4a4538;margin-bottom:.3rem;line-height:1.3}
+.card-es{font-size:.75rem;margin-bottom:.5rem}
+.card-es.identical{color:#2c7a3a}
+.card-es.similar{color:#2a6eaa}
+.card-es.different{color:#9a6020}
+.card-tags{display:flex;gap:.35rem;flex-wrap:wrap}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:.15rem .4rem;border-radius:4px;font-weight:500}
+.tag.reg{background:#e6f4eb;color:#2c7a3a}
+.tag.irr{background:#fdf0e0;color:#d47a1a}
+.tag.identical{background:#e6f4eb;color:#2c7a3a}
+.tag.similar{background:#e6f0fa;color:#2a6eaa}
+.tag.different{background:#fdf0e0;color:#9a6020}
+.learned-badge{position:absolute;top:.5rem;right:.5rem;background:#2c7a3a;color:#fff;font-size:.62rem;padding:.15rem .4rem;border-radius:4px;font-family:'IBM Plex Mono',monospace}
+.card.learned .card-verb{text-decoration:line-through;opacity:.7}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:min(680px,100%);max-height:90vh;overflow-y:auto;padding:2rem;position:relative}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:1px solid #d8d0c4;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:1.1rem;color:#7a7060;display:flex;align-items:center;justify-content:center}
+.modal-verb{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;margin-bottom:.25rem}
+.modal-verb.irr{color:#d47a1a}
+.modal-verb.reg{color:#2c7a3a}
+.modal-meaning{color:#4a4538;font-size:1rem;margin-bottom:.25rem}
+.modal-es{font-size:.9rem;margin-bottom:1rem}
+.modal-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.modal-tag{font-family:'IBM Plex Mono',monospace;font-size:.75rem;padding:.25rem .6rem;border-radius:5px;font-weight:500}
+.modal-tag.irr{background:#fdf0e0;color:#d47a1a}
+.modal-tag.reg{background:#e6f4eb;color:#2c7a3a}
+.modal-tag.tier{background:#f0edf8;color:#5a3e9a}
+.modal-tag.cat{background:#f0f5fa;color:#2a6eaa}
+.learn-btn{padding:.55rem 1.25rem;border-radius:8px;border:1px solid #d8d0c4;background:#fff;cursor:pointer;font-family:'IBM Plex Sans',sans-serif;font-size:.9rem;color:#4a4538;margin-bottom:1.5rem;transition:all .15s}
+.learn-btn.learned{background:#2c7a3a;color:#fff;border-color:#2c7a3a}
+.conj-section{margin-bottom:1.25rem}
+.conj-section h4{font-size:.85rem;font-family:'IBM Plex Mono',monospace;color:#7a7060;margin-bottom:.6rem;font-weight:500}
+.conj-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.conj-table th{background:#f5f0e8;padding:.4rem .7rem;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:#7a7060;font-weight:500;border-bottom:1px solid #e8e2d8}
+.conj-table td{padding:.4rem .7rem;border-bottom:1px solid #f0ece4;color:#2c2a25}
+.conj-table td:first-child{color:#7a7060;font-size:.78rem;white-space:nowrap}
+.conj-table td.irr-form{color:#d47a1a;font-weight:500}
+.reg-note{background:#e6f4eb;border-radius:6px;padding:.6rem .9rem;font-size:.78rem;color:#2c7a3a;margin-bottom:1rem;font-family:'IBM Plex Sans',sans-serif}
+.sents{margin-top:1.25rem}
+.sents h4{font-size:.85rem;font-family:'IBM Plex Mono',monospace;color:#7a7060;margin-bottom:.6rem;font-weight:500}
+.sent{margin-bottom:.75rem;padding:.7rem .9rem;background:#faf7f2;border-radius:7px;border-left:3px solid #e8e2d8}
+.sent p{font-size:.85rem;color:#2c2a25;margin-bottom:.2rem;font-style:italic}
+.sent small{font-size:.78rem;color:#7a7060}
+.empty{text-align:center;padding:3rem;color:#aaa;grid-column:1/-1}
+@media(max-width:600px){
+  .pat-grid{grid-template-columns:1fr}
+  .controls,.grid,.stats{padding-left:1rem;padding-right:1rem}
+  .patterns{margin:1rem}
+  .modal{padding:1.25rem}
+  .modal-verb{font-size:1.6rem}
+}
+</style>
+</head>
+<body>
+
+<div style="padding:.6rem 1.5rem;background:#2c7a3a;">
+  <a href="index.html" style="color:#faf7f2;font-family:'IBM Plex Sans',sans-serif;font-size:.85rem;text-decoration:none;">← Home</a>
+</div>
+<div class="header">
+  <div style="font-size:2.5rem;margin-bottom:.25rem">🇧🇷</div>
+  <h1>200 Most Common Brazilian Portuguese Verbs</h1>
+  <p>Click any card to study conjugations & examples</p>
+</div>
+
+<div class="patterns">
+  <div class="patterns-header" onclick="togglePatterns()">
+    <h3>📋 Regular Verb Conjugation Patterns</h3>
+    <span id="pat-arrow">▼</span>
+  </div>
+  <div class="patterns-body" id="pat-body">
+    <div class="pat-grid">
+      <div class="pat-card">
+        <h4>-AR verbs (e.g. falar)</h4>
+        <table class="pat-table">
+          <tr><td>eu</td><td>-o / -ei / -ava</td></tr>
+          <tr><td>você/ele/ela</td><td>-a / -ou / -ava</td></tr>
+          <tr><td>nós</td><td>-amos / -amos / -ávamos</td></tr>
+          <tr><td>vocês/eles/elas</td><td>-am / -aram / -avam</td></tr>
+          <tr><td colspan="2" style="padding-top:6px;font-size:.72rem;color:#2c7a3a">Future: vou/vai/vamos/vão + falar</td></tr>
+        </table>
+      </div>
+      <div class="pat-card">
+        <h4>-ER verbs (e.g. comer)</h4>
+        <table class="pat-table">
+          <tr><td>eu</td><td>-o / -i / -ia</td></tr>
+          <tr><td>você/ele/ela</td><td>-e / -eu / -ia</td></tr>
+          <tr><td>nós</td><td>-emos / -emos / -íamos</td></tr>
+          <tr><td>vocês/eles/elas</td><td>-em / -eram / -iam</td></tr>
+          <tr><td colspan="2" style="padding-top:6px;font-size:.72rem;color:#2c7a3a">Future: vou/vai/vamos/vão + comer</td></tr>
+        </table>
+      </div>
+      <div class="pat-card">
+        <h4>-IR verbs (e.g. partir)</h4>
+        <table class="pat-table">
+          <tr><td>eu</td><td>-o / -i / -ia</td></tr>
+          <tr><td>você/ele/ela</td><td>-e / -iu / -ia</td></tr>
+          <tr><td>nós</td><td>-imos / -imos / -íamos</td></tr>
+          <tr><td>vocês/eles/elas</td><td>-em / -iram / -iam</td></tr>
+          <tr><td colspan="2" style="padding-top:6px;font-size:.72rem;color:#2c7a3a">Future: vou/vai/vamos/vão + partir</td></tr>
+        </table>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:#7a7060;margin-top:.75rem;font-style:italic">* In Brazilian Portuguese speech, the future tense is almost always expressed as <strong>ir + infinitive</strong> (e.g. "vou falar", "vai comer", "vamos partir"). The simple future conjugation is mostly written/formal.</p>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search verb, meaning, Spanish equivalent, or category..." oninput="render()">
+  </div>
+  <div class="filter-row">
+    <label>TYPE</label>
+    <button class="active" onclick="setFilter('type','all',this)">All</button>
+    <button onclick="setFilter('type','irr',this)">Irregular</button>
+    <button onclick="setFilter('type','reg',this)">Regular</button>
+  </div>
+  <div class="filter-row">
+    <label>SPANISH</label>
+    <button class="active" onclick="setFilter('sim','all',this)">All</button>
+    <button onclick="setFilter('sim','identical',this)">Identical</button>
+    <button onclick="setFilter('sim','similar',this)">Similar</button>
+    <button onclick="setFilter('sim','different',this)">Different</button>
+  </div>
+  <div class="filter-row">
+    <label>CATEGORY</label>
+    <button class="active" onclick="setFilter('cat','all',this)">All</button>
+    <button onclick="setFilter('cat','being',this)">Being</button>
+    <button onclick="setFilter('cat','motion',this)">Motion</button>
+    <button onclick="setFilter('cat','communication',this)">Communication</button>
+    <button onclick="setFilter('cat','cognition',this)">Cognition</button>
+    <button onclick="setFilter('cat','emotion',this)">Emotion</button>
+    <button onclick="setFilter('cat','daily',this)">Daily Life</button>
+    <button onclick="setFilter('cat','work',this)">Work/Study</button>
+    <button onclick="setFilter('cat','social',this)">Social</button>
+    <button onclick="setFilter('cat','change',this)">Change</button>
+  </div>
+  <div class="filter-row">
+    <label>PRIORITY</label>
+    <button class="active" onclick="setFilter('pri','all',this)">All</button>
+    <button onclick="setFilter('pri',1,this)">Tier 1 (1–50)</button>
+    <button onclick="setFilter('pri',2,this)">Tier 2 (51–100)</button>
+    <button onclick="setFilter('pri',3,this)">Tier 3 (101–150)</button>
+    <button onclick="setFilter('pri',4,this)">Tier 4 (151–200)</button>
+  </div>
+  <div class="filter-row">
+    <label>STATUS</label>
+    <button class="active" onclick="setFilter('status','all',this)">All</button>
+    <button onclick="setFilter('status','tostudy',this)">To Study</button>
+    <button onclick="setFilter('status','learned',this)">Learned ✓</button>
+  </div>
+</div>
+
+<div class="stats" id="stats"></div>
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+const learned = new Set(JSON.parse(localStorage.getItem('pt_learned')||'[]'));
+
+const VERBS = [
+{n:1,v:'ser',m:'to be (permanent)',irr:true,sim:'identical',es:'ser',cat:'being',pri:1,
+conj:{pres:['sou','é','somos','são'],past:['fui','foi','fomos','foram'],imp:['era','era','éramos','eram']},
+sentences:[
+  {pt:'Eu sou brasileiro e moro em São Paulo.',en:'I am Brazilian and I live in São Paulo.'},
+  {pt:'Ela foi a melhor aluna da turma.',en:'She was the best student in the class.'},
+  {pt:'Nós éramos muito jovens quando nos conhecemos.',en:'We were very young when we met.'}
+]},
+{n:2,v:'estar',m:'to be (temporary)',irr:true,sim:'identical',es:'estar',cat:'being',pri:1,
+conj:{pres:['estou','está','estamos','estão'],past:['estive','esteve','estivemos','estiveram'],imp:['estava','estava','estávamos','estavam']},
+sentences:[
+  {pt:'Eu estou muito cansado hoje.',en:'I am very tired today.'},
+  {pt:'Onde você esteve ontem à noite?',en:'Where were you last night?'},
+  {pt:'A criança estava doente na semana passada.',en:'The child was sick last week.'}
+]},
+{n:3,v:'ter',m:'to have',irr:true,sim:'different',es:'tener',cat:'being',pri:1,
+conj:{pres:['tenho','tem','temos','têm'],past:['tive','teve','tivemos','tiveram'],imp:['tinha','tinha','tínhamos','tinham']},
+sentences:[
+  {pt:'Eu tenho uma reunião às dez horas.',en:'I have a meeting at ten o\'clock.'},
+  {pt:'Ela teve um bebê no mês passado.',en:'She had a baby last month.'},
+  {pt:'Nós tínhamos um cachorro quando éramos crianças.',en:'We had a dog when we were kids.'}
+]},
+{n:4,v:'haver',m:'to have/there to be',irr:true,sim:'similar',es:'haber',cat:'being',pri:1,
+conj:{pres:['hei','há','havemos','hão'],past:['houve','houve','houvemos','houveram'],imp:['havia','havia','havíamos','haviam']},
+sentences:[
+  {pt:'Há muitas pessoas na festa hoje.',en:'There are many people at the party today.'},
+  {pt:'Houve um acidente na estrada ontem.',en:'There was an accident on the road yesterday.'},
+  {pt:'Havia um parque lindo nesta rua.',en:'There used to be a beautiful park on this street.'}
+]},
+{n:5,v:'ir',m:'to go',irr:true,sim:'identical',es:'ir',cat:'motion',pri:1,
+conj:{pres:['vou','vai','vamos','vão'],past:['fui','foi','fomos','foram'],imp:['ia','ia','íamos','iam']},
+sentences:[
+  {pt:'Eu vou ao supermercado mais tarde.',en:'I\'m going to the supermarket later.'},
+  {pt:'Ela foi à praia no fim de semana.',en:'She went to the beach on the weekend.'},
+  {pt:'Nós íamos ao cinema todo sábado.',en:'We used to go to the cinema every Saturday.'}
+]},
+{n:6,v:'vir',m:'to come',irr:true,sim:'different',es:'venir',cat:'motion',pri:1,
+conj:{pres:['venho','vem','vimos','vêm'],past:['vim','veio','viemos','vieram'],imp:['vinha','vinha','vínhamos','vinham']},
+sentences:[
+  {pt:'Você vem jantar conosco hoje?',en:'Are you coming to dinner with us today?'},
+  {pt:'Ela veio de avião do Rio de Janeiro.',en:'She came by plane from Rio de Janeiro.'},
+  {pt:'Eles vinham visitar a família toda semana.',en:'They used to come visit the family every week.'}
+]},
+{n:7,v:'fazer',m:'to do/make',irr:true,sim:'different',es:'hacer',cat:'daily',pri:1,
+conj:{pres:['faço','faz','fazemos','fazem'],past:['fiz','fez','fizemos','fizeram'],imp:['fazia','fazia','fazíamos','faziam']},
+sentences:[
+  {pt:'O que você faz no tempo livre?',en:'What do you do in your free time?'},
+  {pt:'Ela fez um bolo delicioso para a festa.',en:'She made a delicious cake for the party.'},
+  {pt:'Nós fazíamos exercício todos os dias.',en:'We used to exercise every day.'}
+]},
+{n:8,v:'dar',m:'to give',irr:true,sim:'identical',es:'dar',cat:'social',pri:1,
+conj:{pres:['dou','dá','damos','dão'],past:['dei','deu','demos','deram'],imp:['dava','dava','dávamos','davam']},
+sentences:[
+  {pt:'Eu dou uma dica para você.',en:'I\'ll give you a tip.'},
+  {pt:'Ele deu um presente lindo para ela.',en:'He gave her a beautiful gift.'},
+  {pt:'Minha avó dava biscoitos para as crianças.',en:'My grandmother used to give cookies to the children.'}
+]},
+{n:9,v:'dizer',m:'to say/tell',irr:true,sim:'similar',es:'decir',cat:'communication',pri:1,
+conj:{pres:['digo','diz','dizemos','dizem'],past:['disse','disse','dissemos','disseram'],imp:['dizia','dizia','dizíamos','diziam']},
+sentences:[
+  {pt:'O que você diz quando alguém te elogia?',en:'What do you say when someone compliments you?'},
+  {pt:'Ela disse que ia chegar tarde.',en:'She said she was going to arrive late.'},
+  {pt:'Ele sempre dizia a verdade.',en:'He always used to tell the truth.'}
+]},
+{n:10,v:'poder',m:'to be able to/can',irr:true,sim:'identical',es:'poder',cat:'cognition',pri:1,
+conj:{pres:['posso','pode','podemos','podem'],past:['pude','pôde','pudemos','puderam'],imp:['podia','podia','podíamos','podiam']},
+sentences:[
+  {pt:'Você pode me ajudar com isso?',en:'Can you help me with this?'},
+  {pt:'Ela não pôde ir à festa por causa do trabalho.',en:'She couldn\'t go to the party because of work.'},
+  {pt:'Antes eu podia correr cinco quilômetros sem parar.',en:'Before, I used to be able to run five kilometres without stopping.'}
+]},
+{n:11,v:'querer',m:'to want',irr:true,sim:'identical',es:'querer',cat:'emotion',pri:1,
+conj:{pres:['quero','quer','queremos','querem'],past:['quis','quis','quisemos','quiseram'],imp:['queria','queria','queríamos','queriam']},
+sentences:[
+  {pt:'Eu quero aprender a tocar violão.',en:'I want to learn to play guitar.'},
+  {pt:'Ela quis uma pizza de queijo e tomate.',en:'She wanted a cheese and tomato pizza.'},
+  {pt:'Quando era criança, eu queria ser astronauta.',en:'When I was a child, I wanted to be an astronaut.'}
+]},
+{n:12,v:'saber',m:'to know (fact/how)',irr:true,sim:'identical',es:'saber',cat:'cognition',pri:1,
+conj:{pres:['sei','sabe','sabemos','sabem'],past:['soube','soube','soubemos','souberam'],imp:['sabia','sabia','sabíamos','sabiam']},
+sentences:[
+  {pt:'Eu sei falar três idiomas.',en:'I know how to speak three languages.'},
+  {pt:'Ela soube da novidade pelo jornal.',en:'She found out about the news through the newspaper.'},
+  {pt:'Nós sabíamos que ia ser difícil.',en:'We knew it was going to be difficult.'}
+]},
+{n:13,v:'ver',m:'to see',irr:true,sim:'identical',es:'ver',cat:'cognition',pri:1,
+conj:{pres:['vejo','vê','vemos','veem'],past:['vi','viu','vimos','viram'],imp:['via','via','víamos','viam']},
+sentences:[
+  {pt:'Você vê aquele prédio lá no fundo?',en:'Do you see that building in the background?'},
+  {pt:'Eu vi um filme incrível ontem à noite.',en:'I saw an amazing film last night.'},
+  {pt:'Eles se viam toda semana para jogar futebol.',en:'They used to see each other every week to play football.'}
+]},
+{n:14,v:'trazer',m:'to bring',irr:true,sim:'different',es:'traer',cat:'motion',pri:1,
+conj:{pres:['trago','traz','trazemos','trazem'],past:['trouxe','trouxe','trouxemos','trouxeram'],imp:['trazia','trazia','trazíamos','traziam']},
+sentences:[
+  {pt:'Posso trazer alguma coisa para o jantar?',en:'Can I bring something for dinner?'},
+  {pt:'Ela trouxe um bolo de chocolate para o escritório.',en:'She brought a chocolate cake to the office.'},
+  {pt:'Meu pai trazia frutas do mercado toda manhã.',en:'My father used to bring fruit from the market every morning.'}
+]},
+{n:15,v:'pôr',m:'to put/place',irr:true,sim:'different',es:'poner',cat:'daily',pri:1,
+conj:{pres:['ponho','põe','pomos','põem'],past:['pus','pôs','pusemos','puseram'],imp:['punha','punha','púnhamos','punham']},
+sentences:[
+  {pt:'Vou pôr a mesa para o jantar.',en:'I\'m going to set the table for dinner.'},
+  {pt:'Ela pôs o casaco na cadeira.',en:'She put the coat on the chair.'},
+  {pt:'Ele punha as chaves sempre no mesmo lugar.',en:'He always used to put the keys in the same place.'}
+]},
+{n:16,v:'caber',m:'to fit/be able to contain',irr:true,sim:'identical',es:'caber',cat:'daily',pri:1,
+conj:{pres:['caibo','cabe','cabemos','cabem'],past:['coube','coube','coubemos','couberam'],imp:['cabia','cabia','cabíamos','cabiam']},
+sentences:[
+  {pt:'Será que tudo isso cabe na mala?',en:'Do you think all this fits in the suitcase?'},
+  {pt:'A mesa não coube na nova sala.',en:'The table didn\'t fit in the new room.'},
+  {pt:'Antes cabia mais gente nesse ônibus.',en:'Before, more people used to fit on this bus.'}
+]},
+{n:17,v:'ouvir',m:'to hear/listen',irr:true,sim:'different',es:'oír',cat:'cognition',pri:1,
+conj:{pres:['ouço','ouve','ouvimos','ouvem'],past:['ouvi','ouviu','ouvimos','ouviram'],imp:['ouvia','ouvia','ouvíamos','ouviam']},
+sentences:[
+  {pt:'Eu ouço música enquanto trabalho.',en:'I listen to music while I work.'},
+  {pt:'Você ouviu o que ela disse?',en:'Did you hear what she said?'},
+  {pt:'Nós ouvíamos rádio na cozinha toda manhã.',en:'We used to listen to the radio in the kitchen every morning.'}
+]},
+{n:18,v:'pedir',m:'to ask for/request',irr:true,sim:'similar',es:'pedir',cat:'communication',pri:1,
+conj:{pres:['peço','pede','pedimos','pedem'],past:['pedi','pediu','pedimos','pediram'],imp:['pedia','pedia','pedíamos','pediam']},
+sentences:[
+  {pt:'Posso pedir um favor para você?',en:'Can I ask you a favour?'},
+  {pt:'Ele pediu a conta ao garçom.',en:'He asked the waiter for the bill.'},
+  {pt:'Ela sempre pedia ajuda quando precisava.',en:'She always used to ask for help when she needed it.'}
+]},
+{n:19,v:'perder',m:'to lose/miss',irr:true,sim:'identical',es:'perder',cat:'cognition',pri:1,
+conj:{pres:['perco','perde','perdemos','perdem'],past:['perdi','perdeu','perdemos','perderam'],imp:['perdia','perdia','perdíamos','perdiam']},
+sentences:[
+  {pt:'Eu nunca perco meu guarda-chuva.',en:'I never lose my umbrella.'},
+  {pt:'Ela perdeu o ônibus por dois minutos.',en:'She missed the bus by two minutes.'},
+  {pt:'O time sempre perdia nos penais.',en:'The team always used to lose on penalties.'}
+]},
+{n:20,v:'ler',m:'to read',irr:true,sim:'different',es:'leer',cat:'work',pri:1,
+conj:{pres:['leio','lê','lemos','leem'],past:['li','leu','lemos','leram'],imp:['lia','lia','líamos','liam']},
+sentences:[
+  {pt:'Eu leio pelo menos um livro por mês.',en:'I read at least one book per month.'},
+  {pt:'Você leu o artigo que mandei?',en:'Did you read the article I sent?'},
+  {pt:'Ele lia o jornal toda manhã antes do trabalho.',en:'He used to read the newspaper every morning before work.'}
+]},
+{n:21,v:'medir',m:'to measure',irr:true,sim:'identical',es:'medir',cat:'daily',pri:1,
+conj:{pres:['meço','mede','medimos','medem'],past:['medi','mediu','medimos','mediram'],imp:['media','media','medíamos','mediam']},
+sentences:[
+  {pt:'Você pode medir a janela para mim?',en:'Can you measure the window for me?'},
+  {pt:'A enfermeira mediu minha pressão arterial.',en:'The nurse measured my blood pressure.'},
+  {pt:'Eles mediam tudo com muito cuidado.',en:'They used to measure everything very carefully.'}
+]},
+{n:22,v:'rir',m:'to laugh',irr:true,sim:'different',es:'reír',cat:'emotion',pri:1,
+conj:{pres:['rio','ri','rimos','riem'],past:['ri','riu','rimos','riram'],imp:['ria','ria','ríamos','riam']},
+sentences:[
+  {pt:'Eu adoro rir das suas piadas.',en:'I love laughing at your jokes.'},
+  {pt:'Todos riram da situação constrangedora.',en:'Everyone laughed at the embarrassing situation.'},
+  {pt:'Ela ria muito quando era criança.',en:'She used to laugh a lot when she was a child.'}
+]},
+{n:23,v:'subir',m:'to go up/climb',irr:true,sim:'identical',es:'subir',cat:'motion',pri:1,
+conj:{pres:['subo','sobe','subimos','sobem'],past:['subi','subiu','subimos','subiram'],imp:['subia','subia','subíamos','subiam']},
+sentences:[
+  {pt:'Vou subir as escadas em vez de usar o elevador.',en:'I\'m going to take the stairs instead of using the lift.'},
+  {pt:'Ela subiu o morro para ver o pôr do sol.',en:'She climbed the hill to see the sunset.'},
+  {pt:'Os preços subiam todo mês.',en:'Prices used to go up every month.'}
+]},
+{n:24,v:'seguir',m:'to follow/continue',irr:true,sim:'identical',es:'seguir',cat:'motion',pri:1,
+conj:{pres:['sigo','segue','seguimos','seguem'],past:['segui','seguiu','seguimos','seguiram'],imp:['seguia','seguia','seguíamos','seguiam']},
+sentences:[
+  {pt:'Siga em frente e vire à direita.',en:'Go straight ahead and turn right.'},
+  {pt:'Ela seguiu os conselhos do médico.',en:'She followed the doctor\'s advice.'},
+  {pt:'Eles seguiam as mesmas tradições há gerações.',en:'They had been following the same traditions for generations.'}
+]},
+{n:25,v:'fugir',m:'to flee/escape',irr:true,sim:'similar',es:'huir',cat:'motion',pri:1,
+conj:{pres:['fujo','foge','fugimos','fogem'],past:['fugi','fugiu','fugimos','fugiram'],imp:['fugia','fugia','fugíamos','fugiam']},
+sentences:[
+  {pt:'O cachorro fugiu pelo portão aberto.',en:'The dog escaped through the open gate.'},
+  {pt:'Os prisioneiros fugiram durante a noite.',en:'The prisoners escaped during the night.'},
+  {pt:'Ela fugia de situações de conflito.',en:'She used to avoid conflict situations.'}
+]},
+{n:26,v:'mentir',m:'to lie',irr:true,sim:'similar',es:'mentir',cat:'communication',pri:1,
+conj:{pres:['minto','mente','mentimos','mentem'],past:['menti','mentiu','mentimos','mentiram'],imp:['mentia','mentia','mentíamos','mentiam']},
+sentences:[
+  {pt:'Eu nunca minto para as pessoas que amo.',en:'I never lie to the people I love.'},
+  {pt:'Ele mentiu sobre onde estava à noite.',en:'He lied about where he was at night.'},
+  {pt:'As crianças às vezes mentiam para evitar problema.',en:'Children sometimes used to lie to avoid trouble.'}
+]},
+{n:27,v:'sentir',m:'to feel/sense',irr:true,sim:'identical',es:'sentir',cat:'emotion',pri:1,
+conj:{pres:['sinto','sente','sentimos','sentem'],past:['senti','sentiu','sentimos','sentiram'],imp:['sentia','sentia','sentíamos','sentiam']},
+sentences:[
+  {pt:'Eu me sinto muito bem hoje.',en:'I feel very well today.'},
+  {pt:'Ela sentiu falta de casa quando foi estudar fora.',en:'She missed home when she went to study abroad.'},
+  {pt:'Ele sentia dor nas costas depois do trabalho.',en:'He used to feel back pain after work.'}
+]},
+{n:28,v:'servir',m:'to serve',irr:true,sim:'identical',es:'servir',cat:'daily',pri:1,
+conj:{pres:['sirvo','serve','servimos','servem'],past:['servi','serviu','servimos','serviram'],imp:['servia','servia','servíamos','serviam']},
+sentences:[
+  {pt:'O garçom serve o prato com cuidado.',en:'The waiter serves the dish carefully.'},
+  {pt:'Esse casaco não me serviu mais depois que emagreci.',en:'This coat no longer fitted me after I lost weight.'},
+  {pt:'Ela servia café para os clientes todas as manhãs.',en:'She used to serve coffee to customers every morning.'}
+]},
+{n:29,v:'dormir',m:'to sleep',irr:true,sim:'identical',es:'dormir',cat:'daily',pri:1,
+conj:{pres:['durmo','dorme','dormimos','dormem'],past:['dormi','dormiu','dormimos','dormiram'],imp:['dormia','dormia','dormíamos','dormiam']},
+sentences:[
+  {pt:'Eu durmo oito horas por noite.',en:'I sleep eight hours a night.'},
+  {pt:'O bebê dormiu a noite toda.',en:'The baby slept through the night.'},
+  {pt:'Ela dormia tarde nos fins de semana.',en:'She used to sleep late on weekends.'}
+]},
+{n:30,v:'cobrir',m:'to cover',irr:true,sim:'similar',es:'cubrir',cat:'daily',pri:1,
+conj:{pres:['cubro','cobre','cobrimos','cobrem'],past:['cobri','cobriu','cobrimos','cobriram'],imp:['cobria','cobria','cobríamos','cobriam']},
+sentences:[
+  {pt:'Vou cobrir o prato para não esfriar.',en:'I\'ll cover the plate so it doesn\'t get cold.'},
+  {pt:'Ela cobriu os filhos com um cobertor.',en:'She covered the children with a blanket.'},
+  {pt:'A neve cobria as montanhas no inverno.',en:'Snow used to cover the mountains in winter.'}
+]},
+{n:31,v:'abrir',m:'to open',irr:true,sim:'identical',es:'abrir',cat:'daily',pri:1,
+conj:{pres:['abro','abre','abrimos','abrem'],past:['abri','abriu','abrimos','abriram'],imp:['abria','abria','abríamos','abriam']},
+sentences:[
+  {pt:'Você pode abrir a janela? Está muito quente.',en:'Can you open the window? It\'s very hot.'},
+  {pt:'A loja abriu mais cedo hoje por causa do feriado.',en:'The shop opened earlier today because of the holiday.'},
+  {pt:'Ele abria a padaria às cinco da manhã.',en:'He used to open the bakery at five in the morning.'}
+]},
+{n:32,v:'escrever',m:'to write',irr:true,sim:'similar',es:'escribir',cat:'communication',pri:1,
+conj:{pres:['escrevo','escreve','escrevemos','escrevem'],past:['escrevi','escreveu','escrevemos','escreveram'],imp:['escrevia','escrevia','escrevíamos','escreviam']},
+sentences:[
+  {pt:'Eu escrevo um diário todos os dias.',en:'I write a diary every day.'},
+  {pt:'Ela escreveu uma carta longa para o amigo.',en:'She wrote a long letter to her friend.'},
+  {pt:'Ele escrevia poesias quando era jovem.',en:'He used to write poems when he was young.'}
+]},
+{n:33,v:'viver',m:'to live',irr:true,sim:'similar',es:'vivir',cat:'being',pri:1,
+conj:{pres:['vivo','vive','vivemos','vivem'],past:['vivi','viveu','vivemos','viveram'],imp:['vivia','vivia','vivíamos','viviam']},
+sentences:[
+  {pt:'Eu vivo no Rio de Janeiro há cinco anos.',en:'I have been living in Rio de Janeiro for five years.'},
+  {pt:'Ela viveu no exterior por dois anos.',en:'She lived abroad for two years.'},
+  {pt:'Eles viviam simplesmente no interior.',en:'They used to live simply in the countryside.'}
+]},
+{n:34,v:'receber',m:'to receive',irr:true,sim:'similar',es:'recibir',cat:'daily',pri:1,
+conj:{pres:['recebo','recebe','recebemos','recebem'],past:['recebi','recebeu','recebemos','receberam'],imp:['recebia','recebia','recebíamos','recebiam']},
+sentences:[
+  {pt:'Recebi uma ótima notícia hoje de manhã.',en:'I received great news this morning.'},
+  {pt:'Ela recebeu o prêmio com muita emoção.',en:'She received the award with great emotion.'},
+  {pt:'Eles recebiam visitas toda semana.',en:'They used to have visitors every week.'}
+]},
+{n:35,v:'conhecer',m:'to know (person/place)',irr:true,sim:'similar',es:'conocer',cat:'cognition',pri:1,
+conj:{pres:['conheço','conhece','conhecemos','conhecem'],past:['conheci','conheceu','conhecemos','conheceram'],imp:['conhecia','conhecia','conhecíamos','conheciam']},
+sentences:[
+  {pt:'Você conhece alguém que fala japonês?',en:'Do you know anyone who speaks Japanese?'},
+  {pt:'Eu a conheci numa festa no ano passado.',en:'I met her at a party last year.'},
+  {pt:'Ela conhecia cada rua da cidade.',en:'She used to know every street in the city.'}
+]},
+{n:36,v:'parecer',m:'to seem/look like',irr:true,sim:'similar',es:'parecer',cat:'cognition',pri:1,
+conj:{pres:['pareço','parece','parecemos','parecem'],past:['pareci','pareceu','parecemos','pareceram'],imp:['parecia','parecia','parecíamos','pareciam']},
+sentences:[
+  {pt:'Você parece cansado. Dormiu bem?',en:'You look tired. Did you sleep well?'},
+  {pt:'O projeto pareceu mais difícil do que esperávamos.',en:'The project seemed harder than we expected.'},
+  {pt:'Ela parecia mais velha do que era.',en:'She used to look older than she was.'}
+]},
+{n:37,v:'crescer',m:'to grow',irr:true,sim:'similar',es:'crecer',cat:'change',pri:1,
+conj:{pres:['cresço','cresce','crescemos','crescem'],past:['cresci','cresceu','crescemos','cresceram'],imp:['crescia','crescia','crescíamos','cresciam']},
+sentences:[
+  {pt:'As crianças crescem tão rápido!',en:'Children grow so fast!'},
+  {pt:'A empresa cresceu muito nos últimos anos.',en:'The company grew a lot in recent years.'},
+  {pt:'A cidade crescia sem planejamento adequado.',en:'The city used to grow without adequate planning.'}
+]},
+{n:38,v:'aparecer',m:'to appear/show up',irr:true,sim:'identical',es:'aparecer',cat:'motion',pri:1,
+conj:{pres:['apareço','aparece','aparecemos','aparecem'],past:['apareci','apareceu','aparecemos','apareceram'],imp:['aparecia','aparecia','aparecíamos','apareciam']},
+sentences:[
+  {pt:'Ela apareceu na festa sem ser convidada.',en:'She showed up at the party without being invited.'},
+  {pt:'Um arco-íris apareceu depois da chuva.',en:'A rainbow appeared after the rain.'},
+  {pt:'Ele aparecia no trabalho sempre atrasado.',en:'He used to show up at work late all the time.'}
+]},
+{n:39,v:'oferecer',m:'to offer',irr:true,sim:'similar',es:'ofrecer',cat:'social',pri:1,
+conj:{pres:['ofereço','oferece','oferecemos','oferecem'],past:['ofereci','ofereceu','oferecemos','ofereceram'],imp:['oferecia','oferecia','oferecíamos','ofereciam']},
+sentences:[
+  {pt:'Posso oferecer uma bebida para você?',en:'Can I offer you a drink?'},
+  {pt:'A empresa ofereceu um salário muito bom.',en:'The company offered a very good salary.'},
+  {pt:'Eles ofereciam desconto para estudantes.',en:'They used to offer discounts to students.'}
+]},
+{n:40,v:'pertencer',m:'to belong',irr:true,sim:'similar',es:'pertenecer',cat:'being',pri:1,
+conj:{pres:['pertenço','pertence','pertencemos','pertencem'],past:['pertenci','pertenceu','pertencemos','pertenceram'],imp:['pertencia','pertencia','pertencíamos','pertenciam']},
+sentences:[
+  {pt:'Este livro pertence à biblioteca.',en:'This book belongs to the library.'},
+  {pt:'Aquele apartamento pertenceu à minha avó.',en:'That apartment used to belong to my grandmother.'},
+  {pt:'Eles pertenciam ao mesmo clube de leitura.',en:'They used to belong to the same book club.'}
+]},
+{n:41,v:'queixar-se',m:'to complain',irr:true,sim:'different',es:'quejarse',cat:'communication',pri:1,
+conj:{pres:['queixo-me','queixa-se','queixamo-nos','queixam-se'],past:['queixei-me','queixou-se','queixamo-nos','queixaram-se'],imp:['queixava-me','queixava-se','queixávamo-nos','queixavam-se']},
+sentences:[
+  {pt:'Ele sempre se queixa do tempo frio.',en:'He always complains about the cold weather.'},
+  {pt:'Ela se queixou ao gerente sobre o serviço.',en:'She complained to the manager about the service.'},
+  {pt:'Os moradores se queixavam do barulho constante.',en:'The residents used to complain about the constant noise.'}
+]},
+{n:42,v:'construir',m:'to build/construct',irr:true,sim:'identical',es:'construir',cat:'work',pri:1,
+conj:{pres:['construo','constrói','construímos','constroem'],past:['construí','construiu','construímos','construíram'],imp:['construía','construía','construíamos','construíam']},
+sentences:[
+  {pt:'Vamos construir uma casa nova no campo.',en:'We\'re going to build a new house in the countryside.'},
+  {pt:'Eles construíram a ponte em apenas seis meses.',en:'They built the bridge in just six months.'},
+  {pt:'A empresa construía prédios sustentáveis.',en:'The company used to build sustainable buildings.'}
+]},
+{n:43,v:'incluir',m:'to include',irr:true,sim:'identical',es:'incluir',cat:'work',pri:1,
+conj:{pres:['incluo','inclui','incluímos','incluem'],past:['incluí','incluiu','incluímos','incluíram'],imp:['incluía','incluía','incluíamos','incluíam']},
+sentences:[
+  {pt:'O preço inclui café da manhã.',en:'The price includes breakfast.'},
+  {pt:'Ela incluiu todos os detalhes no relatório.',en:'She included all the details in the report.'},
+  {pt:'O contrato não incluía benefícios de saúde.',en:'The contract didn\'t used to include health benefits.'}
+]},
+{n:44,v:'produzir',m:'to produce',irr:true,sim:'similar',es:'producir',cat:'work',pri:1,
+conj:{pres:['produzo','produz','produzimos','produzem'],past:['produzi','produziu','produzimos','produziram'],imp:['produzia','produzia','produzíamos','produziam']},
+sentences:[
+  {pt:'O Brasil produz muito café e soja.',en:'Brazil produces a lot of coffee and soya.'},
+  {pt:'A fábrica produziu mil unidades por dia.',en:'The factory produced a thousand units per day.'},
+  {pt:'Eles produziam artesanato local para vender.',en:'They used to produce local crafts to sell.'}
+]},
+{n:45,v:'traduzir',m:'to translate',irr:true,sim:'similar',es:'traducir',cat:'communication',pri:1,
+conj:{pres:['traduzo','traduz','traduzimos','traduzem'],past:['traduzi','traduziu','traduzimos','traduziram'],imp:['traduzia','traduzia','traduzíamos','traduziam']},
+sentences:[
+  {pt:'Você pode traduzir esse texto para mim?',en:'Can you translate this text for me?'},
+  {pt:'Ela traduziu o livro do inglês para o português.',en:'She translated the book from English to Portuguese.'},
+  {pt:'Ele traduzia documentos para viver.',en:'He used to translate documents for a living.'}
+]},
+{n:46,v:'conduzir',m:'to drive/lead',irr:true,sim:'similar',es:'conducir',cat:'motion',pri:1,
+conj:{pres:['conduzo','conduz','conduzimos','conduzem'],past:['conduzi','conduziu','conduzimos','conduziram'],imp:['conduzia','conduzia','conduzíamos','conduziam']},
+sentences:[
+  {pt:'Ele conduz com muito cuidado.',en:'He drives very carefully.'},
+  {pt:'A diretora conduziu a reunião com eficiência.',en:'The director led the meeting efficiently.'},
+  {pt:'O guia conduzia os turistas pelo centro histórico.',en:'The guide used to lead tourists through the historic centre.'}
+]},
+{n:47,v:'introduzir',m:'to introduce/insert',irr:true,sim:'similar',es:'introducir',cat:'communication',pri:1,
+conj:{pres:['introduzo','introduz','introduzimos','introduzem'],past:['introduzi','introduziu','introduzimos','introduziram'],imp:['introduzia','introduzia','introduzíamos','introduziam']},
+sentences:[
+  {pt:'Vou introduzir algumas mudanças no processo.',en:'I\'m going to introduce some changes to the process.'},
+  {pt:'Ela introduziu a ideia na reunião.',en:'She introduced the idea in the meeting.'},
+  {pt:'Eles introduziam novas tecnologias lentamente.',en:'They used to introduce new technologies slowly.'}
+]},
+{n:48,v:'eleger',m:'to elect',irr:true,sim:'similar',es:'elegir',cat:'work',pri:1,
+conj:{pres:['elejo','elege','elegemos','elegem'],past:['elegi','elegeu','elegemos','elegeram'],imp:['elegia','elegia','elegíamos','elegiam']},
+sentences:[
+  {pt:'Os brasileiros elegem seu presidente a cada quatro anos.',en:'Brazilians elect their president every four years.'},
+  {pt:'Eles elegeram o novo presidente da associação.',en:'They elected the new president of the association.'},
+  {pt:'A comunidade elegia seus representantes democraticamente.',en:'The community used to elect its representatives democratically.'}
+]},
+{n:49,v:'proteger',m:'to protect',irr:true,sim:'identical',es:'proteger',cat:'social',pri:1,
+conj:{pres:['protejo','protege','protegemos','protegem'],past:['protegi','protegeu','protegemos','protegeram'],imp:['protegia','protegia','protegíamos','protegiam']},
+sentences:[
+  {pt:'É importante proteger o meio ambiente.',en:'It\'s important to protect the environment.'},
+  {pt:'Ela protegeu os filhos do sol com protetor solar.',en:'She protected her children from the sun with sunscreen.'},
+  {pt:'O governo protegia as florestas com leis rígidas.',en:'The government used to protect the forests with strict laws.'}
+]},
+{n:50,v:'dirigir',m:'to drive/direct',irr:true,sim:'identical',es:'dirigir',cat:'motion',pri:1,
+conj:{pres:['dirijo','dirige','dirigimos','dirigem'],past:['dirigi','dirigiu','dirigimos','dirigiram'],imp:['dirigia','dirigia','dirigíamos','dirigiam']},
+sentences:[
+  {pt:'Você sabe dirigir na estrada?',en:'Do you know how to drive on the highway?'},
+  {pt:'Ela dirigiu três horas para chegar aqui.',en:'She drove three hours to get here.'},
+  {pt:'Meu avô dirigia um táxi na cidade.',en:'My grandfather used to drive a taxi in the city.'}
+]},
+{n:51,v:'agir',m:'to act/behave',irr:true,sim:'similar',es:'actuar',cat:'work',pri:2,
+conj:{pres:['ajo','age','agimos','agem'],past:['agi','agiu','agimos','agiram'],imp:['agia','agia','agíamos','agiam']},
+sentences:[
+  {pt:'Precisamos agir agora para resolver o problema.',en:'We need to act now to solve the problem.'},
+  {pt:'Ela agiu com muita calma durante a crise.',en:'She acted very calmly during the crisis.'},
+  {pt:'Ele agia sempre com honestidade.',en:'He always used to act with honesty.'}
+]},
+{n:52,v:'exigir',m:'to demand/require',irr:true,sim:'similar',es:'exigir',cat:'work',pri:2,
+conj:{pres:['exijo','exige','exigimos','exigem'],past:['exigi','exigiu','exigimos','exigiram'],imp:['exigia','exigia','exigíamos','exigiam']},
+sentences:[
+  {pt:'O emprego exige experiência de três anos.',en:'The job requires three years of experience.'},
+  {pt:'Ela exigiu uma explicação do marido.',en:'She demanded an explanation from her husband.'},
+  {pt:'O professor exigia muita dedicação dos alunos.',en:'The teacher used to demand great dedication from the students.'}
+]},
+{n:53,v:'fingir',m:'to pretend/fake',irr:true,sim:'similar',es:'fingir',cat:'emotion',pri:2,
+conj:{pres:['finjo','finge','fingimos','fingem'],past:['fingi','fingiu','fingimos','fingiram'],imp:['fingia','fingia','fingíamos','fingiam']},
+sentences:[
+  {pt:'Ele finge que não está ouvindo.',en:'He pretends he\'s not listening.'},
+  {pt:'Ela fingiu estar doente para não ir trabalhar.',en:'She pretended to be sick so she didn\'t have to go to work.'},
+  {pt:'As crianças fingiam ser super-heróis.',en:'The children used to pretend to be superheroes.'}
+]},
+{n:54,v:'atingir',m:'to reach/hit/affect',irr:true,sim:'similar',es:'alcanzar',cat:'change',pri:2,
+conj:{pres:['atinjo','atinge','atingimos','atingem'],past:['atingi','atingiu','atingimos','atingiram'],imp:['atingia','atingia','atingíamos','atingiam']},
+sentences:[
+  {pt:'O avião vai atingir a velocidade máxima em breve.',en:'The plane will reach maximum speed soon.'},
+  {pt:'A tempestade atingiu várias cidades do norte.',en:'The storm hit several cities in the north.'},
+  {pt:'A crise atingia as famílias mais pobres.',en:'The crisis used to affect the poorest families.'}
+]},
+{n:55,v:'conseguir',m:'to manage/achieve/get',irr:true,sim:'identical',es:'conseguir',cat:'cognition',pri:2,
+conj:{pres:['consigo','consegue','conseguimos','conseguem'],past:['consegui','conseguiu','conseguimos','conseguiram'],imp:['conseguia','conseguia','conseguíamos','conseguiam']},
+sentences:[
+  {pt:'Finalmente consegui terminar o projeto.',en:'I finally managed to finish the project.'},
+  {pt:'Ela conseguiu um emprego incrível.',en:'She got an amazing job.'},
+  {pt:'Ele nunca conseguia acordar cedo.',en:'He never used to manage to wake up early.'}
+]},
+{n:56,v:'perseguir',m:'to chase/pursue',irr:true,sim:'identical',es:'perseguir',cat:'motion',pri:2,
+conj:{pres:['persigo','persegue','perseguimos','perseguem'],past:['persegui','perseguiu','perseguimos','perseguiram'],imp:['perseguia','perseguia','perseguíamos','perseguiam']},
+sentences:[
+  {pt:'O policial perseguiu o ladrão pela rua.',en:'The police officer chased the thief down the street.'},
+  {pt:'Ela perseguiu seus sonhos com determinação.',en:'She pursued her dreams with determination.'},
+  {pt:'O time perseguia o campeonato há anos.',en:'The team had been pursuing the championship for years.'}
+]},
+{n:57,v:'distinguir',m:'to distinguish',irr:true,sim:'identical',es:'distinguir',cat:'cognition',pri:2,
+conj:{pres:['distingo','distingue','distinguimos','distinguem'],past:['distingüi','distinguiu','distinguimos','distinguiram'],imp:['distinguia','distinguia','distinguíamos','distinguiam']},
+sentences:[
+  {pt:'É difícil distinguir os gêmeos.',en:'It\'s difficult to tell the twins apart.'},
+  {pt:'Ela distinguiu os dois sabores facilmente.',en:'She distinguished the two flavours easily.'},
+  {pt:'O especialista distinguia obras originais de cópias.',en:'The expert used to distinguish original works from copies.'}
+]},
+{n:58,v:'falar',m:'to speak/talk',irr:false,sim:'different',es:'hablar',cat:'communication',pri:2,
+sentences:[
+  {pt:'Você fala inglês muito bem.',en:'You speak English very well.'},
+  {pt:'Ela falou com o chefe sobre o aumento.',en:'She spoke to the boss about the raise.'},
+  {pt:'Nós falávamos por telefone toda semana.',en:'We used to talk on the phone every week.'}
+]},
+{n:59,v:'perguntar',m:'to ask (a question)',irr:false,sim:'similar',es:'preguntar',cat:'communication',pri:2,
+sentences:[
+  {pt:'Posso te perguntar uma coisa?',en:'Can I ask you something?'},
+  {pt:'Ele perguntou o caminho para a estação.',en:'He asked the way to the station.'},
+  {pt:'As crianças sempre perguntavam o porquê de tudo.',en:'Children always used to ask the reason for everything.'}
+]},
+{n:60,v:'responder',m:'to answer/reply',irr:false,sim:'identical',es:'responder',cat:'communication',pri:2,
+sentences:[
+  {pt:'Por favor, responda o e-mail o quanto antes.',en:'Please reply to the email as soon as possible.'},
+  {pt:'Ela respondeu todas as perguntas corretamente.',en:'She answered all the questions correctly.'},
+  {pt:'Ele nunca respondia às mensagens rapidamente.',en:'He never used to reply to messages quickly.'}
+]},
+{n:61,v:'chamar',m:'to call/name',irr:false,sim:'similar',es:'llamar',cat:'communication',pri:2,
+sentences:[
+  {pt:'Me chama quando você chegar.',en:'Call me when you arrive.'},
+  {pt:'Ela chamou o filho de Pedro.',en:'She named her son Pedro.'},
+  {pt:'Ele chamava um táxi toda manhã.',en:'He used to call a taxi every morning.'}
+]},
+{n:62,v:'achar',m:'to find/think',irr:false,sim:'different',es:'hallar/creer',cat:'cognition',pri:2,
+sentences:[
+  {pt:'Acho que vai chover hoje à tarde.',en:'I think it\'s going to rain this afternoon.'},
+  {pt:'Você achou as chaves que perdeu?',en:'Did you find the keys you lost?'},
+  {pt:'Ela achava que trabalhar aos sábados era normal.',en:'She used to think working on Saturdays was normal.'}
+]},
+{n:63,v:'ficar',m:'to stay/become/be',irr:false,sim:'different',es:'quedarse',cat:'being',pri:2,
+sentences:[
+  {pt:'Vou ficar em casa hoje.',en:'I\'m going to stay home today.'},
+  {pt:'Ela ficou nervosa antes da apresentação.',en:'She became nervous before the presentation.'},
+  {pt:'Nós ficávamos acordados até tarde no verão.',en:'We used to stay up late in summer.'}
+]},
+{n:64,v:'deixar',m:'to let/leave/allow',irr:false,sim:'different',es:'dejar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Deixa eu explicar o que aconteceu.',en:'Let me explain what happened.'},
+  {pt:'Ela deixou o carro na garagem.',en:'She left the car in the garage.'},
+  {pt:'Os pais deixavam as crianças brincar até escurecer.',en:'The parents used to let the children play until dark.'}
+]},
+{n:65,v:'colocar',m:'to place/put',irr:false,sim:'identical',es:'colocar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Coloque o leite na geladeira.',en:'Put the milk in the fridge.'},
+  {pt:'Ela colocou o nome na lista de espera.',en:'She put her name on the waiting list.'},
+  {pt:'Ele colocava os sapatos sempre na mesma prateleira.',en:'He always used to put his shoes on the same shelf.'}
+]},
+{n:66,v:'usar',m:'to use/wear',irr:false,sim:'identical',es:'usar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Você usa esse aplicativo com frequência?',en:'Do you use this app often?'},
+  {pt:'Ela usou o vestido vermelho na festa.',en:'She wore the red dress to the party.'},
+  {pt:'Antes eu usava óculos, agora tenho lentes.',en:'I used to wear glasses, now I have contact lenses.'}
+]},
+{n:67,v:'comprar',m:'to buy',irr:false,sim:'identical',es:'comprar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Preciso comprar presente para o aniversário dela.',en:'I need to buy a gift for her birthday.'},
+  {pt:'Ele comprou um carro novo no mês passado.',en:'He bought a new car last month.'},
+  {pt:'Eles compravam pão fresco toda manhã.',en:'They used to buy fresh bread every morning.'}
+]},
+{n:68,v:'comer',m:'to eat',irr:false,sim:'identical',es:'comer',cat:'daily',pri:2,
+sentences:[
+  {pt:'Você já comeu hoje?',en:'Have you already eaten today?'},
+  {pt:'Ela comeu demais na festa de aniversário.',en:'She ate too much at the birthday party.'},
+  {pt:'Nós comíamos juntos toda sexta-feira.',en:'We used to eat together every Friday.'}
+]},
+{n:69,v:'beber',m:'to drink',irr:false,sim:'identical',es:'beber',cat:'daily',pri:2,
+sentences:[
+  {pt:'É importante beber bastante água por dia.',en:'It\'s important to drink plenty of water a day.'},
+  {pt:'Ela bebeu um suco de laranja natural.',en:'She drank a fresh orange juice.'},
+  {pt:'Ele bebia muito café quando estudava para os exames.',en:'He used to drink a lot of coffee when studying for exams.'}
+]},
+{n:70,v:'trabalhar',m:'to work',irr:false,sim:'different',es:'trabajar',cat:'work',pri:2,
+sentences:[
+  {pt:'Ela trabalha numa empresa de tecnologia.',en:'She works at a technology company.'},
+  {pt:'Trabalhamos o fim de semana todo para terminar.',en:'We worked the whole weekend to finish.'},
+  {pt:'Meu pai trabalhava como engenheiro por trinta anos.',en:'My father used to work as an engineer for thirty years.'}
+]},
+{n:71,v:'estudar',m:'to study',irr:false,sim:'similar',es:'estudiar',cat:'work',pri:2,
+sentences:[
+  {pt:'Estudo português por duas horas por dia.',en:'I study Portuguese for two hours a day.'},
+  {pt:'Ela estudou medicina na USP.',en:'She studied medicine at USP.'},
+  {pt:'Ele estudava à noite porque trabalhava de dia.',en:'He used to study at night because he worked during the day.'}
+]},
+{n:72,v:'morar',m:'to live/reside',irr:false,sim:'different',es:'vivir/residir',cat:'daily',pri:2,
+sentences:[
+  {pt:'Moro em Belo Horizonte há dez anos.',en:'I have been living in Belo Horizonte for ten years.'},
+  {pt:'Ela morou em Portugal durante a faculdade.',en:'She lived in Portugal during university.'},
+  {pt:'Eles moravam numa casa pequena perto do rio.',en:'They used to live in a small house near the river.'}
+]},
+{n:73,v:'precisar',m:'to need',irr:false,sim:'similar',es:'precisar/necesitar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Preciso de ajuda para carregar essas caixas.',en:'I need help carrying these boxes.'},
+  {pt:'Ela precisou de mais tempo para terminar.',en:'She needed more time to finish.'},
+  {pt:'Ele precisava de óculos mas se recusava a usar.',en:'He used to need glasses but refused to wear them.'}
+]},
+{n:74,v:'gostar',m:'to like',irr:false,sim:'different',es:'gustar',cat:'emotion',pri:2,
+sentences:[
+  {pt:'Gosto muito de música brasileira.',en:'I really like Brazilian music.'},
+  {pt:'Ela gostou do presente que recebeu.',en:'She liked the gift she received.'},
+  {pt:'Quando criança, ele não gostava de vegetais.',en:'When he was a child, he didn\'t like vegetables.'}
+]},
+{n:75,v:'levar',m:'to take/carry/bring',irr:false,sim:'similar',es:'llevar',cat:'motion',pri:2,
+sentences:[
+  {pt:'Vou levar meu filho à escola.',en:'I\'m going to take my son to school.'},
+  {pt:'Ela levou horas para arrumar a mala.',en:'She took hours to pack her suitcase.'},
+  {pt:'Ele levava o cachorro para passear toda tarde.',en:'He used to take the dog for a walk every afternoon.'}
+]},
+{n:76,v:'pensar',m:'to think',irr:false,sim:'identical',es:'pensar',cat:'cognition',pri:2,
+sentences:[
+  {pt:'Estou pensando em mudar de emprego.',en:'I\'m thinking about changing jobs.'},
+  {pt:'Ela pensou bem antes de tomar a decisão.',en:'She thought carefully before making the decision.'},
+  {pt:'Nós pensávamos que ia ser mais fácil.',en:'We used to think it was going to be easier.'}
+]},
+{n:77,v:'começar',m:'to begin/start',irr:false,sim:'similar',es:'comenzar',cat:'change',pri:2,
+sentences:[
+  {pt:'A aula começa às oito da manhã.',en:'The class starts at eight in the morning.'},
+  {pt:'Ela começou a aprender violão no ano passado.',en:'She started learning guitar last year.'},
+  {pt:'Eles começavam a trabalhar antes do sol nascer.',en:'They used to start working before sunrise.'}
+]},
+{n:78,v:'voltar',m:'to return/come back',irr:false,sim:'similar',es:'volver',cat:'motion',pri:2,
+sentences:[
+  {pt:'Vou voltar para casa às seis.',en:'I\'m going to come home at six.'},
+  {pt:'Ela voltou do exterior muito diferente.',en:'She came back from abroad very different.'},
+  {pt:'Ele voltava tarde todo dia.',en:'He used to come back late every day.'}
+]},
+{n:79,v:'chegar',m:'to arrive',irr:false,sim:'different',es:'llegar',cat:'motion',pri:2,
+sentences:[
+  {pt:'O trem chega às quatro e meia.',en:'The train arrives at four thirty.'},
+  {pt:'Ela chegou atrasada para a reunião.',en:'She arrived late to the meeting.'},
+  {pt:'Ele chegava em casa cansado todo dia.',en:'He used to arrive home tired every day.'}
+]},
+{n:80,v:'entrar',m:'to enter/come in',irr:false,sim:'identical',es:'entrar',cat:'motion',pri:2,
+sentences:[
+  {pt:'Por favor, entre e fique à vontade.',en:'Please come in and make yourself at home.'},
+  {pt:'Ela entrou na universidade com dezoito anos.',en:'She entered university at eighteen.'},
+  {pt:'Eles entravam pela porta dos fundos.',en:'They used to come in through the back door.'}
+]},
+{n:81,v:'sair',m:'to leave/go out',irr:false,sim:'similar',es:'salir',cat:'motion',pri:2,
+sentences:[
+  {pt:'A que horas você sai do trabalho?',en:'What time do you leave work?'},
+  {pt:'Ela saiu mais cedo ontem para ir ao médico.',en:'She left early yesterday to go to the doctor.'},
+  {pt:'Eles saíam toda sexta para jantar fora.',en:'They used to go out every Friday for dinner.'}
+]},
+{n:82,v:'passear',m:'to walk/stroll/go out',irr:false,sim:'similar',es:'pasear',cat:'motion',pri:2,
+sentences:[
+  {pt:'Vamos passear no parque esta tarde?',en:'Shall we go for a walk in the park this afternoon?'},
+  {pt:'Elas passearam pelo centro histórico.',en:'They strolled through the historic centre.'},
+  {pt:'A família passeava pela praia toda domingo.',en:'The family used to walk on the beach every Sunday.'}
+]},
+{n:83,v:'andar',m:'to walk/go',irr:false,sim:'identical',es:'andar',cat:'motion',pri:2,
+sentences:[
+  {pt:'Costumo andar trinta minutos por dia.',en:'I usually walk thirty minutes a day.'},
+  {pt:'Eles andaram pela cidade o dia inteiro.',en:'They walked around the city all day.'},
+  {pt:'Ela andava de bicicleta para o trabalho.',en:'She used to ride her bike to work.'}
+]},
+{n:84,v:'correr',m:'to run',irr:false,sim:'identical',es:'correr',cat:'motion',pri:2,
+sentences:[
+  {pt:'Corro cinco quilômetros todo sábado.',en:'I run five kilometres every Saturday.'},
+  {pt:'Ele correu para pegar o ônibus.',en:'He ran to catch the bus.'},
+  {pt:'Ela corria maratonas quando era mais jovem.',en:'She used to run marathons when she was younger.'}
+]},
+{n:85,v:'parar',m:'to stop',irr:false,sim:'identical',es:'parar',cat:'motion',pri:2,
+sentences:[
+  {pt:'Por favor, para de fazer barulho!',en:'Please stop making noise!'},
+  {pt:'O carro parou no sinal vermelho.',en:'The car stopped at the red light.'},
+  {pt:'Ela parava para descansar a cada hora.',en:'She used to stop to rest every hour.'}
+]},
+{n:86,v:'esperar',m:'to wait/hope',irr:false,sim:'identical',es:'esperar',cat:'emotion',pri:2,
+sentences:[
+  {pt:'Espero que você passe no exame.',en:'I hope you pass the exam.'},
+  {pt:'Esperamos duas horas na fila.',en:'We waited two hours in the queue.'},
+  {pt:'Ela esperava o ônibus na chuva.',en:'She used to wait for the bus in the rain.'}
+]},
+{n:87,v:'ajudar',m:'to help',irr:false,sim:'similar',es:'ayudar',cat:'social',pri:2,
+sentences:[
+  {pt:'Posso te ajudar com alguma coisa?',en:'Can I help you with something?'},
+  {pt:'Ela ajudou os vizinhos depois do temporal.',en:'She helped the neighbours after the storm.'},
+  {pt:'Ele ajudava os alunos com dificuldade depois da aula.',en:'He used to help struggling students after class.'}
+]},
+{n:88,v:'tentar',m:'to try/attempt',irr:false,sim:'similar',es:'intentar',cat:'motion',pri:2,
+sentences:[
+  {pt:'Vou tentar aprender a cozinhar este mês.',en:'I\'m going to try to learn to cook this month.'},
+  {pt:'Ela tentou ligar três vezes mas ninguém atendeu.',en:'She tried to call three times but no one answered.'},
+  {pt:'Ele tentava resolver os problemas sozinho.',en:'He used to try to solve problems on his own.'}
+]},
+{n:89,v:'mudar',m:'to change/move',irr:false,sim:'similar',es:'cambiar',cat:'change',pri:2,
+sentences:[
+  {pt:'Preciso mudar minha rotina de sono.',en:'I need to change my sleep routine.'},
+  {pt:'Eles mudaram de casa no verão.',en:'They moved house in the summer.'},
+  {pt:'Ela mudava de opinião com frequência.',en:'She used to change her mind frequently.'}
+]},
+{n:90,v:'acontecer',m:'to happen/occur',irr:false,sim:'different',es:'pasar/ocurrir',cat:'being',pri:2,
+sentences:[
+  {pt:'O que aconteceu aqui?',en:'What happened here?'},
+  {pt:'O acidente aconteceu de madrugada.',en:'The accident happened in the early hours.'},
+  {pt:'Essas coisas aconteciam com mais frequência antes.',en:'These things used to happen more frequently before.'}
+]},
+{n:91,v:'depender',m:'to depend',irr:false,sim:'similar',es:'depender',cat:'cognition',pri:2,
+sentences:[
+  {pt:'O sucesso depende do esforço de cada um.',en:'Success depends on each person\'s effort.'},
+  {pt:'Tudo dependeu do resultado da votação.',en:'Everything depended on the result of the vote.'},
+  {pt:'Ela dependia dos pais financeiramente.',en:'She used to depend on her parents financially.'}
+]},
+{n:92,v:'encontrar',m:'to find/meet',irr:false,sim:'identical',es:'encontrar',cat:'social',pri:2,
+sentences:[
+  {pt:'Finalmente encontrei meu celular!',en:'I finally found my phone!'},
+  {pt:'Eles se encontraram por acaso no mercado.',en:'They met by chance at the supermarket.'},
+  {pt:'Ela encontrava soluções criativas para tudo.',en:'She used to find creative solutions for everything.'}
+]},
+{n:93,v:'lembrar',m:'to remember',irr:false,sim:'different',es:'recordar',cat:'cognition',pri:2,
+sentences:[
+  {pt:'Você se lembra do meu nome?',en:'Do you remember my name?'},
+  {pt:'Não lembrei de comprar o leite.',en:'I forgot to buy the milk.'},
+  {pt:'Ela sempre lembrava o aniversário de todos.',en:'She always used to remember everyone\'s birthday.'}
+]},
+{n:94,v:'esquecer',m:'to forget',irr:false,sim:'different',es:'olvidar',cat:'cognition',pri:2,
+sentences:[
+  {pt:'Esqueci o guarda-chuva em casa.',en:'I forgot the umbrella at home.'},
+  {pt:'Ele esqueceu a senha do banco.',en:'He forgot his bank password.'},
+  {pt:'Ela esquecia onde deixava as coisas às vezes.',en:'She used to forget where she put things sometimes.'}
+]},
+{n:95,v:'preferir',m:'to prefer',irr:false,sim:'identical',es:'preferir',cat:'emotion',pri:2,
+sentences:[
+  {pt:'Prefiro café ao chá de manhã.',en:'I prefer coffee to tea in the morning.'},
+  {pt:'Ela preferiu ficar em casa a sair com frio.',en:'She preferred to stay home rather than go out in the cold.'},
+  {pt:'Eles preferiam viajar de carro a pegar avião.',en:'They used to prefer travelling by car to flying.'}
+]},
+{n:96,v:'terminar',m:'to finish/end',irr:false,sim:'identical',es:'terminar',cat:'change',pri:2,
+sentences:[
+  {pt:'Quando você vai terminar o relatório?',en:'When are you going to finish the report?'},
+  {pt:'Ela terminou o curso de inglês este ano.',en:'She finished the English course this year.'},
+  {pt:'A reunião terminava sempre depois das seis.',en:'The meeting used to always end after six.'}
+]},
+{n:97,v:'continuar',m:'to continue',irr:false,sim:'identical',es:'continuar',cat:'change',pri:2,
+sentences:[
+  {pt:'Vamos continuar a conversa amanhã.',en:'Let\'s continue the conversation tomorrow.'},
+  {pt:'Ela continuou trabalhando mesmo doente.',en:'She kept working even when sick.'},
+  {pt:'O projeto continuava sem grandes problemas.',en:'The project used to continue without major problems.'}
+]},
+{n:98,v:'existir',m:'to exist',irr:false,sim:'identical',es:'existir',cat:'being',pri:2,
+sentences:[
+  {pt:'Será que vida extraterrestre existe?',en:'Do you think extraterrestrial life exists?'},
+  {pt:'Um pequeno cinema existiu nessa rua por décadas.',en:'A small cinema existed on this street for decades.'},
+  {pt:'Não existiam smartphones quando era criança.',en:'Smartphones didn\'t exist when I was a child.'}
+]},
+{n:99,v:'ganhar',m:'to win/earn',irr:false,sim:'different',es:'ganar',cat:'work',pri:2,
+sentences:[
+  {pt:'Ganhamos o jogo por três a um.',en:'We won the game three to one.'},
+  {pt:'Ela ganhou um prêmio pela pesquisa.',en:'She won a prize for her research.'},
+  {pt:'Ele ganhava bem mas gastava mais ainda.',en:'He used to earn well but spend even more.'}
+]},
+{n:100,v:'pagar',m:'to pay',irr:false,sim:'identical',es:'pagar',cat:'daily',pri:2,
+sentences:[
+  {pt:'Posso pagar com cartão de crédito?',en:'Can I pay by credit card?'},
+  {pt:'Ela pagou a conta do restaurante.',en:'She paid the restaurant bill.'},
+  {pt:'Antigamente ele pagava o aluguel em dinheiro.',en:'In the old days he used to pay rent in cash.'}
+]},
+{n:101,v:'aceitar',m:'to accept',irr:false,sim:'similar',es:'aceptar',cat:'social',pri:3,
+sentences:[
+  {pt:'Não consigo aceitar essa situação.',en:'I can\'t accept this situation.'},
+  {pt:'Ela aceitou o convite com prazer.',en:'She accepted the invitation with pleasure.'},
+  {pt:'Ele aceitava críticas com muita humildade.',en:'He used to accept criticism very humbly.'}
+]},
+{n:102,v:'acreditar',m:'to believe',irr:false,sim:'similar',es:'creer',cat:'cognition',pri:3,
+sentences:[
+  {pt:'Acredito que você pode conseguir.',en:'I believe you can do it.'},
+  {pt:'Ela não acreditou no que ouviu.',en:'She didn\'t believe what she heard.'},
+  {pt:'Todos acreditavam que ele ia vencer.',en:'Everyone used to believe he was going to win.'}
+]},
+{n:103,v:'admitir',m:'to admit',irr:false,sim:'identical',es:'admitir',cat:'communication',pri:3,
+sentences:[
+  {pt:'Tenho que admitir que errei.',en:'I have to admit I was wrong.'},
+  {pt:'Ela admitiu que não entendeu a explicação.',en:'She admitted she didn\'t understand the explanation.'},
+  {pt:'Raramente ele admitia os próprios erros.',en:'He rarely used to admit his own mistakes.'}
+]},
+{n:104,v:'adorar',m:'to love/adore',irr:false,sim:'identical',es:'adorar',cat:'emotion',pri:3,
+sentences:[
+  {pt:'Adoro comer na casa da minha mãe.',en:'I love eating at my mother\'s house.'},
+  {pt:'Ela adorou o filme que assistiram juntos.',en:'She loved the film they watched together.'},
+  {pt:'Quando era criança, adorava brincar na chuva.',en:'When I was a child, I used to love playing in the rain.'}
+]},
+{n:105,v:'aguentar',m:'to bear/put up with/endure',irr:false,sim:'different',es:'aguantar',cat:'emotion',pri:3,
+sentences:[
+  {pt:'Não aguento mais esse barulho!',en:'I can\'t bear this noise anymore!'},
+  {pt:'Ela aguentou firme até o fim.',en:'She held on to the end.'},
+  {pt:'Ele aguentava muita pressão no trabalho.',en:'He used to endure a lot of pressure at work.'}
+]},
+{n:106,v:'alcançar',m:'to reach/achieve',irr:false,sim:'similar',es:'alcanzar',cat:'change',pri:3,
+sentences:[
+  {pt:'Com esforço, você vai alcançar seu objetivo.',en:'With effort, you will achieve your goal.'},
+  {pt:'Ela alcançou a estante sem precisar de escada.',en:'She reached the shelf without needing a ladder.'},
+  {pt:'Ele sempre alcançava suas metas.',en:'He always used to achieve his targets.'}
+]},
+{n:107,v:'alimentar',m:'to feed/nourish',irr:false,sim:'identical',es:'alimentar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Preciso alimentar o gato duas vezes por dia.',en:'I need to feed the cat twice a day.'},
+  {pt:'Ela alimentou os pombos na praça.',en:'She fed the pigeons in the square.'},
+  {pt:'Eles alimentavam os animais da fazenda.',en:'They used to feed the farm animals.'}
+]},
+{n:108,v:'amar',m:'to love',irr:false,sim:'identical',es:'amar',cat:'emotion',pri:3,
+sentences:[
+  {pt:'Amo minha família mais do que tudo.',en:'I love my family more than anything.'},
+  {pt:'Ela amou aquela cidade desde a primeira vez que visitou.',en:'She loved that city from the first time she visited.'},
+  {pt:'Eles se amavam desde a infância.',en:'They had loved each other since childhood.'}
+]},
+{n:109,v:'ameaçar',m:'to threaten',irr:false,sim:'similar',es:'amenazar',cat:'social',pri:3,
+sentences:[
+  {pt:'É crime ameaçar outra pessoa.',en:'It is a crime to threaten another person.'},
+  {pt:'Ele ameaçou processar a empresa.',en:'He threatened to sue the company.'},
+  {pt:'A enchente ameaçava as casas próximas ao rio.',en:'The flood used to threaten the houses near the river.'}
+]},
+{n:110,v:'analisar',m:'to analyse',irr:false,sim:'similar',es:'analizar',cat:'cognition',pri:3,
+sentences:[
+  {pt:'Precisamos analisar os dados com cuidado.',en:'We need to analyse the data carefully.'},
+  {pt:'Ela analisou os resultados da pesquisa.',en:'She analysed the research results.'},
+  {pt:'Ele analisava cada situação detalhadamente.',en:'He used to analyse every situation in detail.'}
+]},
+{n:111,v:'apoiar',m:'to support',irr:false,sim:'similar',es:'apoyar',cat:'social',pri:3,
+sentences:[
+  {pt:'Vamos apoiar nosso time na final!',en:'Let\'s support our team in the final!'},
+  {pt:'Ela apoiou a decisão do filho.',en:'She supported her son\'s decision.'},
+  {pt:'Os amigos o apoiavam em todos os momentos.',en:'Friends used to support him at all times.'}
+]},
+{n:112,v:'aprender',m:'to learn',irr:false,sim:'similar',es:'aprender',cat:'work',pri:3,
+sentences:[
+  {pt:'Estou aprendendo a tocar guitarra.',en:'I\'m learning to play guitar.'},
+  {pt:'Ela aprendeu a nadar com cinco anos.',en:'She learned to swim at five.'},
+  {pt:'Ele aprendia algo novo todo dia.',en:'He used to learn something new every day.'}
+]},
+{n:113,v:'apresentar',m:'to present/introduce',irr:false,sim:'similar',es:'presentar',cat:'communication',pri:3,
+sentences:[
+  {pt:'Vou te apresentar minha namorada.',en:'I\'m going to introduce you to my girlfriend.'},
+  {pt:'Ela apresentou o projeto para a diretoria.',en:'She presented the project to the board of directors.'},
+  {pt:'Ele apresentava os resultados toda semana.',en:'He used to present the results every week.'}
+]},
+{n:114,v:'aproveitar',m:'to take advantage of/enjoy',irr:false,sim:'similar',es:'aprovechar',cat:'social',pri:3,
+sentences:[
+  {pt:'Aproveite o sol enquanto dura!',en:'Enjoy the sunshine while it lasts!'},
+  {pt:'Ela aproveitou as férias para descansar.',en:'She made the most of the holidays to rest.'},
+  {pt:'Eles aproveitavam cada momento juntos.',en:'They used to enjoy every moment together.'}
+]},
+{n:115,v:'arranjar',m:'to arrange/find/get',irr:false,sim:'different',es:'arreglar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Preciso arranjar um emprego novo.',en:'I need to find a new job.'},
+  {pt:'Ela arranjou flores para decorar a mesa.',en:'She arranged flowers to decorate the table.'},
+  {pt:'Ele sempre arranjava uma desculpa para não fazer.',en:'He always used to find an excuse not to do it.'}
+]},
+{n:116,v:'assumir',m:'to assume/take on',irr:false,sim:'similar',es:'asumir',cat:'work',pri:3,
+sentences:[
+  {pt:'Vou assumir a responsabilidade pelo erro.',en:'I\'m going to take responsibility for the mistake.'},
+  {pt:'Ela assumiu o cargo de diretora.',en:'She took on the role of director.'},
+  {pt:'Ele assumia os projetos mais difíceis.',en:'He used to take on the most difficult projects.'}
+]},
+{n:117,v:'atacar',m:'to attack',irr:false,sim:'similar',es:'atacar',cat:'social',pri:3,
+sentences:[
+  {pt:'O cão atacou o intruso.',en:'The dog attacked the intruder.'},
+  {pt:'Os hackers atacaram o sistema bancário.',en:'Hackers attacked the banking system.'},
+  {pt:'Ele atacava os problemas diretamente.',en:'He used to attack problems directly.'}
+]},
+{n:118,v:'atrasar',m:'to delay/be late',irr:false,sim:'different',es:'atrasar/retrasar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Atrasei porque havia trânsito.',en:'I was late because there was traffic.'},
+  {pt:'A obra atrasou por causa da chuva.',en:'The construction was delayed because of the rain.'},
+  {pt:'O trem atrasava quase todos os dias.',en:'The train used to be late almost every day.'}
+]},
+{n:119,v:'aumentar',m:'to increase/raise',irr:false,sim:'identical',es:'aumentar',cat:'change',pri:3,
+sentences:[
+  {pt:'Os preços aumentam todo ano.',en:'Prices go up every year.'},
+  {pt:'A empresa aumentou o salário dos funcionários.',en:'The company raised employees\' salaries.'},
+  {pt:'O trânsito aumentava na hora do rush.',en:'Traffic used to increase at rush hour.'}
+]},
+{n:120,v:'avisar',m:'to warn/notify',irr:false,sim:'similar',es:'avisar',cat:'communication',pri:3,
+sentences:[
+  {pt:'Avisa quando você chegar em casa.',en:'Let me know when you get home.'},
+  {pt:'Ela avisou a turma sobre o teste.',en:'She notified the class about the test.'},
+  {pt:'Ele avisava com antecedência quando ia faltar.',en:'He used to give advance notice when he was going to be absent.'}
+]},
+{n:121,v:'baixar',m:'to lower/download/go down',irr:false,sim:'similar',es:'bajar',cat:'change',pri:3,
+sentences:[
+  {pt:'A temperatura vai baixar esta semana.',en:'The temperature is going to drop this week.'},
+  {pt:'Ela baixou o aplicativo gratuitamente.',en:'She downloaded the app for free.'},
+  {pt:'O preço da gasolina baixava no verão.',en:'The price of petrol used to go down in summer.'}
+]},
+{n:122,v:'brincar',m:'to play/joke',irr:false,sim:'different',es:'jugar',cat:'social',pri:3,
+sentences:[
+  {pt:'As crianças brincam no quintal.',en:'The children play in the backyard.'},
+  {pt:'Estou brincando, não leve a sério!',en:'I\'m joking, don\'t take it seriously!'},
+  {pt:'Ele brincava de futebol na rua com os amigos.',en:'He used to play football in the street with friends.'}
+]},
+{n:123,v:'buscar',m:'to fetch/look for',irr:false,sim:'similar',es:'buscar',cat:'motion',pri:3,
+sentences:[
+  {pt:'Vou buscar as crianças na escola.',en:'I\'m going to pick up the kids from school.'},
+  {pt:'Ela buscou a solução por horas.',en:'She searched for the solution for hours.'},
+  {pt:'Ele buscava os documentos no arquivo.',en:'He used to fetch documents from the filing cabinet.'}
+]},
+{n:124,v:'cair',m:'to fall',irr:true,sim:'different',es:'caer',cat:'motion',pri:3,
+conj:{pres:['caio','cai','caímos','caem'],past:['caí','caiu','caímos','caíram'],imp:['caía','caía','caíamos','caíam']},
+sentences:[
+  {pt:'Cuidado para não cair na escada.',en:'Be careful not to fall on the stairs.'},
+  {pt:'Ela caiu da bicicleta mas não se machucou.',en:'She fell off the bike but wasn\'t hurt.'},
+  {pt:'As folhas caíam das árvores no outono.',en:'Leaves used to fall from the trees in autumn.'}
+]},
+{n:125,v:'calcular',m:'to calculate',irr:false,sim:'identical',es:'calcular',cat:'work',pri:3,
+sentences:[
+  {pt:'Preciso calcular o custo total do projeto.',en:'I need to calculate the total cost of the project.'},
+  {pt:'Ela calculou o troco rapidamente.',en:'She quickly calculated the change.'},
+  {pt:'Ele calculava tudo de cabeça.',en:'He used to calculate everything in his head.'}
+]},
+{n:126,v:'cantar',m:'to sing',irr:false,sim:'identical',es:'cantar',cat:'social',pri:3,
+sentences:[
+  {pt:'Ela canta muito bem no coro.',en:'She sings very well in the choir.'},
+  {pt:'Cantamos parabéns para ela na festa.',en:'We sang happy birthday to her at the party.'},
+  {pt:'Ele cantava no banho toda manhã.',en:'He used to sing in the shower every morning.'}
+]},
+{n:127,v:'carregar',m:'to carry/load/charge',irr:false,sim:'different',es:'cargar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Não esqueça de carregar o celular.',en:'Don\'t forget to charge your phone.'},
+  {pt:'Ela carregou as compras até o quinto andar.',en:'She carried the shopping up to the fifth floor.'},
+  {pt:'Ele carregava o filho no colo quando cansava.',en:'He used to carry his son in his arms when he got tired.'}
+]},
+{n:128,v:'causar',m:'to cause',irr:false,sim:'identical',es:'causar',cat:'change',pri:3,
+sentences:[
+  {pt:'O barulho causou dor de cabeça nela.',en:'The noise gave her a headache.'},
+  {pt:'A chuva forte causou alagamentos.',en:'The heavy rain caused flooding.'},
+  {pt:'O estresse causava problemas de saúde.',en:'Stress used to cause health problems.'}
+]},
+{n:129,v:'celebrar',m:'to celebrate',irr:false,sim:'identical',es:'celebrar',cat:'social',pri:3,
+sentences:[
+  {pt:'Vamos celebrar essa conquista juntos!',en:'Let\'s celebrate this achievement together!'},
+  {pt:'Eles celebraram o aniversário de casamento.',en:'They celebrated their wedding anniversary.'},
+  {pt:'A família celebrava o Natal com muita festa.',en:'The family used to celebrate Christmas with great festivity.'}
+]},
+{n:130,v:'chorar',m:'to cry/weep',irr:false,sim:'different',es:'llorar',cat:'emotion',pri:3,
+sentences:[
+  {pt:'Ela chorou de emoção no casamento.',en:'She cried with emotion at the wedding.'},
+  {pt:'O bebê chorou a noite toda.',en:'The baby cried all night.'},
+  {pt:'Ele chorava no final de filmes tristes.',en:'He used to cry at the end of sad films.'}
+]},
+{n:131,v:'chutar',m:'to kick',irr:false,sim:'different',es:'patear',cat:'social',pri:3,
+sentences:[
+  {pt:'Ele chutou a bola para o gol.',en:'He kicked the ball into the goal.'},
+  {pt:'A criança chutou a porta com raiva.',en:'The child kicked the door in anger.'},
+  {pt:'Eles chutavam a bola na rua depois da escola.',en:'They used to kick the ball in the street after school.'}
+]},
+{n:132,v:'citar',m:'to cite/quote/mention',irr:false,sim:'identical',es:'citar',cat:'communication',pri:3,
+sentences:[
+  {pt:'Vou citar um trecho do discurso.',en:'I\'m going to quote a passage from the speech.'},
+  {pt:'Ela citou vários estudos em sua apresentação.',en:'She cited several studies in her presentation.'},
+  {pt:'O professor citava exemplos práticos nas aulas.',en:'The teacher used to cite practical examples in class.'}
+]},
+{n:133,v:'colaborar',m:'to collaborate',irr:false,sim:'identical',es:'colaborar',cat:'work',pri:3,
+sentences:[
+  {pt:'Precisamos colaborar para terminar no prazo.',en:'We need to collaborate to finish on time.'},
+  {pt:'Ela colaborou com pesquisadores de vários países.',en:'She collaborated with researchers from several countries.'},
+  {pt:'As equipes colaboravam para resolver os problemas.',en:'The teams used to collaborate to solve problems.'}
+]},
+{n:134,v:'comparar',m:'to compare',irr:false,sim:'identical',es:'comparar',cat:'cognition',pri:3,
+sentences:[
+  {pt:'Não adianta comparar filhos.',en:'There\'s no point comparing children.'},
+  {pt:'Ela comparou os preços em várias lojas.',en:'She compared prices in several shops.'},
+  {pt:'Os analistas comparavam os dados mensalmente.',en:'The analysts used to compare the data monthly.'}
+]},
+{n:135,v:'completar',m:'to complete',irr:false,sim:'identical',es:'completar',cat:'work',pri:3,
+sentences:[
+  {pt:'Você precisa completar o cadastro.',en:'You need to complete the registration.'},
+  {pt:'Ela completou a maratona em três horas.',en:'She completed the marathon in three hours.'},
+  {pt:'A equipe completava os projetos sempre no prazo.',en:'The team used to always complete projects on time.'}
+]},
+{n:136,v:'compreender',m:'to understand/comprehend',irr:false,sim:'similar',es:'comprender',cat:'cognition',pri:3,
+sentences:[
+  {pt:'Não compreendo o motivo dessa decisão.',en:'I don\'t understand the reason for this decision.'},
+  {pt:'Ela compreendeu a situação e ficou quieta.',en:'She understood the situation and kept quiet.'},
+  {pt:'Ele tentava compreender o ponto de vista dos outros.',en:'He used to try to understand other people\'s point of view.'}
+]},
+{n:137,v:'comunicar',m:'to communicate',irr:false,sim:'similar',es:'comunicar',cat:'communication',pri:3,
+sentences:[
+  {pt:'É importante comunicar suas ideias com clareza.',en:'It\'s important to communicate your ideas clearly.'},
+  {pt:'Ela comunicou a decisão à equipe.',en:'She communicated the decision to the team.'},
+  {pt:'Eles comunicavam os resultados por e-mail.',en:'They used to communicate the results by email.'}
+]},
+{n:138,v:'concordar',m:'to agree',irr:false,sim:'similar',es:'concordar/estar de acuerdo',cat:'communication',pri:3,
+sentences:[
+  {pt:'Concordo com você sobre esse ponto.',en:'I agree with you on this point.'},
+  {pt:'Eles finalmente concordaram com os termos.',en:'They finally agreed to the terms.'},
+  {pt:'Ela raramente concordava com a opinião do chefe.',en:'She rarely used to agree with the boss\'s opinion.'}
+]},
+{n:139,v:'consertar',m:'to fix/repair',irr:false,sim:'different',es:'reparar/arreglar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Preciso consertar o computador.',en:'I need to fix the computer.'},
+  {pt:'O mecânico consertou o carro em um dia.',en:'The mechanic fixed the car in one day.'},
+  {pt:'Meu pai consertava qualquer coisa em casa.',en:'My father used to fix anything at home.'}
+]},
+{n:140,v:'controlar',m:'to control',irr:false,sim:'identical',es:'controlar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Você precisa controlar seus gastos.',en:'You need to control your spending.'},
+  {pt:'Ela controlou a situação com calma.',en:'She controlled the situation calmly.'},
+  {pt:'O gerente controlava todos os processos.',en:'The manager used to control all the processes.'}
+]},
+{n:141,v:'conversar',m:'to talk/have a conversation',irr:false,sim:'similar',es:'conversar',cat:'communication',pri:3,
+sentences:[
+  {pt:'Precisamos conversar sobre isso sério.',en:'We need to have a serious talk about this.'},
+  {pt:'Ela conversou com o médico por uma hora.',en:'She talked to the doctor for an hour.'},
+  {pt:'Eles conversavam na varanda todas as tardes.',en:'They used to talk on the veranda every afternoon.'}
+]},
+{n:142,v:'criar',m:'to create/raise',irr:false,sim:'similar',es:'crear',cat:'work',pri:3,
+sentences:[
+  {pt:'Vou criar um perfil nas redes sociais.',en:'I\'m going to create a social media profile.'},
+  {pt:'Ela criou os filhos sozinha.',en:'She raised her children on her own.'},
+  {pt:'O artista criava esculturas com materiais reciclados.',en:'The artist used to create sculptures from recycled materials.'}
+]},
+{n:143,v:'cuidar',m:'to take care of',irr:false,sim:'identical',es:'cuidar',cat:'social',pri:3,
+sentences:[
+  {pt:'Cuide bem de você.',en:'Take good care of yourself.'},
+  {pt:'Ela cuidou da mãe durante a doença.',en:'She took care of her mother during her illness.'},
+  {pt:'Ele cuidava das plantas do escritório.',en:'He used to take care of the office plants.'}
+]},
+{n:144,v:'decidir',m:'to decide',irr:false,sim:'identical',es:'decidir',cat:'cognition',pri:3,
+sentences:[
+  {pt:'Você já decidiu o que vai pedir?',en:'Have you already decided what you\'re going to order?'},
+  {pt:'Ela decidiu aceitar a proposta.',en:'She decided to accept the proposal.'},
+  {pt:'Ele demorava muito para decidir.',en:'He used to take a very long time to make decisions.'}
+]},
+{n:145,v:'declarar',m:'to declare',irr:false,sim:'identical',es:'declarar',cat:'communication',pri:3,
+sentences:[
+  {pt:'O presidente declarou estado de emergência.',en:'The president declared a state of emergency.'},
+  {pt:'Ela declarou seu amor em público.',en:'She declared her love in public.'},
+  {pt:'Os políticos declaravam apoio uns aos outros.',en:'Politicians used to declare support for one another.'}
+]},
+{n:146,v:'descansar',m:'to rest',irr:false,sim:'identical',es:'descansar',cat:'daily',pri:3,
+sentences:[
+  {pt:'Preciso descansar um pouco depois do almoço.',en:'I need to rest a bit after lunch.'},
+  {pt:'Ela descansou o fim de semana todo.',en:'She rested the whole weekend.'},
+  {pt:'Ele descansava uma hora depois do almoço.',en:'He used to rest for an hour after lunch.'}
+]},
+{n:147,v:'descobrir',m:'to discover/find out',irr:true,sim:'similar',es:'descubrir',cat:'cognition',pri:3,
+conj:{pres:['descubro','descobre','descobrimos','descobrem'],past:['descobri','descobriu','descobrimos','descobriram'],imp:['descobria','descobria','descobríamos','descobriam']},
+sentences:[
+  {pt:'Acabei de descobrir um restaurante incrível.',en:'I just discovered an amazing restaurant.'},
+  {pt:'Ela descobriu que estava grávida.',en:'She found out she was pregnant.'},
+  {pt:'Os cientistas descobriam novas espécies todo ano.',en:'Scientists used to discover new species every year.'}
+]},
+{n:148,v:'descrever',m:'to describe',irr:true,sim:'similar',es:'describir',cat:'communication',pri:3,
+conj:{pres:['descrevo','descreve','descrevemos','descrevem'],past:['descrevi','descreveu','descrevemos','descreveram'],imp:['descrevia','descrevia','descrevíamos','descreviam']},
+sentences:[
+  {pt:'Pode descrever o suspeito?',en:'Can you describe the suspect?'},
+  {pt:'Ela descreveu a viagem em detalhes.',en:'She described the trip in detail.'},
+  {pt:'Ele descrevia seus sentimentos com dificuldade.',en:'He used to find it difficult to describe his feelings.'}
+]},
+{n:149,v:'desenvolver',m:'to develop',irr:false,sim:'similar',es:'desarrollar',cat:'work',pri:3,
+sentences:[
+  {pt:'Estamos desenvolvendo um novo produto.',en:'We are developing a new product.'},
+  {pt:'Ela desenvolveu habilidades novas no curso.',en:'She developed new skills on the course.'},
+  {pt:'A empresa desenvolvia soluções inovadoras.',en:'The company used to develop innovative solutions.'}
+]},
+{n:150,v:'desejar',m:'to wish/desire',irr:false,sim:'similar',es:'desear',cat:'emotion',pri:3,
+sentences:[
+  {pt:'Desejo a você muita saúde e felicidade.',en:'I wish you much health and happiness.'},
+  {pt:'Ela desejou boa sorte antes da prova.',en:'She wished good luck before the test.'},
+  {pt:'Ele desejava um futuro melhor para os filhos.',en:'He used to wish for a better future for his children.'}
+]},
+{n:151,v:'discutir',m:'to discuss/argue',irr:false,sim:'similar',es:'discutir',cat:'communication',pri:4,
+sentences:[
+  {pt:'Vamos discutir o tema na próxima reunião.',en:'Let\'s discuss the topic at the next meeting.'},
+  {pt:'Eles discutiram por causa de dinheiro.',en:'They argued because of money.'},
+  {pt:'A família discutia política na mesa do jantar.',en:'The family used to discuss politics at the dinner table.'}
+]},
+{n:152,v:'dividir',m:'to divide/share',irr:false,sim:'identical',es:'dividir',cat:'daily',pri:4,
+sentences:[
+  {pt:'Vamos dividir a conta igualmente.',en:'Let\'s split the bill equally.'},
+  {pt:'Ela dividiu o bolo em oito pedaços.',en:'She divided the cake into eight pieces.'},
+  {pt:'Eles dividiam as tarefas domésticas.',en:'They used to share the household chores.'}
+]},
+{n:153,v:'duvidar',m:'to doubt',irr:false,sim:'similar',es:'dudar',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Duvido que ele chegue na hora.',en:'I doubt he\'ll arrive on time.'},
+  {pt:'Ela duvidou da versão dos fatos.',en:'She doubted the version of events.'},
+  {pt:'Ele duvidava de tudo que lia.',en:'He used to doubt everything he read.'}
+]},
+{n:154,v:'economizar',m:'to save (money/time)',irr:false,sim:'similar',es:'economizar/ahorrar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Preciso economizar para comprar uma moto.',en:'I need to save up to buy a motorbike.'},
+  {pt:'Ela economizou dinheiro durante anos.',en:'She saved money for years.'},
+  {pt:'Eles economizavam energia apagando as luzes.',en:'They used to save energy by turning off the lights.'}
+]},
+{n:155,v:'emprestar',m:'to lend/borrow',irr:false,sim:'similar',es:'prestar',cat:'social',pri:4,
+sentences:[
+  {pt:'Você pode me emprestar um lápis?',en:'Can you lend me a pencil?'},
+  {pt:'Ela emprestou dinheiro para o irmão.',en:'She lent money to her brother.'},
+  {pt:'Ele emprestava livros a todo mundo.',en:'He used to lend books to everyone.'}
+]},
+{n:156,v:'encher',m:'to fill',irr:false,sim:'different',es:'llenar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Enche o copo de água, por favor.',en:'Fill the glass with water, please.'},
+  {pt:'Ela encheu o carro antes de viajar.',en:'She filled up the car before the trip.'},
+  {pt:'O estádio enchia rapidamente nos jogos importantes.',en:'The stadium used to fill up quickly for important matches.'}
+]},
+{n:157,v:'ensinar',m:'to teach',irr:false,sim:'similar',es:'enseñar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Ela ensina matemática para crianças.',en:'She teaches mathematics to children.'},
+  {pt:'Meu avô me ensinou a pescar.',en:'My grandfather taught me to fish.'},
+  {pt:'Ele ensinava com muita paciência.',en:'He used to teach with great patience.'}
+]},
+{n:158,v:'entender',m:'to understand',irr:false,sim:'identical',es:'entender',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Não entendo o que você quis dizer.',en:'I don\'t understand what you meant.'},
+  {pt:'Ela entendeu o problema rapidamente.',en:'She understood the problem quickly.'},
+  {pt:'Ele entendia de computadores melhor que ninguém.',en:'He used to understand computers better than anyone.'}
+]},
+{n:159,v:'enviar',m:'to send',irr:false,sim:'identical',es:'enviar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Vou enviar o documento por e-mail.',en:'I\'ll send the document by email.'},
+  {pt:'Ela enviou flores para a amiga doente.',en:'She sent flowers to her sick friend.'},
+  {pt:'Eles enviavam relatórios semanais à diretoria.',en:'They used to send weekly reports to the board.'}
+]},
+{n:160,v:'escolher',m:'to choose',irr:false,sim:'similar',es:'elegir/escoger',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Você já escolheu o que vai pedir?',en:'Have you already chosen what you\'re going to order?'},
+  {pt:'Ela escolheu o vestido azul para a festa.',en:'She chose the blue dress for the party.'},
+  {pt:'Ele escolhia cuidadosamente cada palavra.',en:'He used to choose every word carefully.'}
+]},
+{n:161,v:'escutar',m:'to listen',irr:false,sim:'similar',es:'escuchar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Por favor, me escuta por um momento.',en:'Please listen to me for a moment.'},
+  {pt:'Ela escutou atentamente a história.',en:'She listened attentively to the story.'},
+  {pt:'Ele escutava música enquanto dirigia.',en:'He used to listen to music while driving.'}
+]},
+{n:162,v:'esforçar-se',m:'to make an effort/strive',irr:false,sim:'similar',es:'esforzarse',cat:'work',pri:4,
+sentences:[
+  {pt:'Preciso me esforçar mais nos estudos.',en:'I need to make more effort in my studies.'},
+  {pt:'Ela se esforçou muito para conseguir o emprego.',en:'She made a great effort to get the job.'},
+  {pt:'Os atletas se esforçavam ao máximo.',en:'The athletes used to strive to their maximum.'}
+]},
+{n:163,v:'evitar',m:'to avoid',irr:false,sim:'identical',es:'evitar',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Tento evitar açúcar na alimentação.',en:'I try to avoid sugar in my diet.'},
+  {pt:'Ela evitou a conversa difícil.',en:'She avoided the difficult conversation.'},
+  {pt:'Ele evitava lugares com muito barulho.',en:'He used to avoid noisy places.'}
+]},
+{n:164,v:'explicar',m:'to explain',irr:false,sim:'identical',es:'explicar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Você pode explicar isso de novo?',en:'Can you explain this again?'},
+  {pt:'Ela explicou a matéria de forma simples.',en:'She explained the subject in a simple way.'},
+  {pt:'Ele explicava tudo com exemplos práticos.',en:'He used to explain everything with practical examples.'}
+]},
+{n:165,v:'faltar',m:'to be missing/to be absent',irr:false,sim:'similar',es:'faltar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Faltam dez minutos para chegar.',en:'It\'s ten minutes to arrival.'},
+  {pt:'Ela faltou ao trabalho dois dias.',en:'She was absent from work for two days.'},
+  {pt:'Sempre faltava café no escritório.',en:'There was always coffee missing at the office.'}
+]},
+{n:166,v:'fechar',m:'to close',irr:false,sim:'different',es:'cerrar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Fecha a janela, por favor.',en:'Close the window, please.'},
+  {pt:'Ela fechou o negócio com sucesso.',en:'She closed the deal successfully.'},
+  {pt:'A loja fechava às vinte horas.',en:'The shop used to close at eight in the evening.'}
+]},
+{n:167,v:'funcionar',m:'to work/function',irr:false,sim:'similar',es:'funcionar',cat:'daily',pri:4,
+sentences:[
+  {pt:'O elevador não está funcionando.',en:'The lift isn\'t working.'},
+  {pt:'O plano funcionou perfeitamente.',en:'The plan worked perfectly.'},
+  {pt:'O sistema funcionava sem problemas.',en:'The system used to work without problems.'}
+]},
+{n:168,v:'gastar',m:'to spend/waste',irr:false,sim:'identical',es:'gastar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Não gaste dinheiro com coisas desnecessárias.',en:'Don\'t spend money on unnecessary things.'},
+  {pt:'Ela gastou muito na viagem.',en:'She spent a lot on the trip.'},
+  {pt:'Ele gastava mais do que ganhava.',en:'He used to spend more than he earned.'}
+]},
+{n:169,v:'gritar',m:'to shout/scream',irr:false,sim:'similar',es:'gritar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Não precisa gritar, estou bem perto.',en:'No need to shout, I\'m right here.'},
+  {pt:'Ela gritou de susto quando viu a cobra.',en:'She screamed with fright when she saw the snake.'},
+  {pt:'Os torcedores gritavam o nome do jogador.',en:'The fans used to shout the player\'s name.'}
+]},
+{n:170,v:'guardar',m:'to keep/store/save',irr:false,sim:'identical',es:'guardar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Guarda isso numa gaveta.',en:'Keep this in a drawer.'},
+  {pt:'Ela guardou as cartas da infância.',en:'She kept the childhood letters.'},
+  {pt:'Ele guardava dinheiro em baixo do colchão.',en:'He used to keep money under the mattress.'}
+]},
+{n:171,v:'imaginar',m:'to imagine',irr:false,sim:'identical',es:'imaginar',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Imagina como seria morar em Paris!',en:'Imagine what it would be like to live in Paris!'},
+  {pt:'Ela imaginou um futuro diferente.',en:'She imagined a different future.'},
+  {pt:'Ele imaginava soluções criativas para os problemas.',en:'He used to imagine creative solutions to problems.'}
+]},
+{n:172,v:'importar',m:'to matter/to import',irr:false,sim:'identical',es:'importar',cat:'emotion',pri:4,
+sentences:[
+  {pt:'O que você pensa me importa muito.',en:'What you think matters a lot to me.'},
+  {pt:'Não importou o esforço, o resultado foi ruim.',en:'The effort didn\'t matter, the result was bad.'},
+  {pt:'Apenas a família importava para ele.',en:'Only family used to matter to him.'}
+]},
+{n:173,v:'informar',m:'to inform',irr:false,sim:'identical',es:'informar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Vou te informar assim que souber.',en:'I\'ll inform you as soon as I know.'},
+  {pt:'Ela informou a polícia sobre o furto.',en:'She informed the police about the theft.'},
+  {pt:'O sistema informava os usuários por e-mail.',en:'The system used to inform users by email.'}
+]},
+{n:174,v:'jogar',m:'to play (sport/game)',irr:false,sim:'different',es:'jugar',cat:'social',pri:4,
+sentences:[
+  {pt:'Você joga futebol no fim de semana?',en:'Do you play football at the weekend?'},
+  {pt:'Eles jogaram xadrez a tarde toda.',en:'They played chess all afternoon.'},
+  {pt:'Ela jogava vôlei na escola.',en:'She used to play volleyball at school.'}
+]},
+{n:175,v:'juntar',m:'to join/gather/save up',irr:false,sim:'similar',es:'juntar',cat:'social',pri:4,
+sentences:[
+  {pt:'Precisamos juntar mais dinheiro.',en:'We need to save up more money.'},
+  {pt:'Ela juntou todas as peças do quebra-cabeça.',en:'She gathered all the puzzle pieces.'},
+  {pt:'O grupo se juntava no fim de semana.',en:'The group used to get together at the weekend.'}
+]},
+{n:176,v:'largar',m:'to drop/quit/let go',irr:false,sim:'different',es:'soltar/dejar',cat:'change',pri:4,
+sentences:[
+  {pt:'Ela largou o emprego para viajar o mundo.',en:'She quit her job to travel the world.'},
+  {pt:'Ele largou o cigarro depois de dez anos.',en:'He gave up smoking after ten years.'},
+  {pt:'As crianças largavam as mochilas na sala.',en:'The children used to drop their bags in the living room.'}
+]},
+{n:177,v:'ligar',m:'to call/switch on/connect',irr:false,sim:'different',es:'llamar/conectar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Vou te ligar mais tarde.',en:'I\'ll call you later.'},
+  {pt:'Ela ligou a televisão para assistir as notícias.',en:'She switched on the television to watch the news.'},
+  {pt:'Ele ligava para a mãe todo domingo.',en:'He used to call his mother every Sunday.'}
+]},
+{n:178,v:'limpar',m:'to clean',irr:false,sim:'similar',es:'limpiar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Preciso limpar o apartamento antes da visita.',en:'I need to clean the flat before the visit.'},
+  {pt:'Ela limpou a cozinha inteira em uma hora.',en:'She cleaned the entire kitchen in an hour.'},
+  {pt:'Ele limpava o carro todo sábado.',en:'He used to clean the car every Saturday.'}
+]},
+{n:179,v:'lutar',m:'to fight/struggle',irr:false,sim:'similar',es:'luchar',cat:'social',pri:4,
+sentences:[
+  {pt:'Ela lutou pelos seus direitos.',en:'She fought for her rights.'},
+  {pt:'Lutamos para manter o projeto.',en:'We struggled to keep the project going.'},
+  {pt:'Ele lutava caratê desde pequeno.',en:'He used to do karate since he was small.'}
+]},
+{n:180,v:'manter',m:'to maintain/keep',irr:true,sim:'similar',es:'mantener',cat:'change',pri:4,
+conj:{pres:['mantenho','mantém','mantemos','mantêm'],past:['mantive','manteve','mantivemos','mantiveram'],imp:['mantinha','mantinha','mantínhamos','mantinham']},
+sentences:[
+  {pt:'É difícil manter uma dieta saudável.',en:'It\'s difficult to maintain a healthy diet.'},
+  {pt:'Ela manteve a calma durante a crise.',en:'She kept calm during the crisis.'},
+  {pt:'Ele mantinha contato com os amigos da escola.',en:'He used to keep in touch with school friends.'}
+]},
+{n:181,v:'melhorar',m:'to improve/get better',irr:false,sim:'similar',es:'mejorar',cat:'change',pri:4,
+sentences:[
+  {pt:'Meu português está melhorando cada dia.',en:'My Portuguese is getting better every day.'},
+  {pt:'O tempo melhorou depois da chuva.',en:'The weather improved after the rain.'},
+  {pt:'Ela sempre tentava melhorar seu desempenho.',en:'She always used to try to improve her performance.'}
+]},
+{n:182,v:'misturar',m:'to mix',irr:false,sim:'similar',es:'mezclar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Mistura bem os ingredientes.',en:'Mix the ingredients well.'},
+  {pt:'Ela misturou as tintas para criar uma nova cor.',en:'She mixed the paints to create a new colour.'},
+  {pt:'Ele misturava trabalho com diversão.',en:'He used to mix work with pleasure.'}
+]},
+{n:183,v:'mostrar',m:'to show',irr:false,sim:'identical',es:'mostrar',cat:'communication',pri:4,
+sentences:[
+  {pt:'Posso te mostrar minha cidade?',en:'Can I show you my city?'},
+  {pt:'Ela mostrou as fotos da viagem para todos.',en:'She showed everyone the travel photos.'},
+  {pt:'Ele mostrava as habilidades com orgulho.',en:'He used to show off his skills proudly.'}
+]},
+{n:184,v:'nadar',m:'to swim',irr:false,sim:'identical',es:'nadar',cat:'motion',pri:4,
+sentences:[
+  {pt:'Ela nada todos os dias na piscina.',en:'She swims every day in the pool.'},
+  {pt:'Nadamos no mar até o pôr do sol.',en:'We swam in the sea until sunset.'},
+  {pt:'Ele nadava pelo clube na infância.',en:'He used to swim competitively for the club as a child.'}
+]},
+{n:185,v:'nascer',m:'to be born',irr:false,sim:'similar',es:'nacer',cat:'being',pri:4,
+sentences:[
+  {pt:'Minha filha nasceu em maio.',en:'My daughter was born in May.'},
+  {pt:'Beethoven nasceu na Alemanha.',en:'Beethoven was born in Germany.'},
+  {pt:'Muitas estrelas nasciam e morriam em milhões de anos.',en:'Many stars used to be born and die over millions of years.'}
+]},
+{n:186,v:'notar',m:'to notice',irr:false,sim:'identical',es:'notar',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Notei que você cortou o cabelo.',en:'I noticed you cut your hair.'},
+  {pt:'Ela notou uma mudança no comportamento dele.',en:'She noticed a change in his behaviour.'},
+  {pt:'Ele notava detalhes que os outros ignoravam.',en:'He used to notice details that others ignored.'}
+]},
+{n:187,v:'obrigar',m:'to force/oblige',irr:false,sim:'similar',es:'obligar',cat:'social',pri:4,
+sentences:[
+  {pt:'Ninguém pode te obrigar a fazer isso.',en:'No one can force you to do this.'},
+  {pt:'A lei obrigou as empresas a pagar mais.',en:'The law forced companies to pay more.'},
+  {pt:'Ele se sentia obrigado a ajudar todos.',en:'He used to feel obliged to help everyone.'}
+]},
+{n:188,v:'olhar',m:'to look (at)',irr:false,sim:'different',es:'mirar',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Olha que paisagem linda!',en:'Look at this beautiful scenery!'},
+  {pt:'Ela olhou para mim com surpresa.',en:'She looked at me in surprise.'},
+  {pt:'Ele olhava pelas janelas enquanto esperava.',en:'He used to look out of the windows while waiting.'}
+]},
+{n:189,v:'organizar',m:'to organise',irr:false,sim:'similar',es:'organizar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Preciso organizar minha agenda.',en:'I need to organise my schedule.'},
+  {pt:'Ela organizou a festa de surpresa.',en:'She organised the surprise party.'},
+  {pt:'Ele organizava os documentos por data.',en:'He used to organise documents by date.'}
+]},
+{n:190,v:'perceber',m:'to notice/realise',irr:false,sim:'similar',es:'percibir/darse cuenta',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Percebi que cometi um erro.',en:'I realised I made a mistake.'},
+  {pt:'Ela percebeu que alguém havia entrado.',en:'She noticed that someone had come in.'},
+  {pt:'Ele percebia quando algo estava errado.',en:'He used to notice when something was wrong.'}
+]},
+{n:191,v:'permitir',m:'to allow/permit',irr:false,sim:'identical',es:'permitir',cat:'social',pri:4,
+sentences:[
+  {pt:'Os pais permitiram que ela saísse.',en:'The parents allowed her to go out.'},
+  {pt:'A lei não permite isso.',en:'The law does not allow this.'},
+  {pt:'O chefe permitia trabalho remoto.',en:'The boss used to allow remote working.'}
+]},
+{n:192,v:'planejar',m:'to plan',irr:false,sim:'similar',es:'planear',cat:'work',pri:4,
+sentences:[
+  {pt:'Estamos planejando uma viagem para o nordeste.',en:'We are planning a trip to the northeast.'},
+  {pt:'Ela planejou cada detalhe do casamento.',en:'She planned every detail of the wedding.'},
+  {pt:'Ele planejava cada semana com antecedência.',en:'He used to plan each week in advance.'}
+]},
+{n:193,v:'praticar',m:'to practise',irr:false,sim:'similar',es:'practicar',cat:'work',pri:4,
+sentences:[
+  {pt:'Pratico inglês todo dia com podcasts.',en:'I practise English every day with podcasts.'},
+  {pt:'Ela praticou a apresentação muitas vezes.',en:'She practised the presentation many times.'},
+  {pt:'Ele praticava esporte três vezes por semana.',en:'He used to do sport three times a week.'}
+]},
+{n:194,v:'preocupar',m:'to worry',irr:false,sim:'similar',es:'preocupar',cat:'emotion',pri:4,
+sentences:[
+  {pt:'Não se preocupa, vai ficar tudo bem.',en:'Don\'t worry, everything will be fine.'},
+  {pt:'Ela se preocupou muito com o resultado.',en:'She worried a lot about the result.'},
+  {pt:'Ele se preocupava com o futuro constantemente.',en:'He used to worry about the future constantly.'}
+]},
+{n:195,v:'preparar',m:'to prepare',irr:false,sim:'identical',es:'preparar',cat:'daily',pri:4,
+sentences:[
+  {pt:'Vou preparar o jantar para você.',en:'I\'m going to prepare dinner for you.'},
+  {pt:'Ela preparou tudo com antecedência.',en:'She prepared everything in advance.'},
+  {pt:'Ele preparava o material da aula com cuidado.',en:'He used to prepare his class material carefully.'}
+]},
+{n:196,v:'realizar',m:'to fulfil/carry out/realise',irr:false,sim:'similar',es:'realizar',cat:'work',pri:4,
+sentences:[
+  {pt:'Quero realizar meu sonho de morar fora.',en:'I want to fulfil my dream of living abroad.'},
+  {pt:'Ela realizou um trabalho excelente.',en:'She carried out an excellent piece of work.'},
+  {pt:'Ele realizava projetos sociais no bairro.',en:'He used to carry out social projects in the neighbourhood.'}
+]},
+{n:197,v:'resolver',m:'to solve/resolve',irr:false,sim:'identical',es:'resolver',cat:'cognition',pri:4,
+sentences:[
+  {pt:'Precisamos resolver esse problema logo.',en:'We need to solve this problem soon.'},
+  {pt:'Ela resolveu a questão diplomaticamente.',en:'She resolved the matter diplomatically.'},
+  {pt:'Ele resolvia conflitos com muita habilidade.',en:'He used to resolve conflicts very skilfully.'}
+]},
+{n:198,v:'respeitar',m:'to respect',irr:false,sim:'similar',es:'respetar',cat:'social',pri:4,
+sentences:[
+  {pt:'Devemos respeitar as diferenças.',en:'We should respect differences.'},
+  {pt:'Ela sempre respeitou as opiniões alheias.',en:'She always respected other people\'s opinions.'},
+  {pt:'Ele respeitava os mais velhos.',en:'He used to respect his elders.'}
+]},
+{n:199,v:'sorrir',m:'to smile',irr:true,sim:'similar',es:'sonreír',cat:'emotion',pri:4,
+conj:{pres:['sorrio','sorri','sorrimos','sorriem'],past:['sorri','sorriu','sorrimos','sorriram'],imp:['sorria','sorria','sorríamos','sorriam']},
+sentences:[
+  {pt:'Ela sorri toda vez que vê o filho.',en:'She smiles every time she sees her son.'},
+  {pt:'Ele sorriu ao receber a notícia.',en:'He smiled when he received the news.'},
+  {pt:'Ela sorria mesmo nos momentos difíceis.',en:'She used to smile even in difficult moments.'}
+]},
+{n:200,v:'tocar',m:'to touch/play (instrument)',irr:false,sim:'identical',es:'tocar',cat:'social',pri:4,
+sentences:[
+  {pt:'Ela toca violão muito bem.',en:'She plays guitar very well.'},
+  {pt:'Ele tocou meu ombro para chamar atenção.',en:'He touched my shoulder to get my attention.'},
+  {pt:'A banda tocava em bares toda sexta.',en:'The band used to play in bars every Friday.'}
+]}
+];
+
+const filters = {type:'all',sim:'all',cat:'all',pri:'all',status:'all'};
+
+function togglePatterns(){
+  const b=document.getElementById('pat-body');
+  const a=document.getElementById('pat-arrow');
+  b.classList.toggle('open');
+  a.textContent=b.classList.contains('open')?'▲':'▼';
+}
+
+function setFilter(key,val,el){
+  filters[key]=val;
+  el.closest('.filter-row').querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function getRegConj(v){
+  const ending=v.slice(-2).toLowerCase();
+  const stem=v.slice(0,-2);
+  if(ending==='ar'){
+    return{
+      pres:[stem+'o',stem+'a',stem+'amos',stem+'am'],
+      past:[stem+'ei',stem+'ou',stem+'amos',stem+'aram'],
+      imp:[stem+'ava',stem+'ava',stem+'ávamos',stem+'avam']
+    };
+  } else if(ending==='er'){
+    return{
+      pres:[stem+'o',stem+'e',stem+'emos',stem+'em'],
+      past:[stem+'i',stem+'eu',stem+'emos',stem+'eram'],
+      imp:[stem+'ia',stem+'ia',stem+'íamos',stem+'iam']
+    };
+  } else {
+    return{
+      pres:[stem+'o',stem+'e',stem+'imos',stem+'em'],
+      past:[stem+'i',stem+'iu',stem+'imos',stem+'iram'],
+      imp:[stem+'ia',stem+'ia',stem+'íamos',stem+'iam']
+    };
+  }
+}
+
+function simLabel(s){return s==='identical'?'=ES':s==='similar'?'≈ES':'≠ES';}
+function simColor(s){return s==='identical'?'identical':s==='similar'?'similar':'different';}
+function catLabel(c){const m={being:'Being',motion:'Motion',communication:'Communication',cognition:'Cognition',emotion:'Emotion',daily:'Daily Life',work:'Work/Study',social:'Social',change:'Change'};return m[c]||c;}
+function priLabel(p){return `Tier ${p}`;}
+
+function getFiltered(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  return VERBS.filter(vb=>{
+    if(filters.type==='irr'&&!vb.irr)return false;
+    if(filters.type==='reg'&&vb.irr)return false;
+    if(filters.sim!=='all'&&vb.sim!==filters.sim)return false;
+    if(filters.cat!=='all'&&vb.cat!==filters.cat)return false;
+    if(filters.pri!=='all'&&vb.pri!==filters.pri)return false;
+    if(filters.status==='learned'&&!learned.has(vb.n))return false;
+    if(filters.status==='tostudy'&&learned.has(vb.n))return false;
+    if(q){
+      const hay=`${vb.v} ${vb.m} ${vb.es} ${vb.cat}`.toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+}
+
+function render(){
+  const filtered=getFiltered();
+  const grid=document.getElementById('grid');
+  const stats=document.getElementById('stats');
+
+  const irr=filtered.filter(v=>v.irr).length;
+  const id=filtered.filter(v=>v.sim==='identical').length;
+  const sim=filtered.filter(v=>v.sim==='similar').length;
+  const dif=filtered.filter(v=>v.sim==='different').length;
+  const lrn=filtered.filter(v=>learned.has(v.n)).length;
+
+  stats.innerHTML=`
+    <div class="stat">Showing <span>${filtered.length}</span></div>
+    <div class="stat">Irregular <span>${irr}</span></div>
+    <div class="stat">=ES <span>${id}</span></div>
+    <div class="stat">≈ES <span>${sim}</span></div>
+    <div class="stat">≠ES <span>${dif}</span></div>
+    <div class="stat">Learned <span>${lrn}</span></div>
+  `;
+
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty">No verbs match your filters.</div>';
+    return;
+  }
+
+  grid.innerHTML=filtered.map(vb=>{
+    const isL=learned.has(vb.n);
+    return `<div class="card${vb.irr?' irr':' reg'}${isL?' learned':''}" onclick="openModal(${vb.n})">
+      ${isL?'<span class="learned-badge">✓ LEARNED</span>':''}
+      <div class="card-num">#${vb.n}</div>
+      <div class="card-verb ${vb.irr?'irr':'reg'}">${vb.v}</div>
+      <div class="card-meaning">${vb.m}</div>
+      <div class="card-es ${simColor(vb.sim)}">${vb.es}</div>
+      <div class="card-tags">
+        <span class="tag ${vb.irr?'irr':'reg'}">${vb.irr?'IRR':'REG'}</span>
+        <span class="tag ${simColor(vb.sim)}">${simLabel(vb.sim)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const SUBJECTS=['eu','você / ele / ela','nós','vocês / eles / elas'];
+
+function openModal(n){
+  const vb=VERBS.find(v=>v.n===n);
+  if(!vb)return;
+  const conj=vb.irr?vb.conj:getRegConj(vb.v);
+  const regEnd=vb.v.slice(-2).toLowerCase();
+  const isL=learned.has(vb.n);
+
+  const conjRows=SUBJECTS.map((sub,i)=>`
+    <tr>
+      <td>${sub}</td>
+      <td>${vb.irr?`<span class="irr-form">${conj.pres[i]}</span>`:conj.pres[i]}</td>
+      <td>${vb.irr?`<span class="irr-form">${conj.past[i]}</span>`:conj.past[i]}</td>
+      <td>${vb.irr?`<span class="irr-form">${conj.imp[i]}</span>`:conj.imp[i]}</td>
+    </tr>`).join('');
+
+  const regNote=!vb.irr?`<div class="reg-note">✓ Regular -${regEnd.toUpperCase()} verb — follows standard pattern. For future use: <strong>vou ${vb.v}</strong> / vai / vamos / vão ${vb.v}</div>`:'';
+
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-verb ${vb.irr?'irr':'reg'}">${vb.v}</div>
+    <div class="modal-meaning">${vb.m}</div>
+    <div class="modal-es ${simColor(vb.sim)}" style="font-size:.9rem;margin-bottom:.75rem">ES: ${vb.es} (${vb.sim})</div>
+    <div class="modal-tags">
+      <span class="modal-tag ${vb.irr?'irr':'reg'}">${vb.irr?'Irregular':'Regular -'+regEnd.toUpperCase()}</span>
+      <span class="modal-tag tier">${priLabel(vb.pri)} · #${vb.n}</span>
+      <span class="modal-tag cat">${catLabel(vb.cat)}</span>
+    </div>
+    <button class="learn-btn${isL?' learned':''}" onclick="toggleLearned(${vb.n})" id="learn-btn-${vb.n}">
+      ${isL?'✓ Learned':'Mark as Learned'}
+    </button>
+    ${regNote}
+    <div class="conj-section">
+      <h4>Conjugation</h4>
+      <table class="conj-table">
+        <thead><tr><th>Subject</th><th>Present</th><th>Past (Pretérito)</th><th>Imperfect</th></tr></thead>
+        <tbody>${conjRows}</tbody>
+      </table>
+    </div>
+    <div class="sents">
+      <h4>Example Sentences</h4>
+      ${vb.sentences.map(s=>`<div class="sent"><p>${s.pt}</p><small>${s.en}</small></div>`).join('')}
+    </div>
+  `;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('overlay'))closeModalDirect();
+}
+function closeModalDirect(){
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function toggleLearned(n){
+  if(learned.has(n))learned.delete(n);
+  else learned.add(n);
+  localStorage.setItem('pt_learned',JSON.stringify([...learned]));
+  const btn=document.getElementById(`learn-btn-${n}`);
+  if(btn){
+    btn.classList.toggle('learned',learned.has(n));
+    btn.textContent=learned.has(n)?'✓ Learned':'Mark as Learned';
+  }
+  render();
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModalDirect();});
+
+render();
+</script>
+</body>
+</html>

@@ -7,19 +7,14 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f0e8;color:#2a2a2a;min-height:100vh;}
-
-/* NAV */
 nav{background:#2d5a3d;padding:0 1.5rem;height:48px;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 6px rgba(0,0,0,.25);}
 nav a{color:#c8e6c9;text-decoration:none;font-size:.85rem;}
 nav a:hover{color:#fff;}
 nav .nav-title{color:#a5d6a7;font-size:.95rem;font-weight:600;flex:1;text-align:center;}
-
-/* MAIN */
 main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
 
-/* ARTICLE GUIDE */
+/* GUIDE */
 .guide{background:#fff;border:1px solid #d4c9b0;border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1rem;font-size:.8rem;line-height:1.6;color:#444;}
-.guide strong{color:#2d5a3d;}
 .guide-title{font-weight:700;color:#2d5a3d;font-size:.85rem;margin-bottom:.35rem;}
 .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.4rem .8rem;}
 .guide-row{display:flex;gap:.4rem;align-items:baseline;}
@@ -34,8 +29,8 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
 .api-note{font-size:.7rem;color:#aaa;}
 
 /* STAT PILLS */
-.stat-row{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.75rem;align-items:center;}
-.stat-pill{background:#fff;border:1px solid #d4c9b0;border-radius:20px;padding:.22rem .75rem;font-size:.75rem;color:#555;cursor:default;}
+.stat-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem;align-items:center;}
+.stat-pill{background:#fff;border:1px solid #d4c9b0;border-radius:20px;padding:.2rem .7rem;font-size:.73rem;color:#555;}
 .stat-pill.clickable{cursor:pointer;transition:all .15s;}
 .stat-pill.clickable:hover{border-color:#2d5a3d;color:#2d5a3d;}
 .stat-pill.active{background:#2d5a3d;color:#fff;border-color:#2d5a3d;}
@@ -43,83 +38,103 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
 .stat-pill.active .ct{color:#ffd580;}
 
 /* CONTROLS */
-.controls{display:flex;flex-direction:column;gap:.6rem;margin-bottom:.85rem;}
-.ctrl-row{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;}
+.controls{display:flex;flex-direction:column;gap:.55rem;margin-bottom:.85rem;}
+.ctrl-row{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
 .row-label{font-size:.72rem;color:#999;white-space:nowrap;}
-.pill{border:1.5px solid #2d5a3d;background:transparent;color:#2d5a3d;border-radius:20px;padding:.24rem .8rem;font-size:.75rem;cursor:pointer;transition:all .15s;}
+.pill{border:1.5px solid #2d5a3d;background:transparent;color:#2d5a3d;border-radius:20px;padding:.22rem .75rem;font-size:.73rem;cursor:pointer;transition:all .15s;}
 .pill:hover{background:#e8f5e9;}
 .pill.active{background:#2d5a3d;color:#fff;}
-#search{flex:1;min-width:160px;border:1px solid #d4c9b0;border-radius:20px;padding:.38rem 1rem;font-size:.85rem;background:#fff;color:#333;}
+#search{flex:1;min-width:160px;border:1px solid #d4c9b0;border-radius:20px;padding:.36rem 1rem;font-size:.84rem;background:#fff;color:#333;}
 #search:focus{outline:none;border-color:#2d5a3d;}
 .view-btns{display:flex;gap:.3rem;margin-left:auto;}
-.view-btn{background:#fff;border:1.5px solid #ccc;border-radius:7px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .15s;}
+.view-btn{background:#fff;border:1.5px solid #ccc;border-radius:7px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:all .15s;}
 .view-btn.active{border-color:#2d5a3d;background:#2d5a3d;color:#fff;}
 
 /* GRID */
 .noun-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.6rem;}
 .noun-grid.list-mode{grid-template-columns:1fr;}
 
-/* CARD — GRID */
-.card{background:#fff;border:1px solid #ddd5c0;border-radius:9px;padding:.65rem .8rem;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;}
+/* CARD */
+.card{background:#fff;border:1px solid #ddd5c0;border-radius:9px;padding:.65rem .8rem;cursor:pointer;transition:box-shadow .15s,border-color .15s;}
 .card:hover{box-shadow:0 3px 10px rgba(0,0,0,.09);border-color:#b8a98a;}
 .card.learned{border-color:#2d5a3d;background:#f0faf3;}
-.card-freq{font-size:.68rem;color:#c4924a;font-weight:700;margin-bottom:.15rem;}
-.card-word{font-size:1rem;font-weight:700;color:#1a1a1a;margin-bottom:.05rem;}
-.card-article{font-size:.75rem;color:#888;margin-bottom:.2rem;}
-.card-en{font-size:.75rem;color:#555;margin-bottom:.35rem;}
-.card-tags{display:flex;gap:.3rem;flex-wrap:wrap;align-items:center;}
-.tag{font-size:.62rem;border-radius:8px;padding:.1rem .42rem;font-weight:600;white-space:nowrap;}
-.tag-m{background:#dbeafe;color:#1e40af;}
-.tag-f{background:#fce7f3;color:#9d174d;}
-.tag-g{background:#d4edda;color:#276b3a;}
-.tag-y{background:#fff3cd;color:#856404;}
-.tag-r{background:#f8d7da;color:#842029;}
-.tag-learned{background:#d1fae5;color:#065f46;}
-
-/* CARD — LIST MODE */
-.noun-grid.list-mode .card{display:flex;align-items:center;gap:.8rem;padding:.5rem .9rem;}
-.noun-grid.list-mode .card-freq{min-width:30px;margin-bottom:0;}
-.noun-grid.list-mode .card-word{font-size:.95rem;min-width:110px;margin-bottom:0;}
-.noun-grid.list-mode .card-article{min-width:80px;margin-bottom:0;}
-.noun-grid.list-mode .card-en{flex:1;margin-bottom:0;}
+.card-freq{font-size:.68rem;color:#c4924a;font-weight:700;margin-bottom:.12rem;}
+.card-word{font-size:1rem;font-weight:700;color:#1a1a1a;margin-bottom:.02rem;}
+.card-article{font-size:.73rem;color:#888;margin-bottom:.15rem;}
+.card-en{font-size:.73rem;color:#555;margin-bottom:.08rem;}
+.card-es{font-size:.71rem;color:#999;margin-bottom:.28rem;}
+.card-tags{display:flex;gap:.28rem;flex-wrap:wrap;align-items:center;}
+.tag{font-size:.62rem;border-radius:5px;padding:.1rem .4rem;font-weight:700;white-space:nowrap;border:1.5px solid transparent;}
+.tag-m{background:#dbeafe;color:#1e40af;border-color:#bfdbfe;}
+.tag-f{background:#fce7f3;color:#9d174d;border-color:#fbcfe8;}
+.tag-eq{background:#d4edda;color:#276b3a;border-color:#a3cfbb;}   /* =ES */
+.tag-ap{background:#fff3cd;color:#856404;border-color:#fde68a;}   /* ≈ES */
+.tag-ne{background:#f8d7da;color:#842029;border-color:#f5c2c7;}   /* ≠ES */
+.tag-learned{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
+.noun-grid.list-mode .card{display:flex;align-items:center;gap:.7rem;padding:.45rem .85rem;}
+.noun-grid.list-mode .card-freq{min-width:28px;margin:0;}
+.noun-grid.list-mode .card-word{min-width:100px;margin:0;}
+.noun-grid.list-mode .card-article{min-width:80px;margin:0;}
+.noun-grid.list-mode .card-en{flex:1;margin:0;}
+.noun-grid.list-mode .card-es{min-width:80px;margin:0;}
 .noun-grid.list-mode .card-tags{margin-left:auto;}
-
-/* EMPTY */
 .empty{text-align:center;padding:3rem;color:#aaa;font-size:.9rem;grid-column:1/-1;}
 
 /* MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;padding:1rem;}
 .overlay.open{display:flex;}
 .modal{background:#fff;border-radius:14px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.22);padding:1.5rem;}
-.modal-close{float:right;background:none;border:1px solid #ddd;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:#666;margin-top:-.2rem;}
+.modal-close{float:right;background:none;border:1px solid #ddd;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;color:#666;}
 .modal-close:hover{background:#eee;}
-.modal-word{font-size:1.8rem;font-weight:800;color:#c4924a;margin-bottom:.1rem;}
-.modal-article{font-size:1rem;color:#888;margin-bottom:.2rem;}
-.modal-en{font-size:.95rem;color:#444;margin-bottom:.5rem;}
-.modal-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;}
-.modal-tag{font-size:.72rem;border-radius:8px;padding:.15rem .55rem;font-weight:600;}
+.modal-word{font-size:1.8rem;font-weight:800;color:#c4924a;margin-bottom:.05rem;}
+.modal-article{font-size:1rem;color:#888;margin-bottom:.15rem;}
+.modal-en{font-size:.95rem;color:#444;margin-bottom:.15rem;}
+.modal-es{font-size:.85rem;color:#888;margin-bottom:.5rem;}
+.modal-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem;}
+.modal-tag{font-size:.72rem;border-radius:6px;padding:.15rem .55rem;font-weight:700;border:1.5px solid transparent;}
 .mark-btn{border:1.5px solid #2d5a3d;background:#fff;color:#2d5a3d;border-radius:8px;padding:.35rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s;margin-bottom:1.1rem;}
 .mark-btn:hover{background:#2d5a3d;color:#fff;}
 .mark-btn.marked{background:#2d5a3d;color:#fff;}
-.modal-section{font-size:.8rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
-.sent-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem;}
-.sent-item{background:#f9f6f0;border-radius:8px;padding:.6rem .75rem;display:flex;gap:.5rem;align-items:flex-start;}
-.sent-text{font-size:.85rem;color:#333;line-height:1.5;flex:1;font-style:italic;}
-.speak-btn{background:none;border:1px solid #ccc;border-radius:50%;width:28px;height:28px;min-width:28px;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;color:#555;transition:all .15s;flex-shrink:0;}
+.modal-section{font-size:.78rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem;}
+.sent-list{display:flex;flex-direction:column;gap:.55rem;}
+.sent-item{background:#f9f6f0;border-radius:8px;padding:.55rem .7rem;display:flex;gap:.5rem;align-items:flex-start;}
+.sent-text{font-size:.84rem;color:#333;line-height:1.5;flex:1;font-style:italic;}
+.speak-btn{background:none;border:1px solid #ccc;border-radius:50%;width:26px;height:26px;min-width:26px;cursor:pointer;font-size:.72rem;display:flex;align-items:center;justify-content:center;color:#555;transition:all .15s;flex-shrink:0;}
 .speak-btn:hover{background:#2d5a3d;border-color:#2d5a3d;color:#fff;}
 .speak-btn.loading{opacity:.4;cursor:wait;}
+
+/* FLASHCARD */
+#fc-view{display:none;}
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0;}
+.fc-counter{font-size:.8rem;color:#888;}
+.fc-card-outer{width:100%;max-width:480px;perspective:1000px;cursor:pointer;}
+.fc-card-inner{position:relative;width:100%;min-height:260px;transition:transform .5s;transform-style:preserve-3d;}
+.fc-card-inner.flipped{transform:rotateY(180deg);}
+.fc-front,.fc-back{position:absolute;width:100%;min-height:260px;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+.fc-front{background:#fff;border:2px solid #ddd5c0;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+.fc-back{background:#fff;border:2px solid #2d5a3d;box-shadow:0 4px 20px rgba(45,90,61,.15);transform:rotateY(180deg);}
+.fc-art{font-size:1rem;color:#888;margin-bottom:.3rem;}
+.fc-word{font-size:2.4rem;font-weight:800;color:#c4924a;margin-bottom:.2rem;}
+.fc-hint{font-size:.75rem;color:#bbb;margin-top:.8rem;}
+.fc-en{font-size:1.2rem;color:#333;font-weight:600;margin-bottom:.3rem;}
+.fc-es{font-size:.9rem;color:#888;margin-bottom:.6rem;}
+.fc-tags{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;}
+.fc-nav{display:flex;gap:1rem;align-items:center;}
+.fc-nav button{background:#fff;border:1.5px solid #2d5a3d;color:#2d5a3d;border-radius:8px;padding:.4rem 1.1rem;font-size:.85rem;cursor:pointer;font-weight:600;transition:all .15s;}
+.fc-nav button:hover{background:#2d5a3d;color:#fff;}
+.fc-nav button:disabled{opacity:.35;cursor:default;background:#fff;color:#2d5a3d;}
+.fc-mark-btn{border:1.5px solid #2d5a3d;background:#fff;color:#2d5a3d;border-radius:8px;padding:.35rem 1rem;font-size:.8rem;cursor:pointer;font-weight:600;transition:all .15s;}
+.fc-mark-btn:hover,.fc-mark-btn.marked{background:#2d5a3d;color:#fff;}
+.fc-kbd{font-size:.72rem;color:#bbb;text-align:center;}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="index.html">← Home</a>
   <span class="nav-title">🇧🇷 Portuguese Nouns</span>
 </nav>
-
 <main>
 
-<!-- ARTICLE GUIDE -->
 <div class="guide">
   <div class="guide-title">📖 Articles in Brazilian Portuguese</div>
   <div class="guide-grid">
@@ -129,36 +144,34 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
     <div class="guide-row"><span class="guide-art fem">as</span><span>feminine plural — <em>as casas, as vidas</em></span></div>
   </div>
   <div style="margin-top:.5rem;font-size:.75rem;color:#666;">
-    <strong>Patterns:</strong> nouns ending in <strong>-o</strong> → usually masculine &nbsp;·&nbsp; <strong>-a, -ção, -dade, -tude, -gem</strong> → usually feminine &nbsp;·&nbsp; <strong>-ema, -ama, -ista</strong> → usually masculine &nbsp;·&nbsp; Always learn nouns with their article!
+    <strong>Patterns:</strong> <strong>-o</strong> → usually masculine &nbsp;·&nbsp; <strong>-a, -ção, -dade, -tude, -gem</strong> → usually feminine &nbsp;·&nbsp; <strong>-ema, -ama</strong> → usually masculine &nbsp;·&nbsp; Always learn nouns with their article!
   </div>
 </div>
 
-<!-- API KEY -->
 <div class="api-bar">
   <label for="apikey">Google TTS API Key:</label>
   <input type="password" id="apikey" placeholder="AIza... (session only, never stored)">
   <span class="api-note">Used only for 🔊 playback</span>
 </div>
 
-<!-- STAT PILLS -->
 <div class="stat-row" id="statrow">
-  <div class="stat-pill">Showing <span class="ct" id="ct-showing">200</span></div>
-  <div class="stat-pill clickable active" data-filter="all">All <span class="ct" id="ct-all">200</span></div>
-  <div class="stat-pill clickable" data-filter="m">Masculine <span class="ct" id="ct-m">0</span></div>
-  <div class="stat-pill clickable" data-filter="f">Feminine <span class="ct" id="ct-f">0</span></div>
-  <div class="stat-pill clickable" data-filter="g">🟢 <span class="ct" id="ct-g">0</span></div>
-  <div class="stat-pill clickable" data-filter="y">🟡 <span class="ct" id="ct-y">0</span></div>
-  <div class="stat-pill clickable" data-filter="r">🔴 <span class="ct" id="ct-r">0</span></div>
-  <div class="stat-pill clickable" data-filter="learned">Learned <span class="ct" id="ct-learned">0</span></div>
+  <span class="stat-pill">Showing <span class="ct" id="ct-showing">200</span></span>
+  <span class="stat-pill clickable active" data-filter="all">All <span class="ct" id="ct-all">200</span></span>
+  <span class="stat-pill clickable" data-filter="m">Masculine <span class="ct" id="ct-m">0</span></span>
+  <span class="stat-pill clickable" data-filter="f">Feminine <span class="ct" id="ct-f">0</span></span>
+  <span class="stat-pill clickable" data-filter="g">=ES <span class="ct" id="ct-g">0</span></span>
+  <span class="stat-pill clickable" data-filter="y">≈ES <span class="ct" id="ct-y">0</span></span>
+  <span class="stat-pill clickable" data-filter="r">≠ES <span class="ct" id="ct-r">0</span></span>
+  <span class="stat-pill clickable" data-filter="learned">Learned <span class="ct" id="ct-learned">0</span></span>
 </div>
 
-<!-- CONTROLS -->
 <div class="controls">
   <div class="ctrl-row">
     <input type="search" id="search" placeholder="Search Portuguese or English…">
     <div class="view-btns">
       <button class="view-btn active" id="btn-grid" title="Grid view">⊞</button>
       <button class="view-btn" id="btn-list" title="List view">☰</button>
+      <button class="view-btn" id="btn-fc" title="Flashcards">🃏</button>
     </div>
   </div>
   <div class="ctrl-row">
@@ -168,19 +181,55 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
     <button class="pill" data-sort="sim">Similarity</button>
     <button class="pill" data-sort="len">Word Length</button>
   </div>
+  <div class="ctrl-row">
+    <span class="row-label">Freq:</span>
+    <button class="pill active" data-freq="all">#1–200</button>
+    <button class="pill" data-freq="1">#1–50</button>
+    <button class="pill" data-freq="2">#51–100</button>
+    <button class="pill" data-freq="3">#101–150</button>
+    <button class="pill" data-freq="4">#151–200</button>
+  </div>
 </div>
 
 <div class="noun-grid" id="grid"></div>
 
+<!-- FLASHCARD VIEW -->
+<div id="fc-view">
+  <div class="fc-wrap">
+    <div class="fc-counter" id="fc-counter">1 / 0</div>
+    <div class="fc-card-outer" onclick="flipCard()">
+      <div class="fc-card-inner" id="fc-inner">
+        <div class="fc-front">
+          <div class="fc-art" id="fc-art"></div>
+          <div class="fc-word" id="fc-word"></div>
+          <div class="fc-hint">tap to reveal</div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-en" id="fc-en"></div>
+          <div class="fc-es" id="fc-es"></div>
+          <div class="fc-tags" id="fc-tags"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button id="fc-prev" onclick="fcNav(-1)" disabled>← Prev</button>
+      <button class="fc-mark-btn" id="fc-mark" onclick="fcToggleLearned()">Mark as Learned</button>
+      <button id="fc-next" onclick="fcNav(1)">Next →</button>
+    </div>
+    <div class="fc-kbd">Spacebar to flip &nbsp;·&nbsp; ← → to navigate &nbsp;·&nbsp; L to mark learned</div>
+  </div>
+</div>
+
 </main>
 
 <!-- MODAL -->
-<div class="overlay" id="overlay" onclick="closeModal(event)">
+<div class="overlay" id="overlay">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-word" id="m-word"></div>
     <div class="modal-article" id="m-article"></div>
     <div class="modal-en" id="m-en"></div>
+    <div class="modal-es" id="m-es"></div>
     <div class="modal-tags" id="m-tags"></div>
     <button class="mark-btn" id="mark-btn" onclick="toggleLearned()">Mark as Learned</button>
     <div class="modal-section">Example Sentences</div>
@@ -188,7 +237,6 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
   </div>
 </div>
 
-<!-- SENTENCE DATA -->
 <script type="application/json" id="sdata">
 [
   {"id":1,"s":["Minha casa tem três quartos.","A casa da minha avó é bem antiga."]},
@@ -395,361 +443,437 @@ main{max-width:1100px;margin:0 auto;padding:1rem 1rem 3rem;}
 </script>
 
 <script>
-// g=gender m/f, sim=similarity g/y/r
+// sim: g==ES  y≈ES  r≠ES
 const NOUNS = [
-  {id:1,  w:"casa",        e:"house / home",         g:"f", sim:"g"},
-  {id:2,  w:"dia",         e:"day",                  g:"m", sim:"g"},
-  {id:3,  w:"mão",         e:"hand",                 g:"f", sim:"g"},
-  {id:4,  w:"homem",       e:"man",                  g:"m", sim:"g"},
-  {id:5,  w:"parte",       e:"part",                 g:"f", sim:"g"},
-  {id:6,  w:"vida",        e:"life",                 g:"f", sim:"g"},
-  {id:7,  w:"tempo",       e:"time / weather",       g:"m", sim:"g"},
-  {id:8,  w:"dinheiro",    e:"money",                g:"m", sim:"y"},
-  {id:9,  w:"hora",        e:"hour / time",          g:"f", sim:"g"},
-  {id:10, w:"nome",        e:"name",                 g:"m", sim:"g"},
-  {id:11, w:"olho",        e:"eye",                  g:"m", sim:"g"},
-  {id:12, w:"pão",         e:"bread",                g:"m", sim:"g"},
-  {id:13, w:"lugar",       e:"place / spot",         g:"m", sim:"g"},
-  {id:14, w:"pai",         e:"father",               g:"m", sim:"g"},
-  {id:15, w:"mãe",         e:"mother",               g:"f", sim:"g"},
-  {id:16, w:"carro",       e:"car",                  g:"m", sim:"y"},
-  {id:17, w:"fome",        e:"hunger",               g:"f", sim:"g"},
-  {id:18, w:"ano",         e:"year",                 g:"m", sim:"g"},
-  {id:19, w:"água",        e:"water",                g:"f", sim:"g"},
-  {id:20, w:"filho",       e:"son / child",          g:"m", sim:"g"},
-  {id:21, w:"telefone",    e:"phone",                g:"m", sim:"g"},
-  {id:22, w:"ajuda",       e:"help",                 g:"f", sim:"g"},
-  {id:23, w:"escola",      e:"school",               g:"f", sim:"g"},
-  {id:24, w:"mercado",     e:"market / store",       g:"m", sim:"g"},
-  {id:25, w:"noite",       e:"night",                g:"f", sim:"g"},
-  {id:26, w:"trabalho",    e:"work / job",           g:"m", sim:"g"},
-  {id:27, w:"problema",    e:"problem",              g:"m", sim:"g"},
-  {id:28, w:"rua",         e:"street",               g:"f", sim:"g"},
-  {id:29, w:"fim",         e:"end",                  g:"m", sim:"g"},
-  {id:30, w:"governo",     e:"government",           g:"m", sim:"g"},
-  {id:31, w:"país",        e:"country",              g:"m", sim:"g"},
-  {id:32, w:"cerveja",     e:"beer",                 g:"f", sim:"y"},
-  {id:33, w:"ponto",       e:"point / stop",         g:"m", sim:"g"},
-  {id:34, w:"cabeça",      e:"head",                 g:"f", sim:"g"},
-  {id:35, w:"favor",       e:"favour",               g:"m", sim:"g"},
-  {id:36, w:"bolsa",       e:"bag / purse",          g:"f", sim:"y"},
-  {id:37, w:"coisa",       e:"thing",                g:"f", sim:"g"},
-  {id:38, w:"jeito",       e:"way / manner",         g:"m", sim:"r"},
-  {id:39, w:"mundo",       e:"world",                g:"m", sim:"g"},
-  {id:40, w:"amor",        e:"love",                 g:"m", sim:"g"},
-  {id:41, w:"praia",       e:"beach",                g:"f", sim:"y"},
-  {id:42, w:"carta",       e:"letter",               g:"f", sim:"g"},
-  {id:43, w:"ideia",       e:"idea",                 g:"f", sim:"g"},
-  {id:44, w:"cidade",      e:"city",                 g:"f", sim:"g"},
-  {id:45, w:"febre",       e:"fever",                g:"f", sim:"g"},
-  {id:46, w:"saúde",       e:"health",               g:"f", sim:"g"},
-  {id:47, w:"preço",       e:"price",                g:"m", sim:"g"},
-  {id:48, w:"irmão",       e:"brother",              g:"m", sim:"g"},
-  {id:49, w:"família",     e:"family",               g:"f", sim:"g"},
-  {id:50, w:"corpo",       e:"body",                 g:"m", sim:"g"},
-  {id:51, w:"voz",         e:"voice",                g:"f", sim:"g"},
-  {id:52, w:"história",    e:"story / history",      g:"f", sim:"g"},
-  {id:53, w:"estado",      e:"state",                g:"m", sim:"g"},
-  {id:54, w:"sol",         e:"sun",                  g:"m", sim:"g"},
-  {id:55, w:"céu",         e:"sky",                  g:"m", sim:"g"},
-  {id:56, w:"palavra",     e:"word",                 g:"f", sim:"g"},
-  {id:57, w:"lado",        e:"side",                 g:"m", sim:"g"},
-  {id:58, w:"verdade",     e:"truth",                g:"f", sim:"g"},
-  {id:59, w:"tipo",        e:"type / kind",          g:"m", sim:"g"},
-  {id:60, w:"forma",       e:"form / way",           g:"f", sim:"g"},
-  {id:61, w:"resultado",   e:"result",               g:"m", sim:"g"},
-  {id:62, w:"questão",     e:"question / issue",     g:"f", sim:"g"},
-  {id:63, w:"mesa",        e:"table",                g:"f", sim:"g"},
-  {id:64, w:"centro",      e:"center",               g:"m", sim:"g"},
-  {id:65, w:"campo",       e:"field / countryside",  g:"m", sim:"g"},
-  {id:66, w:"porta",       e:"door",                 g:"f", sim:"g"},
-  {id:67, w:"livro",       e:"book",                 g:"m", sim:"g"},
-  {id:68, w:"banco",       e:"bank / bench",         g:"m", sim:"g"},
-  {id:69, w:"música",      e:"music",                g:"f", sim:"g"},
-  {id:70, w:"olhar",       e:"look / gaze",          g:"m", sim:"g"},
-  {id:71, w:"copo",        e:"cup / glass",          g:"m", sim:"y"},
-  {id:72, w:"bairro",      e:"neighborhood",         g:"m", sim:"y"},
-  {id:73, w:"situação",    e:"situation",            g:"f", sim:"g"},
-  {id:74, w:"nível",       e:"level",                g:"m", sim:"g"},
-  {id:75, w:"processo",    e:"process",              g:"m", sim:"g"},
-  {id:76, w:"empresa",     e:"company",              g:"f", sim:"g"},
-  {id:77, w:"grupo",       e:"group",                g:"m", sim:"g"},
-  {id:78, w:"vez",         e:"time / turn",          g:"f", sim:"g"},
-  {id:79, w:"coração",     e:"heart",                g:"m", sim:"g"},
-  {id:80, w:"guerra",      e:"war",                  g:"f", sim:"g"},
-  {id:81, w:"pé",          e:"foot",                 g:"m", sim:"g"},
-  {id:82, w:"canal",       e:"channel / canal",      g:"m", sim:"g"},
-  {id:83, w:"manhã",       e:"morning",              g:"f", sim:"g"},
-  {id:84, w:"tarde",       e:"afternoon",            g:"f", sim:"g"},
-  {id:85, w:"semana",      e:"week",                 g:"f", sim:"g"},
-  {id:86, w:"mês",         e:"month",                g:"m", sim:"g"},
-  {id:87, w:"negócio",     e:"business / thing",     g:"m", sim:"g"},
-  {id:88, w:"povo",        e:"people / folk",        g:"m", sim:"g"},
-  {id:89, w:"lei",         e:"law",                  g:"f", sim:"g"},
-  {id:90, w:"serviço",     e:"service",              g:"m", sim:"g"},
-  {id:91, w:"lista",       e:"list",                 g:"f", sim:"g"},
-  {id:92, w:"prato",       e:"plate / dish",         g:"m", sim:"g"},
-  {id:93, w:"chão",        e:"floor / ground",       g:"m", sim:"y"},
-  {id:94, w:"ônibus",      e:"bus",                  g:"m", sim:"r"},
-  {id:95, w:"jardim",      e:"garden",               g:"m", sim:"g"},
-  {id:96, w:"chuva",       e:"rain",                 g:"f", sim:"g"},
-  {id:97, w:"fogo",        e:"fire",                 g:"m", sim:"g"},
-  {id:98, w:"objetivo",    e:"goal / objective",     g:"m", sim:"g"},
-  {id:99, w:"sal",         e:"salt",                 g:"m", sim:"g"},
-  {id:100,w:"momento",     e:"moment",               g:"m", sim:"g"},
-  {id:101,w:"cor",         e:"color",                g:"f", sim:"g"},
-  {id:102,w:"número",      e:"number",               g:"m", sim:"g"},
-  {id:103,w:"opinião",     e:"opinion",              g:"f", sim:"g"},
-  {id:104,w:"poder",       e:"power",                g:"m", sim:"g"},
-  {id:105,w:"dúvida",      e:"doubt",                g:"f", sim:"g"},
-  {id:106,w:"espaço",      e:"space",                g:"m", sim:"g"},
-  {id:107,w:"vontade",     e:"will / desire",        g:"f", sim:"g"},
-  {id:108,w:"ordem",       e:"order",                g:"f", sim:"g"},
-  {id:109,w:"valor",       e:"value / amount",       g:"m", sim:"g"},
-  {id:110,w:"custo",       e:"cost",                 g:"m", sim:"g"},
-  {id:111,w:"plano",       e:"plan",                 g:"m", sim:"g"},
-  {id:112,w:"uso",         e:"use",                  g:"m", sim:"g"},
-  {id:113,w:"papel",       e:"paper / role",         g:"m", sim:"g"},
-  {id:114,w:"sistema",     e:"system",               g:"m", sim:"g"},
-  {id:115,w:"jornal",      e:"newspaper",            g:"m", sim:"g"},
-  {id:116,w:"notícia",     e:"news",                 g:"f", sim:"g"},
-  {id:117,w:"razão",       e:"reason",               g:"f", sim:"g"},
-  {id:118,w:"linha",       e:"line",                 g:"f", sim:"g"},
-  {id:119,w:"peso",        e:"weight",               g:"m", sim:"g"},
-  {id:120,w:"base",        e:"base",                 g:"f", sim:"g"},
-  {id:121,w:"terra",       e:"earth / land",         g:"f", sim:"g"},
-  {id:122,w:"braço",       e:"arm",                  g:"m", sim:"g"},
-  {id:123,w:"perna",       e:"leg",                  g:"f", sim:"g"},
-  {id:124,w:"conta",       e:"bill / account",       g:"f", sim:"g"},
-  {id:125,w:"área",        e:"area",                 g:"f", sim:"g"},
-  {id:126,w:"ritmo",       e:"rhythm / pace",        g:"m", sim:"g"},
-  {id:127,w:"posição",     e:"position",             g:"f", sim:"g"},
-  {id:128,w:"curso",       e:"course",               g:"m", sim:"g"},
-  {id:129,w:"hospital",    e:"hospital",             g:"m", sim:"g"},
-  {id:130,w:"produto",     e:"product",              g:"m", sim:"g"},
-  {id:131,w:"reunião",     e:"meeting",              g:"f", sim:"y"},
-  {id:132,w:"recado",      e:"message / note",       g:"m", sim:"r"},
-  {id:133,w:"fila",        e:"queue / line",         g:"f", sim:"y"},
-  {id:134,w:"susto",       e:"fright / scare",       g:"m", sim:"r"},
-  {id:135,w:"cozinha",     e:"kitchen",              g:"f", sim:"g"},
-  {id:136,w:"banheiro",    e:"bathroom",             g:"m", sim:"r"},
-  {id:137,w:"sala",        e:"room / living room",   g:"f", sim:"g"},
-  {id:138,w:"roupa",       e:"clothes",              g:"f", sim:"y"},
-  {id:139,w:"sapato",      e:"shoe",                 g:"m", sim:"y"},
-  {id:140,w:"avião",       e:"airplane",             g:"m", sim:"g"},
-  {id:141,w:"trem",        e:"train",                g:"m", sim:"r"},
-  {id:142,w:"ponte",       e:"bridge",               g:"f", sim:"g"},
-  {id:143,w:"rio",         e:"river",                g:"m", sim:"g"},
-  {id:144,w:"morro",       e:"hill / favela",        g:"m", sim:"r"},
-  {id:145,w:"floresta",    e:"forest",               g:"f", sim:"g"},
-  {id:146,w:"bolo",        e:"cake",                 g:"m", sim:"r"},
-  {id:147,w:"fruta",       e:"fruit",                g:"f", sim:"g"},
-  {id:148,w:"arroz",       e:"rice",                 g:"m", sim:"y"},
-  {id:149,w:"carne",       e:"meat",                 g:"f", sim:"g"},
-  {id:150,w:"feijão",      e:"beans",                g:"m", sim:"y"},
-  {id:151,w:"café",        e:"coffee",               g:"m", sim:"g"},
-  {id:152,w:"leite",       e:"milk",                 g:"m", sim:"g"},
-  {id:153,w:"açúcar",      e:"sugar",                g:"m", sim:"g"},
-  {id:154,w:"farinha",     e:"flour",                g:"f", sim:"g"},
-  {id:155,w:"queijo",      e:"cheese",               g:"m", sim:"g"},
-  {id:156,w:"ovo",         e:"egg",                  g:"m", sim:"g"},
-  {id:157,w:"suco",        e:"juice",                g:"m", sim:"r"},
-  {id:158,w:"sopa",        e:"soup",                 g:"f", sim:"g"},
-  {id:159,w:"cachorro",    e:"dog",                  g:"m", sim:"r"},
-  {id:160,w:"gato",        e:"cat",                  g:"m", sim:"g"},
-  {id:161,w:"peixe",       e:"fish",                 g:"m", sim:"g"},
-  {id:162,w:"cavalo",      e:"horse",                g:"m", sim:"g"},
-  {id:163,w:"computador",  e:"computer",             g:"m", sim:"g"},
-  {id:164,w:"celular",     e:"cell phone",           g:"m", sim:"y"},
-  {id:165,w:"chave",       e:"key",                  g:"f", sim:"g"},
-  {id:166,w:"janela",      e:"window",               g:"f", sim:"g"},
-  {id:167,w:"vizinho",     e:"neighbor",             g:"m", sim:"g"},
-  {id:168,w:"calçada",     e:"sidewalk",             g:"f", sim:"r"},
-  {id:169,w:"montanha",    e:"mountain",             g:"f", sim:"g"},
-  {id:170,w:"desconto",    e:"discount",             g:"m", sim:"g"},
-  {id:171,w:"nota",        e:"note / grade",         g:"f", sim:"g"},
-  {id:172,w:"endereço",    e:"address",              g:"m", sim:"g"},
-  {id:173,w:"sinal",       e:"sign / signal",        g:"m", sim:"g"},
-  {id:174,w:"resultado",   e:"result / outcome",     g:"m", sim:"g"},
-  {id:175,w:"figura",      e:"figure",               g:"f", sim:"g"},
-  {id:176,w:"conjunto",    e:"set / ensemble",       g:"m", sim:"g"},
-  {id:177,w:"teto",        e:"ceiling / roof",       g:"m", sim:"y"},
-  {id:178,w:"ritmo",       e:"pace / beat",          g:"m", sim:"g"},
-  {id:179,w:"peça",        e:"part / play",          g:"f", sim:"g"},
-  {id:180,w:"objetivo",    e:"goal / aim",           g:"m", sim:"g"},
-  {id:181,w:"formato",     e:"format",               g:"m", sim:"g"},
-  {id:182,w:"profissão",   e:"profession",           g:"f", sim:"g"},
-  {id:183,w:"movimento",   e:"movement",             g:"m", sim:"g"},
-  {id:184,w:"sentido",     e:"sense / meaning",      g:"m", sim:"g"},
-  {id:185,w:"vontade",     e:"desire / will",        g:"f", sim:"g"},
-  {id:186,w:"peso",        e:"weight / burden",      g:"m", sim:"g"},
-  {id:187,w:"razão",       e:"reason / cause",       g:"f", sim:"g"},
-  {id:188,w:"poder",       e:"power / authority",    g:"m", sim:"g"},
-  {id:189,w:"valor",       e:"value / worth",        g:"m", sim:"g"},
-  {id:190,w:"ordem",       e:"order / command",      g:"f", sim:"g"},
-  {id:191,w:"barco",       e:"boat",                 g:"m", sim:"g"},
-  {id:192,w:"trem",        e:"train (context 2)",    g:"m", sim:"r"},
-  {id:193,w:"morro",       e:"hill (context 2)",     g:"m", sim:"r"},
-  {id:194,w:"manteiga",    e:"butter",               g:"f", sim:"y"},
-  {id:195,w:"açúcar",      e:"sugar (context 2)",    g:"m", sim:"g"},
-  {id:196,w:"leite",       e:"milk (context 2)",     g:"m", sim:"g"},
-  {id:197,w:"ovo",         e:"egg (context 2)",      g:"m", sim:"g"},
-  {id:198,w:"sopa",        e:"soup (context 2)",     g:"f", sim:"g"},
-  {id:199,w:"sanduíche",   e:"sandwich",             g:"m", sim:"g"},
-  {id:200,w:"condomínio",  e:"condo / building",     g:"m", sim:"g"}
+  {id:1,  w:"casa",       e:"house / home",        es:"casa",        g:"f", sim:"g"},
+  {id:2,  w:"dia",        e:"day",                 es:"día",         g:"m", sim:"g"},
+  {id:3,  w:"mão",        e:"hand",                es:"mano",        g:"f", sim:"g"},
+  {id:4,  w:"homem",      e:"man",                 es:"hombre",      g:"m", sim:"g"},
+  {id:5,  w:"parte",      e:"part",                es:"parte",       g:"f", sim:"g"},
+  {id:6,  w:"vida",       e:"life",                es:"vida",        g:"f", sim:"g"},
+  {id:7,  w:"tempo",      e:"time / weather",      es:"tiempo",      g:"m", sim:"g"},
+  {id:8,  w:"dinheiro",   e:"money",               es:"dinero",      g:"m", sim:"y"},
+  {id:9,  w:"hora",       e:"hour / time",         es:"hora",        g:"f", sim:"g"},
+  {id:10, w:"nome",       e:"name",                es:"nombre",      g:"m", sim:"g"},
+  {id:11, w:"olho",       e:"eye",                 es:"ojo",         g:"m", sim:"g"},
+  {id:12, w:"pão",        e:"bread",               es:"pan",         g:"m", sim:"g"},
+  {id:13, w:"lugar",      e:"place / spot",        es:"lugar",       g:"m", sim:"g"},
+  {id:14, w:"pai",        e:"father",              es:"padre",       g:"m", sim:"y"},
+  {id:15, w:"mãe",        e:"mother",              es:"madre",       g:"f", sim:"y"},
+  {id:16, w:"carro",      e:"car",                 es:"carro",       g:"m", sim:"g"},
+  {id:17, w:"fome",       e:"hunger",              es:"hambre",      g:"f", sim:"y"},
+  {id:18, w:"ano",        e:"year",                es:"año",         g:"m", sim:"g"},
+  {id:19, w:"água",       e:"water",               es:"agua",        g:"f", sim:"g"},
+  {id:20, w:"filho",      e:"son / child",         es:"hijo",        g:"m", sim:"g"},
+  {id:21, w:"telefone",   e:"phone",               es:"teléfono",    g:"m", sim:"g"},
+  {id:22, w:"ajuda",      e:"help",                es:"ayuda",       g:"f", sim:"y"},
+  {id:23, w:"escola",     e:"school",              es:"escuela",     g:"f", sim:"g"},
+  {id:24, w:"mercado",    e:"market / store",      es:"mercado",     g:"m", sim:"g"},
+  {id:25, w:"noite",      e:"night",               es:"noche",       g:"f", sim:"g"},
+  {id:26, w:"trabalho",   e:"work / job",          es:"trabajo",     g:"m", sim:"g"},
+  {id:27, w:"problema",   e:"problem",             es:"problema",    g:"m", sim:"g"},
+  {id:28, w:"rua",        e:"street",              es:"calle",       g:"f", sim:"r"},
+  {id:29, w:"fim",        e:"end",                 es:"fin",         g:"m", sim:"g"},
+  {id:30, w:"governo",    e:"government",          es:"gobierno",    g:"m", sim:"g"},
+  {id:31, w:"país",       e:"country",             es:"país",        g:"m", sim:"g"},
+  {id:32, w:"cerveja",    e:"beer",                es:"cerveza",     g:"f", sim:"y"},
+  {id:33, w:"ponto",      e:"point / stop",        es:"punto",       g:"m", sim:"g"},
+  {id:34, w:"cabeça",     e:"head",                es:"cabeza",      g:"f", sim:"g"},
+  {id:35, w:"favor",      e:"favour",              es:"favor",       g:"m", sim:"g"},
+  {id:36, w:"bolsa",      e:"bag / purse",         es:"bolsa",       g:"f", sim:"g"},
+  {id:37, w:"coisa",      e:"thing",               es:"cosa",        g:"f", sim:"g"},
+  {id:38, w:"jeito",      e:"way / manner",        es:"modo/manera", g:"m", sim:"r"},
+  {id:39, w:"mundo",      e:"world",               es:"mundo",       g:"m", sim:"g"},
+  {id:40, w:"amor",       e:"love",                es:"amor",        g:"m", sim:"g"},
+  {id:41, w:"praia",      e:"beach",               es:"playa",       g:"f", sim:"r"},
+  {id:42, w:"carta",      e:"letter",              es:"carta",       g:"f", sim:"g"},
+  {id:43, w:"ideia",      e:"idea",                es:"idea",        g:"f", sim:"g"},
+  {id:44, w:"cidade",     e:"city",                es:"ciudad",      g:"f", sim:"y"},
+  {id:45, w:"febre",      e:"fever",               es:"fiebre",      g:"f", sim:"y"},
+  {id:46, w:"saúde",      e:"health",              es:"salud",       g:"f", sim:"y"},
+  {id:47, w:"preço",      e:"price",               es:"precio",      g:"m", sim:"g"},
+  {id:48, w:"irmão",      e:"brother",             es:"hermano",     g:"m", sim:"y"},
+  {id:49, w:"família",    e:"family",              es:"familia",     g:"f", sim:"g"},
+  {id:50, w:"corpo",      e:"body",                es:"cuerpo",      g:"m", sim:"g"},
+  {id:51, w:"voz",        e:"voice",               es:"voz",         g:"f", sim:"g"},
+  {id:52, w:"história",   e:"story / history",     es:"historia",    g:"f", sim:"g"},
+  {id:53, w:"estado",     e:"state",               es:"estado",      g:"m", sim:"g"},
+  {id:54, w:"sol",        e:"sun",                 es:"sol",         g:"m", sim:"g"},
+  {id:55, w:"céu",        e:"sky",                 es:"cielo",       g:"m", sim:"y"},
+  {id:56, w:"palavra",    e:"word",                es:"palabra",     g:"f", sim:"g"},
+  {id:57, w:"lado",       e:"side",                es:"lado",        g:"m", sim:"g"},
+  {id:58, w:"verdade",    e:"truth",               es:"verdad",      g:"f", sim:"g"},
+  {id:59, w:"tipo",       e:"type / kind",         es:"tipo",        g:"m", sim:"g"},
+  {id:60, w:"forma",      e:"form / way",          es:"forma",       g:"f", sim:"g"},
+  {id:61, w:"resultado",  e:"result",              es:"resultado",   g:"m", sim:"g"},
+  {id:62, w:"questão",    e:"question / issue",    es:"cuestión",    g:"f", sim:"g"},
+  {id:63, w:"mesa",       e:"table",               es:"mesa",        g:"f", sim:"g"},
+  {id:64, w:"centro",     e:"center",              es:"centro",      g:"m", sim:"g"},
+  {id:65, w:"campo",      e:"field / countryside", es:"campo",       g:"m", sim:"g"},
+  {id:66, w:"porta",      e:"door",                es:"puerta",      g:"f", sim:"y"},
+  {id:67, w:"livro",      e:"book",                es:"libro",       g:"m", sim:"g"},
+  {id:68, w:"banco",      e:"bank / bench",        es:"banco",       g:"m", sim:"g"},
+  {id:69, w:"música",     e:"music",               es:"música",      g:"f", sim:"g"},
+  {id:70, w:"olhar",      e:"look / gaze",         es:"mirada",      g:"m", sim:"r"},
+  {id:71, w:"copo",       e:"cup / glass",         es:"vaso",        g:"m", sim:"r"},
+  {id:72, w:"bairro",     e:"neighborhood",        es:"barrio",      g:"m", sim:"g"},
+  {id:73, w:"situação",   e:"situation",           es:"situación",   g:"f", sim:"g"},
+  {id:74, w:"nível",      e:"level",               es:"nivel",       g:"m", sim:"g"},
+  {id:75, w:"processo",   e:"process",             es:"proceso",     g:"m", sim:"g"},
+  {id:76, w:"empresa",    e:"company",             es:"empresa",     g:"f", sim:"g"},
+  {id:77, w:"grupo",      e:"group",               es:"grupo",       g:"m", sim:"g"},
+  {id:78, w:"vez",        e:"time / turn",         es:"vez",         g:"f", sim:"g"},
+  {id:79, w:"coração",    e:"heart",               es:"corazón",     g:"m", sim:"g"},
+  {id:80, w:"guerra",     e:"war",                 es:"guerra",      g:"f", sim:"g"},
+  {id:81, w:"pé",         e:"foot",                es:"pie",         g:"m", sim:"g"},
+  {id:82, w:"canal",      e:"channel / canal",     es:"canal",       g:"m", sim:"g"},
+  {id:83, w:"manhã",      e:"morning",             es:"mañana",      g:"f", sim:"g"},
+  {id:84, w:"tarde",      e:"afternoon",           es:"tarde",       g:"f", sim:"g"},
+  {id:85, w:"semana",     e:"week",                es:"semana",      g:"f", sim:"g"},
+  {id:86, w:"mês",        e:"month",               es:"mes",         g:"m", sim:"g"},
+  {id:87, w:"negócio",    e:"business / thing",    es:"negocio",     g:"m", sim:"g"},
+  {id:88, w:"povo",       e:"people / folk",       es:"pueblo",      g:"m", sim:"y"},
+  {id:89, w:"lei",        e:"law",                 es:"ley",         g:"f", sim:"g"},
+  {id:90, w:"serviço",    e:"service",             es:"servicio",    g:"m", sim:"g"},
+  {id:91, w:"lista",      e:"list",                es:"lista",       g:"f", sim:"g"},
+  {id:92, w:"prato",      e:"plate / dish",        es:"plato",       g:"m", sim:"g"},
+  {id:93, w:"chão",       e:"floor / ground",      es:"suelo/piso",  g:"m", sim:"r"},
+  {id:94, w:"ônibus",     e:"bus",                 es:"autobús",     g:"m", sim:"r"},
+  {id:95, w:"jardim",     e:"garden",              es:"jardín",      g:"m", sim:"g"},
+  {id:96, w:"chuva",      e:"rain",                es:"lluvia",      g:"f", sim:"r"},
+  {id:97, w:"fogo",       e:"fire",                es:"fuego",       g:"m", sim:"y"},
+  {id:98, w:"objetivo",   e:"goal / objective",    es:"objetivo",    g:"m", sim:"g"},
+  {id:99, w:"sal",        e:"salt",                es:"sal",         g:"m", sim:"g"},
+  {id:100,w:"momento",    e:"moment",              es:"momento",     g:"m", sim:"g"},
+  {id:101,w:"cor",        e:"color",               es:"color",       g:"f", sim:"y"},
+  {id:102,w:"número",     e:"number",              es:"número",      g:"m", sim:"g"},
+  {id:103,w:"opinião",    e:"opinion",             es:"opinión",     g:"f", sim:"g"},
+  {id:104,w:"poder",      e:"power",               es:"poder",       g:"m", sim:"g"},
+  {id:105,w:"dúvida",     e:"doubt",               es:"duda",        g:"f", sim:"y"},
+  {id:106,w:"espaço",     e:"space",               es:"espacio",     g:"m", sim:"g"},
+  {id:107,w:"vontade",    e:"will / desire",       es:"ganas/voluntad",g:"f",sim:"y"},
+  {id:108,w:"ordem",      e:"order",               es:"orden",       g:"f", sim:"g"},
+  {id:109,w:"valor",      e:"value / amount",      es:"valor",       g:"m", sim:"g"},
+  {id:110,w:"custo",      e:"cost",                es:"costo",       g:"m", sim:"g"},
+  {id:111,w:"plano",      e:"plan",                es:"plan",        g:"m", sim:"g"},
+  {id:112,w:"uso",        e:"use",                 es:"uso",         g:"m", sim:"g"},
+  {id:113,w:"papel",      e:"paper / role",        es:"papel",       g:"m", sim:"g"},
+  {id:114,w:"sistema",    e:"system",              es:"sistema",     g:"m", sim:"g"},
+  {id:115,w:"jornal",     e:"newspaper",           es:"periódico",   g:"m", sim:"r"},
+  {id:116,w:"notícia",    e:"news",                es:"noticia",     g:"f", sim:"g"},
+  {id:117,w:"razão",      e:"reason",              es:"razón",       g:"f", sim:"g"},
+  {id:118,w:"linha",      e:"line",                es:"línea",       g:"f", sim:"g"},
+  {id:119,w:"peso",       e:"weight",              es:"peso",        g:"m", sim:"g"},
+  {id:120,w:"base",       e:"base",                es:"base",        g:"f", sim:"g"},
+  {id:121,w:"terra",      e:"earth / land",        es:"tierra",      g:"f", sim:"g"},
+  {id:122,w:"braço",      e:"arm",                 es:"brazo",       g:"m", sim:"g"},
+  {id:123,w:"perna",      e:"leg",                 es:"pierna",      g:"f", sim:"g"},
+  {id:124,w:"conta",      e:"bill / account",      es:"cuenta",      g:"f", sim:"g"},
+  {id:125,w:"área",       e:"area",                es:"área",        g:"f", sim:"g"},
+  {id:126,w:"ritmo",      e:"rhythm / pace",       es:"ritmo",       g:"m", sim:"g"},
+  {id:127,w:"posição",    e:"position",            es:"posición",    g:"f", sim:"g"},
+  {id:128,w:"curso",      e:"course",              es:"curso",       g:"m", sim:"g"},
+  {id:129,w:"hospital",   e:"hospital",            es:"hospital",    g:"m", sim:"g"},
+  {id:130,w:"produto",    e:"product",             es:"producto",    g:"m", sim:"g"},
+  {id:131,w:"reunião",    e:"meeting",             es:"reunión",     g:"f", sim:"g"},
+  {id:132,w:"recado",     e:"message / note",      es:"recado",      g:"m", sim:"g"},
+  {id:133,w:"fila",       e:"queue / line",        es:"fila/cola",   g:"f", sim:"y"},
+  {id:134,w:"susto",      e:"fright / scare",      es:"susto",       g:"m", sim:"g"},
+  {id:135,w:"cozinha",    e:"kitchen",             es:"cocina",      g:"f", sim:"y"},
+  {id:136,w:"banheiro",   e:"bathroom",            es:"baño",        g:"m", sim:"r"},
+  {id:137,w:"sala",       e:"room / living room",  es:"sala",        g:"f", sim:"g"},
+  {id:138,w:"roupa",      e:"clothes",             es:"ropa",        g:"f", sim:"g"},
+  {id:139,w:"sapato",     e:"shoe",                es:"zapato",      g:"m", sim:"g"},
+  {id:140,w:"avião",      e:"airplane",            es:"avión",       g:"m", sim:"g"},
+  {id:141,w:"trem",       e:"train",               es:"tren",        g:"m", sim:"g"},
+  {id:142,w:"ponte",      e:"bridge",              es:"puente",      g:"f", sim:"y"},
+  {id:143,w:"rio",        e:"river",               es:"río",         g:"m", sim:"g"},
+  {id:144,w:"morro",      e:"hill / favela",       es:"cerro",       g:"m", sim:"r"},
+  {id:145,w:"floresta",   e:"forest",              es:"bosque/selva",g:"f", sim:"r"},
+  {id:146,w:"bolo",       e:"cake",                es:"pastel/torta",g:"m", sim:"r"},
+  {id:147,w:"fruta",      e:"fruit",               es:"fruta",       g:"f", sim:"g"},
+  {id:148,w:"arroz",      e:"rice",                es:"arroz",       g:"m", sim:"g"},
+  {id:149,w:"carne",      e:"meat",                es:"carne",       g:"f", sim:"g"},
+  {id:150,w:"feijão",     e:"beans",               es:"frijoles",    g:"m", sim:"y"},
+  {id:151,w:"café",       e:"coffee",              es:"café",        g:"m", sim:"g"},
+  {id:152,w:"leite",      e:"milk",                es:"leche",       g:"m", sim:"y"},
+  {id:153,w:"açúcar",     e:"sugar",               es:"azúcar",      g:"m", sim:"y"},
+  {id:154,w:"farinha",    e:"flour",               es:"harina",      g:"f", sim:"y"},
+  {id:155,w:"queijo",     e:"cheese",              es:"queso",       g:"m", sim:"g"},
+  {id:156,w:"ovo",        e:"egg",                 es:"huevo",       g:"m", sim:"y"},
+  {id:157,w:"suco",       e:"juice",               es:"jugo",        g:"m", sim:"r"},
+  {id:158,w:"sopa",       e:"soup",                es:"sopa",        g:"f", sim:"g"},
+  {id:159,w:"cachorro",   e:"dog",                 es:"perro",       g:"m", sim:"r"},
+  {id:160,w:"gato",       e:"cat",                 es:"gato",        g:"m", sim:"g"},
+  {id:161,w:"peixe",      e:"fish",                es:"pez/pescado", g:"m", sim:"y"},
+  {id:162,w:"cavalo",     e:"horse",               es:"caballo",     g:"m", sim:"g"},
+  {id:163,w:"computador", e:"computer",            es:"computadora", g:"m", sim:"g"},
+  {id:164,w:"celular",    e:"cell phone",          es:"celular",     g:"m", sim:"g"},
+  {id:165,w:"chave",      e:"key",                 es:"llave",       g:"f", sim:"y"},
+  {id:166,w:"janela",     e:"window",              es:"ventana",     g:"f", sim:"r"},
+  {id:167,w:"vizinho",    e:"neighbor",            es:"vecino",      g:"m", sim:"g"},
+  {id:168,w:"calçada",    e:"sidewalk",            es:"acera/vereda",g:"f", sim:"r"},
+  {id:169,w:"montanha",   e:"mountain",            es:"montaña",     g:"f", sim:"g"},
+  {id:170,w:"desconto",   e:"discount",            es:"descuento",   g:"m", sim:"g"},
+  {id:171,w:"nota",       e:"note / grade",        es:"nota",        g:"f", sim:"g"},
+  {id:172,w:"endereço",   e:"address",             es:"dirección",   g:"m", sim:"r"},
+  {id:173,w:"sinal",      e:"sign / signal",       es:"señal",       g:"m", sim:"y"},
+  {id:174,w:"resultado",  e:"result / outcome",    es:"resultado",   g:"m", sim:"g"},
+  {id:175,w:"figura",     e:"figure",              es:"figura",      g:"f", sim:"g"},
+  {id:176,w:"conjunto",   e:"set / ensemble",      es:"conjunto",    g:"m", sim:"g"},
+  {id:177,w:"teto",       e:"ceiling / roof",      es:"techo",       g:"m", sim:"g"},
+  {id:178,w:"ritmo",      e:"pace / beat",         es:"ritmo",       g:"m", sim:"g"},
+  {id:179,w:"peça",       e:"part / play",         es:"pieza",       g:"f", sim:"g"},
+  {id:180,w:"objetivo",   e:"goal / aim",          es:"objetivo",    g:"m", sim:"g"},
+  {id:181,w:"formato",    e:"format",              es:"formato",     g:"m", sim:"g"},
+  {id:182,w:"profissão",  e:"profession",          es:"profesión",   g:"f", sim:"g"},
+  {id:183,w:"movimento",  e:"movement",            es:"movimiento",  g:"m", sim:"g"},
+  {id:184,w:"sentido",    e:"sense / meaning",     es:"sentido",     g:"m", sim:"g"},
+  {id:185,w:"vontade",    e:"desire / will",       es:"ganas",       g:"f", sim:"y"},
+  {id:186,w:"peso",       e:"weight / burden",     es:"peso",        g:"m", sim:"g"},
+  {id:187,w:"razão",      e:"reason / cause",      es:"razón",       g:"f", sim:"g"},
+  {id:188,w:"poder",      e:"power / authority",   es:"poder",       g:"m", sim:"g"},
+  {id:189,w:"valor",      e:"value / worth",       es:"valor",       g:"m", sim:"g"},
+  {id:190,w:"ordem",      e:"order / command",     es:"orden",       g:"f", sim:"g"},
+  {id:191,w:"barco",      e:"boat",                es:"barco",       g:"m", sim:"g"},
+  {id:192,w:"trem",       e:"train (context 2)",   es:"tren",        g:"m", sim:"g"},
+  {id:193,w:"morro",      e:"hill (context 2)",    es:"cerro",       g:"m", sim:"r"},
+  {id:194,w:"manteiga",   e:"butter",              es:"mantequilla", g:"f", sim:"y"},
+  {id:195,w:"açúcar",     e:"sugar (context 2)",   es:"azúcar",      g:"m", sim:"y"},
+  {id:196,w:"leite",      e:"milk (context 2)",    es:"leche",       g:"m", sim:"y"},
+  {id:197,w:"ovo",        e:"egg (context 2)",     es:"huevo",       g:"m", sim:"y"},
+  {id:198,w:"sopa",       e:"soup (context 2)",    es:"sopa",        g:"f", sim:"g"},
+  {id:199,w:"sanduíche",  e:"sandwich",            es:"sándwich",    g:"m", sim:"g"},
+  {id:200,w:"condomínio", e:"condo / building",    es:"condominio",  g:"m", sim:"g"}
 ];
 
-const ART = {m:"o", f:"a"};
-const SIM_LABEL = {g:"Very Similar", y:"Somewhat Similar", r:"Different"};
-const SIM_CLS   = {g:"tag-g", y:"tag-y", r:"tag-r"};
-const SIM_EMJ   = {g:"🟢", y:"🟡", r:"🔴"};
+const ART={m:"o",f:"a"};
+const SIM_LABEL={g:"=ES",y:"≈ES",r:"≠ES"};
+const SIM_CLS={g:"tag-eq",y:"tag-ap",r:"tag-ne"};
 
-let sentences = {};
-JSON.parse(document.getElementById("sdata").textContent).forEach(x => sentences[x.id] = x.s);
+let sentences={};
+JSON.parse(document.getElementById("sdata").textContent).forEach(x=>sentences[x.id]=x.s);
 
-let activeFilter = "all", activeSort = "freq", viewMode = "grid";
-let learned = new Set();
-let modalId = null;
+let activeFilter="all", activeSort="freq", viewMode="grid", freqFilter="all";
+let learned=new Set(), modalId=null;
+let fcItems=[], fcIdx=0, fcFlipped=false;
 
-function article(n){ return ART[n.g]; }
+function simBadge(sim){return `<span class="tag ${SIM_CLS[sim]}">${SIM_LABEL[sim]}</span>`;}
+function genderBadge(g){return `<span class="tag ${g==="m"?"tag-m":"tag-f"}">${g==="m"?"masc":"fem"}</span>`;}
 
-function renderGrid(){
-  const q = document.getElementById("search").value.toLowerCase().trim();
-  let items = NOUNS.filter(n => {
-    if(activeFilter === "m" && n.g !== "m") return false;
-    if(activeFilter === "f" && n.g !== "f") return false;
-    if(activeFilter === "g" && n.sim !== "g") return false;
-    if(activeFilter === "y" && n.sim !== "y") return false;
-    if(activeFilter === "r" && n.sim !== "r") return false;
-    if(activeFilter === "learned" && !learned.has(n.id)) return false;
-    if(q && !n.w.toLowerCase().includes(q) && !n.e.toLowerCase().includes(q)) return false;
+function getFiltered(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  let items=NOUNS.filter(n=>{
+    if(activeFilter==="m"&&n.g!=="m") return false;
+    if(activeFilter==="f"&&n.g!=="f") return false;
+    if(activeFilter==="g"&&n.sim!=="g") return false;
+    if(activeFilter==="y"&&n.sim!=="y") return false;
+    if(activeFilter==="r"&&n.sim!=="r") return false;
+    if(activeFilter==="learned"&&!learned.has(n.id)) return false;
+    if(freqFilter==="1"&&(n.id<1||n.id>50)) return false;
+    if(freqFilter==="2"&&(n.id<51||n.id>100)) return false;
+    if(freqFilter==="3"&&(n.id<101||n.id>150)) return false;
+    if(freqFilter==="4"&&(n.id<151||n.id>200)) return false;
+    if(q&&!n.w.toLowerCase().includes(q)&&!n.e.toLowerCase().includes(q)&&!n.es.toLowerCase().includes(q)) return false;
     return true;
   });
   if(activeSort==="freq")  items.sort((a,b)=>a.id-b.id);
   else if(activeSort==="alpha") items.sort((a,b)=>a.w.localeCompare(b.w));
   else if(activeSort==="sim")   items.sort((a,b)=>({g:0,y:1,r:2}[a.sim]-{g:0,y:1,r:2}[b.sim])||a.id-b.id);
   else if(activeSort==="len")   items.sort((a,b)=>a.w.length-b.w.length||a.id-b.id);
+  return items;
+}
 
-  // update counts
-  document.getElementById("ct-showing").textContent = items.length;
-  document.getElementById("ct-all").textContent = NOUNS.length;
-  document.getElementById("ct-m").textContent = NOUNS.filter(n=>n.g==="m").length;
-  document.getElementById("ct-f").textContent = NOUNS.filter(n=>n.g==="f").length;
-  document.getElementById("ct-g").textContent = NOUNS.filter(n=>n.sim==="g").length;
-  document.getElementById("ct-y").textContent = NOUNS.filter(n=>n.sim==="y").length;
-  document.getElementById("ct-r").textContent = NOUNS.filter(n=>n.sim==="r").length;
-  document.getElementById("ct-learned").textContent = learned.size;
+function renderGrid(){
+  const items=getFiltered();
+  document.getElementById("ct-showing").textContent=items.length;
+  document.getElementById("ct-all").textContent=NOUNS.length;
+  document.getElementById("ct-m").textContent=NOUNS.filter(n=>n.g==="m").length;
+  document.getElementById("ct-f").textContent=NOUNS.filter(n=>n.g==="f").length;
+  document.getElementById("ct-g").textContent=NOUNS.filter(n=>n.sim==="g").length;
+  document.getElementById("ct-y").textContent=NOUNS.filter(n=>n.sim==="y").length;
+  document.getElementById("ct-r").textContent=NOUNS.filter(n=>n.sim==="r").length;
+  document.getElementById("ct-learned").textContent=learned.size;
 
-  const grid = document.getElementById("grid");
-  grid.className = "noun-grid" + (viewMode==="list" ? " list-mode" : "");
-
-  if(!items.length){ grid.innerHTML='<div class="empty">No nouns match your search.</div>'; return; }
-
-  grid.innerHTML = items.map(n => {
-    const art = article(n);
-    const lrn = learned.has(n.id);
+  const grid=document.getElementById("grid");
+  grid.className="noun-grid"+(viewMode==="list"?" list-mode":"");
+  if(!items.length){grid.innerHTML='<div class="empty">No nouns match your search.</div>';return;}
+  grid.innerHTML=items.map(n=>{
+    const lrn=learned.has(n.id);
     return `<div class="card${lrn?" learned":""}" onclick="openModal(${n.id})">
       <div class="card-freq">#${n.id}</div>
       <div class="card-word">${n.w}</div>
-      <div class="card-article">${art} ${n.w}</div>
+      <div class="card-article">${ART[n.g]} ${n.w}</div>
       <div class="card-en">${n.e}</div>
+      <div class="card-es">ES: ${n.es}</div>
       <div class="card-tags">
-        <span class="tag ${n.g==="m"?"tag-m":"tag-f"}">${n.g==="m"?"masc":"fem"}</span>
-        <span class="tag ${SIM_CLS[n.sim]}">${SIM_EMJ[n.sim]}</span>
+        ${genderBadge(n.g)}
+        ${simBadge(n.sim)}
         ${lrn?'<span class="tag tag-learned">✓</span>':""}
       </div>
     </div>`;
   }).join("");
 }
 
+/* ── MODAL ── */
 function openModal(id){
-  const n = NOUNS.find(x=>x.id===id);
-  if(!n) return;
-  modalId = id;
-  const art = article(n);
-  document.getElementById("m-word").textContent = n.w;
-  document.getElementById("m-article").textContent = art + " " + n.w + (n.g==="m" ? " (masculine)" : " (feminine)");
-  document.getElementById("m-en").textContent = n.e;
-  document.getElementById("m-tags").innerHTML =
-    `<span class="modal-tag ${n.g==="m"?"tag-m":"tag-f"}">${n.g==="m"?"Masculine":"Feminine"}</span>
-     <span class="modal-tag ${SIM_CLS[n.sim]}">${SIM_EMJ[n.sim]} ${SIM_LABEL[n.sim]}</span>
-     <span class="modal-tag" style="background:#fef3c7;color:#92400e;">Freq #${n.id}</span>`;
-  const btn = document.getElementById("mark-btn");
-  btn.textContent = learned.has(id) ? "✓ Learned!" : "Mark as Learned";
-  btn.className = "mark-btn" + (learned.has(id) ? " marked" : "");
-  const sents = sentences[id] || ["",""];
-  document.getElementById("m-sents").innerHTML = sents.map((s,i) =>
+  const n=NOUNS.find(x=>x.id===id); if(!n) return;
+  modalId=id;
+  document.getElementById("m-word").textContent=n.w;
+  document.getElementById("m-article").textContent=ART[n.g]+" "+n.w+" ("+(n.g==="m"?"masculine":"feminine")+")";
+  document.getElementById("m-en").textContent=n.e;
+  document.getElementById("m-es").textContent="ES: "+n.es;
+  document.getElementById("m-tags").innerHTML=
+    genderBadge(n.g)+simBadge(n.sim)+
+    `<span class="modal-tag" style="background:#fef3c7;color:#92400e;border-color:#fde68a;">Freq #${n.id}</span>`;
+  const btn=document.getElementById("mark-btn");
+  btn.textContent=learned.has(id)?"✓ Learned!":"Mark as Learned";
+  btn.className="mark-btn"+(learned.has(id)?" marked":"");
+  const s=sentences[id]||["",""];
+  document.getElementById("m-sents").innerHTML=s.map((txt,i)=>
     `<div class="sent-item">
-      <span class="sent-text" id="sent-${id}-${i}">${s}</span>
-      <button class="speak-btn" onclick="speak('sent-${id}-${i}',this)" title="Listen">🔊</button>
+      <span class="sent-text" id="sent-${id}-${i}">${txt}</span>
+      <button class="speak-btn" onclick="speakEl('sent-${id}-${i}',this)" title="Listen">🔊</button>
     </div>`).join("");
   document.getElementById("overlay").classList.add("open");
+  // auto-pronounce article + word
+  speakText(ART[n.g]+" "+n.w);
 }
 
-function closeModal(e){
-  if(!e || e.target===document.getElementById("overlay") || e.currentTarget===document.getElementById("overlay") && e.target.classList.contains("overlay")){
-    if(e && e.target!==document.getElementById("overlay") && e.type==="click") return;
-    document.getElementById("overlay").classList.remove("open");
-    modalId = null;
-  }
+function closeModal(){
+  document.getElementById("overlay").classList.remove("open");
+  modalId=null;
 }
-
-document.getElementById("overlay").addEventListener("click", function(e){
-  if(e.target === this) { this.classList.remove("open"); modalId=null; }
+document.getElementById("overlay").addEventListener("click",function(e){
+  if(e.target===this) closeModal();
 });
 
 function toggleLearned(){
   if(!modalId) return;
-  if(learned.has(modalId)) learned.delete(modalId);
-  else learned.add(modalId);
-  const btn = document.getElementById("mark-btn");
-  btn.textContent = learned.has(modalId) ? "✓ Learned!" : "Mark as Learned";
-  btn.className = "mark-btn" + (learned.has(modalId) ? " marked" : "");
+  learned.has(modalId)?learned.delete(modalId):learned.add(modalId);
+  const btn=document.getElementById("mark-btn");
+  btn.textContent=learned.has(modalId)?"✓ Learned!":"Mark as Learned";
+  btn.className="mark-btn"+(learned.has(modalId)?" marked":"");
   renderGrid();
 }
 
-function speak(elId, btn){
-  const key = document.getElementById("apikey").value.trim();
-  if(!key){ alert("Please enter your Google TTS API key at the top of the page."); return; }
-  const text = document.getElementById(elId).textContent;
-  btn.classList.add("loading");
+/* ── TTS ── */
+function speakText(text, btn){
+  const key=document.getElementById("apikey").value.trim();
+  if(!key) return;
+  if(btn) btn.classList.add("loading");
   fetch("https://texttospeech.googleapis.com/v1/text:synthesize?key="+key,{
-    method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({input:{text},voice:{languageCode:"pt-BR",name:"pt-BR-Neural2-B"},audioConfig:{audioEncoding:"MP3",speakingRate:0.9}})
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({input:{text},voice:{languageCode:"pt-BR",name:"pt-BR-Neural2-B"},audioConfig:{audioEncoding:"MP3",speakingRate:0.85}})
   }).then(r=>r.json()).then(d=>{
-    btn.classList.remove("loading");
+    if(btn) btn.classList.remove("loading");
     if(d.audioContent) new Audio("data:audio/mp3;base64,"+d.audioContent).play();
-    else alert("TTS error: "+(d.error?d.error.message:"Check your API key."));
-  }).catch(err=>{ btn.classList.remove("loading"); alert("Request failed: "+err.message); });
+  }).catch(()=>{ if(btn) btn.classList.remove("loading"); });
+}
+function speakEl(elId, btn){
+  speakText(document.getElementById(elId).textContent, btn);
 }
 
-// Sort pills
+/* ── FLASHCARDS ── */
+function enterFC(){
+  fcItems=getFiltered();
+  fcIdx=0; fcFlipped=false;
+  if(!fcItems.length){alert("No nouns match the current filters.");return;}
+  document.getElementById("grid").style.display="none";
+  document.getElementById("fc-view").style.display="block";
+  renderFC();
+}
+function exitFC(){
+  document.getElementById("fc-view").style.display="none";
+  document.getElementById("grid").style.display="";
+}
+function renderFC(){
+  if(!fcItems.length) return;
+  const n=fcItems[fcIdx];
+  document.getElementById("fc-counter").textContent=(fcIdx+1)+" / "+fcItems.length;
+  document.getElementById("fc-art").textContent=ART[n.g];
+  document.getElementById("fc-word").textContent=n.w;
+  document.getElementById("fc-en").textContent=n.e;
+  document.getElementById("fc-es").textContent="ES: "+n.es;
+  document.getElementById("fc-tags").innerHTML=genderBadge(n.g)+simBadge(n.sim);
+  const inner=document.getElementById("fc-inner");
+  inner.classList.remove("flipped"); fcFlipped=false;
+  document.getElementById("fc-prev").disabled=fcIdx===0;
+  document.getElementById("fc-next").disabled=fcIdx===fcItems.length-1;
+  const mk=document.getElementById("fc-mark");
+  mk.textContent=learned.has(n.id)?"✓ Learned!":"Mark as Learned";
+  mk.className="fc-mark-btn"+(learned.has(n.id)?" marked":"");
+  // auto-pronounce word with article
+  speakText(ART[n.g]+" "+n.w);
+}
+function flipCard(){
+  fcFlipped=!fcFlipped;
+  document.getElementById("fc-inner").classList.toggle("flipped",fcFlipped);
+}
+function fcNav(dir){
+  fcIdx=Math.max(0,Math.min(fcItems.length-1,fcIdx+dir));
+  renderFC();
+}
+function fcToggleLearned(){
+  if(!fcItems.length) return;
+  const id=fcItems[fcIdx].id;
+  learned.has(id)?learned.delete(id):learned.add(id);
+  const mk=document.getElementById("fc-mark");
+  mk.textContent=learned.has(id)?"✓ Learned!":"Mark as Learned";
+  mk.className="fc-mark-btn"+(learned.has(id)?" marked":"");
+  document.getElementById("ct-learned").textContent=learned.size;
+  renderGrid();
+}
+
+/* ── KEYBOARD ── */
+document.addEventListener("keydown",e=>{
+  if(document.getElementById("fc-view").style.display==="block"){
+    if(e.key===" "||e.key==="ArrowUp"){e.preventDefault();flipCard();}
+    else if(e.key==="ArrowLeft") fcNav(-1);
+    else if(e.key==="ArrowRight") fcNav(1);
+    else if(e.key==="l"||e.key==="L") fcToggleLearned();
+  } else {
+    if(e.key==="Escape") closeModal();
+  }
+});
+
+/* ── CONTROLS ── */
 document.querySelectorAll("[data-sort]").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll("[data-sort]").forEach(x=>x.classList.remove("active"));
   b.classList.add("active"); activeSort=b.dataset.sort; renderGrid();
+  if(document.getElementById("fc-view").style.display==="block"){fcItems=getFiltered();fcIdx=0;renderFC();}
 }));
-
-// Filter stat pills
+document.querySelectorAll("[data-freq]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("[data-freq]").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); freqFilter=b.dataset.freq; renderGrid();
+  if(document.getElementById("fc-view").style.display==="block"){fcItems=getFiltered();fcIdx=0;renderFC();}
+}));
 document.querySelectorAll(".stat-pill.clickable").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".stat-pill.clickable").forEach(x=>x.classList.remove("active"));
   b.classList.add("active"); activeFilter=b.dataset.filter; renderGrid();
+  if(document.getElementById("fc-view").style.display==="block"){fcItems=getFiltered();fcIdx=0;renderFC();}
 }));
+document.getElementById("search").addEventListener("input",()=>{renderGrid();});
 
-// Search
-document.getElementById("search").addEventListener("input", renderGrid);
-
-// View toggle
 document.getElementById("btn-grid").addEventListener("click",()=>{
-  viewMode="grid";
+  viewMode="grid"; exitFC();
   document.getElementById("btn-grid").classList.add("active");
   document.getElementById("btn-list").classList.remove("active");
+  document.getElementById("btn-fc").classList.remove("active");
   renderGrid();
 });
 document.getElementById("btn-list").addEventListener("click",()=>{
-  viewMode="list";
+  viewMode="list"; exitFC();
   document.getElementById("btn-list").classList.add("active");
   document.getElementById("btn-grid").classList.remove("active");
+  document.getElementById("btn-fc").classList.remove("active");
   renderGrid();
+});
+document.getElementById("btn-fc").addEventListener("click",()=>{
+  document.getElementById("btn-fc").classList.add("active");
+  document.getElementById("btn-grid").classList.remove("active");
+  document.getElementById("btn-list").classList.remove("active");
+  enterFC();
 });
 
 renderGrid();

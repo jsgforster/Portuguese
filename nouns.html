@@ -715,7 +715,7 @@ function speak(elId, btn){
   btn.classList.add("loading");
   fetch("https://texttospeech.googleapis.com/v1/text:synthesize?key="+key,{
     method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({input:{text},voice:{languageCode:"pt-BR",name:"pt-BR-Standard-A"},audioConfig:{audioEncoding:"MP3",speakingRate:0.9}})
+    body:JSON.stringify({input:{text},voice:{languageCode:"pt-BR",name:"pt-BR-Neural2-B"},audioConfig:{audioEncoding:"MP3",speakingRate:0.9}})
   }).then(r=>r.json()).then(d=>{
     btn.classList.remove("loading");
     if(d.audioContent) new Audio("data:audio/mp3;base64,"+d.audioContent).play();

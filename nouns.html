@@ -1,0 +1,382 @@
+import { useState, useMemo } from "react";
+
+const NOUNS = [
+  { id: 1, pt: "tempo", en: "time / weather", sim: "yellow", note: "False friend alert: means both 'time' and 'weather'", sentences: ["Não tenho tempo pra isso agora.", "O tempo tá fechado, vai chover."] },
+  { id: 2, pt: "coisa", en: "thing", sim: "green", sentences: ["Que coisa mais estranha!", "Preciso te contar uma coisa."] },
+  { id: 3, pt: "vez", en: "time (instance)", sim: "yellow", note: "vez = occasion/turn, not clock time", sentences: ["Já fui lá várias vezes.", "Dessa vez eu não erro."] },
+  { id: 4, pt: "dia", en: "day", sim: "green", sentences: ["Que dia é hoje?", "Tive um dia horrível no trabalho."] },
+  { id: 5, pt: "homem", en: "man", sim: "green", sentences: ["Tem um homem te esperando lá fora.", "Ele é um homem de palavra."] },
+  { id: 6, pt: "mulher", en: "woman / wife", sim: "yellow", note: "Can mean 'wife' in context", sentences: ["A mulher dele é médica.", "Tem uma mulher na fila reclamando."] },
+  { id: 7, pt: "casa", en: "house / home", sim: "green", sentences: ["Vou pra casa depois do trampo.", "A casa da minha vó é enorme."] },
+  { id: 8, pt: "vida", en: "life", sim: "green", sentences: ["A vida é muito corrida aqui em SP.", "Que vida boa, hein?"] },
+  { id: 9, pt: "gente", en: "people / we (informal)", sim: "yellow", note: "'A gente' = informal 'we'", sentences: ["A gente vai sair mais tarde.", "Tinha muita gente no show."] },
+  { id: 10, pt: "ano", en: "year", sim: "green", sentences: ["Faz dois anos que não te vejo.", "Esse ano foi pesado."] },
+  { id: 11, pt: "cidade", en: "city", sim: "green", sentences: ["Essa cidade nunca dorme.", "Você conhece alguma cidade boa pra visitar?"] },
+  { id: 12, pt: "mão", en: "hand", sim: "green", sentences: ["Me dá uma mão aqui?", "Ela sempre tem o celular na mão."] },
+  { id: 13, pt: "olho", en: "eye", sim: "green", sentences: ["Ele tem olhos verdes lindos.", "Fica de olho na bolsa."] },
+  { id: 14, pt: "pai", en: "father / parents (plural)", sim: "yellow", note: "pais (plural) = parents", sentences: ["Meu pai chega sexta-feira.", "Os meus pais moram no interior."] },
+  { id: 15, pt: "mãe", en: "mother", sim: "yellow", note: "Different spelling from Spanish 'madre'", sentences: ["Minha mãe ligou agora pouco.", "Você é igualzinho à sua mãe."] },
+  { id: 16, pt: "filho", en: "son / child", sim: "green", sentences: ["O filho dela passou na faculdade.", "Tenho dois filhos pequenos."] },
+  { id: 17, pt: "água", en: "water", sim: "green", sentences: ["Me passa um copo d'água?", "A água aqui é boa pra beber."] },
+  { id: 18, pt: "rua", en: "street", sim: "yellow", sentences: ["Ele mora na rua de baixo.", "Tá frio na rua hoje."] },
+  { id: 19, pt: "trabalho", en: "work / job", sim: "green", sentences: ["Preciso ir pro trabalho cedo amanhã.", "Como tá o trabalho?"] },
+  { id: 20, pt: "hora", en: "hour / time (clock)", sim: "green", sentences: ["Que horas são?", "Já tá na hora de ir embora."] },
+  { id: 21, pt: "lugar", en: "place", sim: "green", sentences: ["Conheço um lugar ótimo pra comer.", "Guarda esse lugar pra mim."] },
+  { id: 22, pt: "mundo", en: "world", sim: "green", sentences: ["O mundo tá uma loucura.", "Ela viajou o mundo inteiro."] },
+  { id: 23, pt: "parte", en: "part", sim: "green", sentences: ["Essa é a parte mais difícil.", "A maior parte das pessoas não sabe disso."] },
+  { id: 24, pt: "olhar", en: "look / gaze", sim: "yellow", sentences: ["O olhar dela me deixou sem graça.", "Ele me jogou um olhar estranho."] },
+  { id: 25, pt: "nome", en: "name", sim: "green", sentences: ["Qual é o seu nome?", "Não me lembro o nome do restaurante."] },
+  { id: 26, pt: "noite", en: "night", sim: "green", sentences: ["Boa noite, tudo bem?", "A gente saiu essa noite toda."] },
+  { id: 27, pt: "problema", en: "problem", sim: "green", sentences: ["Sem problema, pode deixar.", "O problema é que não tenho dinheiro."] },
+  { id: 28, pt: "governo", en: "government", sim: "green", sentences: ["O governo anunciou uma nova lei.", "Não confio muito no governo."] },
+  { id: 29, pt: "país", en: "country", sim: "green", sentences: ["Esse país tem muita gente boa.", "Ela vai sair do país mês que vem."] },
+  { id: 30, pt: "forma", en: "form / way / shape", sim: "green", sentences: ["De forma alguma aceito isso.", "Tem várias formas de resolver."] },
+  { id: 31, pt: "amor", en: "love", sim: "green", sentences: ["Amor, você viu meu celular?", "Ela fez tudo isso por amor."] },
+  { id: 32, pt: "ideia", en: "idea", sim: "green", sentences: ["Tive uma ideia incrível agora.", "Não tenho a menor ideia."] },
+  { id: 33, pt: "ponto", en: "point / dot / stop", sim: "green", sentences: ["Ponto final, não tem mais discussão.", "Qual é o ponto de ônibus mais perto?"] },
+  { id: 34, pt: "caso", en: "case / situation", sim: "green", sentences: ["Nesse caso, vou ter que cancelar.", "É um caso sério, precisamos resolver."] },
+  { id: 35, pt: "número", en: "number", sim: "green", sentences: ["Qual é o seu número de celular?", "Anota o número do protocolo."] },
+  { id: 36, pt: "porta", en: "door", sim: "green", sentences: ["Fecha a porta, tá frio.", "Alguém bateu na porta."] },
+  { id: 37, pt: "caminho", en: "path / way / road", sim: "green", sentences: ["Esse não é o caminho certo.", "A gente descobriu um caminho mais rápido."] },
+  { id: 38, pt: "fim", en: "end", sim: "green", sentences: ["No fim das contas, deu tudo certo.", "Esse filme não tem fim."] },
+  { id: 39, pt: "tipo", en: "type / guy (informal)", sim: "green", note: "'Tipo' also used as filler word like 'like' in English", sentences: ["Que tipo de comida você prefere?", "Tinha um tipo esquisito me olhando."] },
+  { id: 40, pt: "meio", en: "middle / half / means", sim: "green", note: "Very versatile word", sentences: ["Tô meio cansado hoje.", "O meio do caminho é o mais difícil."] },
+  { id: 41, pt: "poder", en: "power", sim: "green", sentences: ["O dinheiro dá poder a quem não merece.", "Ela perdeu o poder dentro da empresa."] },
+  { id: 42, pt: "olhos", en: "eyes", sim: "green", sentences: ["Fecha os olhos e respira.", "Os olhos dela brilharam quando ouviu a notícia."] },
+  { id: 43, pt: "coração", en: "heart", sim: "yellow", sentences: ["Meu coração acelerou quando te vi.", "Faz isso de coração, não por obrigação."] },
+  { id: 44, pt: "voz", en: "voice", sim: "green", sentences: ["Ela tem uma voz muito bonita.", "Abaixa a voz, o bebê tá dormindo."] },
+  { id: 45, pt: "palavra", en: "word", sim: "green", sentences: ["Ele é um cara de palavra.", "Não achei a palavra certa pra falar."] },
+  { id: 46, pt: "momento", en: "moment", sim: "green", sentences: ["Esse é o momento certo.", "Aguarda um momento, por favor."] },
+  { id: 47, pt: "corpo", en: "body", sim: "green", sentences: ["Meu corpo tá todo doendo.", "Cuida do seu corpo, só temos um."] },
+  { id: 48, pt: "modo", en: "way / mode / manner", sim: "green", sentences: ["De modo geral, foi um bom evento.", "Mudou o modo de trabalhar depois da pandemia."] },
+  { id: 49, pt: "lei", en: "law", sim: "green", sentences: ["Essa lei não faz sentido nenhum.", "A lei é igual pra todo mundo."] },
+  { id: 50, pt: "deus", en: "god", sim: "green", sentences: ["Meu Deus, que susto!", "Ela agradece a Deus todo dia."] },
+  { id: 51, pt: "dinheiro", en: "money", sim: "red", note: "Spanish: dinero — similar but different", sentences: ["Tô sem dinheiro no momento.", "Dinheiro não compra felicidade, mas ajuda."] },
+  { id: 52, pt: "verdade", en: "truth", sim: "green", sentences: ["Fala a verdade, você gostou?", "Na verdade, eu nem fui lá."] },
+  { id: 53, pt: "família", en: "family", sim: "green", sentences: ["Família em primeiro lugar.", "A família dela é muito animada."] },
+  { id: 54, pt: "história", en: "history / story", sim: "green", sentences: ["Que história mais louca!", "A história do Brasil é muito rica."] },
+  { id: 55, pt: "céu", en: "sky / heaven", sim: "yellow", sentences: ["Olha o céu, que lindo!", "Ela é um céu de pessoa."] },
+  { id: 56, pt: "olha", en: "look (interjection)", sim: "yellow", note: "Often used as a filler/attention-getter", sentences: ["Olha, não é bem assim.", "Olha que coincidência!"] },
+  { id: 57, pt: "terra", en: "earth / land / soil", sim: "green", sentences: ["Ele voltou pra terra dele.", "A terra aqui é muito fértil."] },
+  { id: 58, pt: "braço", en: "arm", sim: "yellow", sentences: ["Me dá um abraço, não o braço.", "Ele me puxou pelo braço."] },
+  { id: 59, pt: "frente", en: "front", sim: "green", sentences: ["Senta na minha frente.", "A loja fica na frente do mercado."] },
+  { id: 60, pt: "carro", en: "car", sim: "red", note: "Spanish: coche/carro — carro used in some regions", sentences: ["Meu carro quebrou hoje de manhã.", "Vai de carro ou de metrô?"] },
+  { id: 61, pt: "mesa", en: "table", sim: "green", sentences: ["Coloca na mesa da cozinha.", "A mesa tá reservada pro jantar."] },
+  { id: 62, pt: "livro", en: "book", sim: "green", sentences: ["Tô lendo um livro incrível.", "Qual foi o último livro que você leu?"] },
+  { id: 63, pt: "escola", en: "school", sim: "green", sentences: ["A escola começa às sete da manhã.", "Meu filho não quer ir pra escola."] },
+  { id: 64, pt: "saúde", en: "health", sim: "yellow", sentences: ["Saúde é o mais importante.", "O sistema de saúde tá sobrecarregado."] },
+  { id: 65, pt: "semana", en: "week", sim: "green", sentences: ["Semana que vem a gente resolve.", "Foi uma semana muito puxada."] },
+  { id: 66, pt: "tarde", en: "afternoon / late", sim: "green", note: "Both a noun and adjective", sentences: ["Boa tarde, como vai?", "Já é tarde, vou dormir."] },
+  { id: 67, pt: "manhã", en: "morning", sim: "yellow", sentences: ["Bom dia, como foi a manhã?", "De manhã cedo não me fala."] },
+  { id: 68, pt: "cidade", en: "city", sim: "green", sentences: ["Que cidade você mora?", "Essa cidade tem muito trânsito."] },
+  { id: 69, pt: "amigo", en: "friend", sim: "green", sentences: ["Ele é meu amigo de infância.", "Amigo de verdade aparece na hora difícil."] },
+  { id: 70, pt: "comida", en: "food", sim: "yellow", sentences: ["A comida aqui é muito boa.", "Não tem comida em casa, vou pedir delivery."] },
+  { id: 71, pt: "pé", en: "foot / bottom", sim: "yellow", note: "pé de página = footnote; estar de pé = standing", sentences: ["Tô com o pé doendo de tanto andar.", "Ela ficou de pé a noite toda."] },
+  { id: 72, pt: "jeito", en: "way / manner", sim: "red", note: "Very Brazilian — 'dar um jeito' = to find a way", sentences: ["Dá um jeito nisso aí.", "Não tem jeito, vai ter que esperar."] },
+  { id: 73, pt: "lado", en: "side", sim: "green", sentences: ["Fica do meu lado, tô com medo.", "Do lado de fora tá quente."] },
+  { id: 74, pt: "processo", en: "process", sim: "green", sentences: ["O processo de aprovação demora.", "Tá tudo no processo, é só aguardar."] },
+  { id: 75, pt: "resultado", en: "result", sim: "green", sentences: ["O resultado saiu hoje.", "Que resultado ótimo pra empresa!"] },
+  { id: 76, pt: "grupo", en: "group", sim: "green", sentences: ["Entrei num grupo de estudos.", "O grupo todo foi junto."] },
+  { id: 77, pt: "vez", en: "time (turn)", sim: "yellow", sentences: ["É a minha vez agora.", "Às vezes não dá pra tudo."] },
+  { id: 78, pt: "uso", en: "use", sim: "green", sentences: ["Qual é o uso correto dessa palavra?", "Esse produto é de uso diário."] },
+  { id: 79, pt: "serviço", en: "service / work", sim: "green", sentences: ["O serviço deles é de primeira.", "Ele foi pro serviço cedo hoje."] },
+  { id: 80, pt: "exemplo", en: "example", sim: "green", sentences: ["Por exemplo, você pode usar assim.", "Ela é um exemplo pra seguir."] },
+  { id: 81, pt: "situação", en: "situation", sim: "green", sentences: ["A situação tá complicada.", "Como você resolveu essa situação?"] },
+  { id: 82, pt: "programa", en: "program / show / plan", sim: "green", note: "Brazilians use 'programa' for social plans too", sentences: ["Qual é o programa pra esse finde?", "O programa tá travando no meu computador."] },
+  { id: 83, pt: "início", en: "beginning / start", sim: "yellow", sentences: ["No início foi difícil, mas melhorou.", "O início do filme é um pouco lento."] },
+  { id: 84, pt: "sistema", en: "system", sim: "green", sentences: ["O sistema caiu de novo.", "O sistema de transporte aqui é ruim."] },
+  { id: 85, pt: "informação", en: "information", sim: "green", sentences: ["Você tem alguma informação sobre isso?", "A informação chegou errada pra mim."] },
+  { id: 86, pt: "área", en: "area / field", sim: "green", sentences: ["Ela trabalha na área de saúde.", "Essa área da cidade é perigosa à noite."] },
+  { id: 87, pt: "nível", en: "level", sim: "green", sentences: ["Qual é o seu nível de inglês?", "O nível do rio subiu muito."] },
+  { id: 88, pt: "pessoa", en: "person", sim: "green", sentences: ["Ela é uma pessoa muito boa.", "Tem alguma pessoa responsável aqui?"] },
+  { id: 89, pt: "questão", en: "question / issue / matter", sim: "green", note: "More formal than 'pergunta'", sentences: ["A questão é mais complicada do que parece.", "Isso é questão de tempo."] },
+  { id: 90, pt: "projeto", en: "project", sim: "green", sentences: ["Tô num projeto novo no trampo.", "O projeto foi aprovado finalmente."] },
+  { id: 91, pt: "minuto", en: "minute", sim: "green", sentences: ["Espera um minuto, já volto.", "Chegou com dez minutos de atraso."] },
+  { id: 92, pt: "conta", en: "bill / account / count", sim: "green", note: "Very versatile: 'conta no banco', 'paga a conta'", sentences: ["Pede a conta, por favor.", "Vou depositar na minha conta."] },
+  { id: 93, pt: "campo", en: "field / countryside", sim: "green", sentences: ["Ela foi morar no campo.", "O campo de futebol tá alagado."] },
+  { id: 94, pt: "falta", en: "lack / absence / foul", sim: "green", note: "'Tá faltando' = something is missing", sentences: ["Sinto falta de você.", "Falta de respeito é inaceitável."] },
+  { id: 95, pt: "hora", en: "hour / time (clock)", sim: "green", sentences: ["Na hora H ele some.", "Que horas você chega?"] },
+  { id: 96, pt: "empresa", en: "company / business", sim: "green", sentences: ["Trabalho numa empresa grande.", "A empresa faliu no ano passado."] },
+  { id: 97, pt: "estado", en: "state / condition", sim: "green", sentences: ["Em que estado você mora?", "O estado do apartamento era horrível."] },
+  { id: 98, pt: "sentido", en: "sense / direction / meaning", sim: "green", sentences: ["Isso não faz sentido nenhum.", "Vai no sentido contrário."] },
+  { id: 99, pt: "direito", en: "right / law (study)", sim: "green", note: "direito = right (noun); direto = straight/direct", sentences: ["Você tem direito de reclamar.", "Ela tá estudando direito na federal."] },
+  { id: 100, pt: "razão", en: "reason / right (to be)", sim: "green", note: "ter razão = to be right", sentences: ["Você tem razão, me enganei.", "Qual é a razão disso tudo?"] },
+  { id: 101, pt: "relação", en: "relationship / relation", sim: "green", sentences: ["A relação deles não tá bem.", "Não tem relação com o que aconteceu."] },
+  { id: 102, pt: "movimento", en: "movement", sim: "green", sentences: ["O movimento na rua tá intenso hoje.", "O movimento dos direitos civis foi essencial."] },
+  { id: 103, pt: "natureza", en: "nature", sim: "green", sentences: ["Preciso de um tempo na natureza.", "A natureza do problema é diferente."] },
+  { id: 104, pt: "espécie", en: "species / sort / kind", sim: "green", sentences: ["É uma espécie de ritual pra eles.", "Essa espécie tá em extinção."] },
+  { id: 105, pt: "jogo", en: "game / match", sim: "yellow", sentences: ["Viu o jogo ontem à noite?", "A vida é um jogo de paciência."] },
+  { id: 106, pt: "povo", en: "people / folk", sim: "green", note: "More collective than 'pessoas'", sentences: ["O povo brasileiro é muito acolhedor.", "O povo tá cansado de promessa."] },
+  { id: 107, pt: "criança", en: "child", sim: "red", note: "Spanish: niño — completely different word", sentences: ["Criança tem que ter limite.", "Era uma criança muito esperta."] },
+  { id: 108, pt: "cama", en: "bed", sim: "green", sentences: ["Vou direto pra cama quando chegar.", "Faz a cama antes de sair."] },
+  { id: 109, pt: "chão", en: "floor / ground", sim: "red", note: "Spanish: suelo/piso — different", sentences: ["Cuidado, o chão tá molhado.", "O celular caiu no chão e quebrou."] },
+  { id: 110, pt: "sangue", en: "blood", sim: "green", sentences: ["Doação de sangue salva vidas.", "É da família, corre no sangue."] },
+  { id: 111, pt: "volta", en: "return / turn / around", sim: "yellow", note: "dar uma volta = to take a walk", sentences: ["Vou dar uma volta no bairro.", "Na volta a gente para pra comer."] },
+  { id: 112, pt: "força", en: "strength / force", sim: "green", sentences: ["Força, vai dar tudo certo!", "Não tenho força pra discutir agora."] },
+  { id: 113, pt: "sol", en: "sun", sim: "green", sentences: ["Que sol gostoso hoje!", "Passa protetor, tá um sol danado."] },
+  { id: 114, pt: "noite", en: "night / evening", sim: "green", sentences: ["Boa noite, dormiu bem?", "A gente saiu até de madrugada essa noite."] },
+  { id: 115, pt: "médico", en: "doctor", sim: "green", sentences: ["Preciso marcar consulta com o médico.", "O médico disse que é nada grave."] },
+  { id: 116, pt: "trabalho", en: "work / effort", sim: "green", sentences: ["Deu muito trabalho montar isso.", "Tô saindo do trabalho agora."] },
+  { id: 117, pt: "sonho", en: "dream", sim: "green", sentences: ["Tive um sonho muito estranho.", "Realizar um sonho não é fácil."] },
+  { id: 118, pt: "sorriso", en: "smile", sim: "green", sentences: ["O sorriso dela ilumina o ambiente.", "Mantém o sorriso, vai passar."] },
+  { id: 119, pt: "pele", en: "skin", sim: "yellow", sentences: ["Minha pele ressecou com o frio.", "Ela tem uma pele muito bonita."] },
+  { id: 120, pt: "boca", en: "mouth", sim: "green", sentences: ["Cuidado com o que sai da sua boca.", "Abre a boca pro médico ver."] },
+  { id: 121, pt: "cabeça", en: "head / mind", sim: "green", sentences: ["Tô com a cabeça cheia.", "Dói a minha cabeça de tanto pensar."] },
+  { id: 122, pt: "nariz", en: "nose", sim: "yellow", sentences: ["Meu nariz não para de escorrer.", "Não mete o nariz na vida dos outros."] },
+  { id: 123, pt: "ouvido", en: "ear (inner) / hearing", sim: "yellow", note: "orelha = outer ear, ouvido = inner/hearing", sentences: ["Ela tem um ouvido absoluto pra música.", "Fala mais alto, meu ouvido tá ruim."] },
+  { id: 124, pt: "dor", en: "pain / ache", sim: "green", sentences: ["Tô com uma dor nas costas.", "A dor passa, fica a saudade."] },
+  { id: 125, pt: "medo", en: "fear", sim: "red", note: "Spanish: miedo — very similar actually!", sentences: ["Tenho medo de altura.", "Não tem medo não, vai lá."] },
+  { id: 126, pt: "saudade", en: "longing / missing someone", sim: "red", note: "Untranslatable — unique to Portuguese", sentences: ["Tô com saudade de você.", "Saudade é a presença de quem tá longe."] },
+  { id: 127, pt: "festa", en: "party / celebration", sim: "green", sentences: ["Vai ter festa no sábado.", "A festa foi até de manhã."] },
+  { id: 128, pt: "música", en: "music / song", sim: "green", sentences: ["Coloca uma música boa aí.", "Essa música me lembra de você."] },
+  { id: 129, pt: "filme", en: "film / movie", sim: "yellow", sentences: ["Vamos assistir um filme hoje à noite?", "Esse filme me fez chorar muito."] },
+  { id: 130, pt: "vinho", en: "wine", sim: "green", sentences: ["Vou tomar uma taça de vinho.", "Esse vinho harmoniza bem com o queijo."] },
+  { id: 131, pt: "cerveja", en: "beer", sim: "red", note: "Spanish: cerveza — similar enough!", sentences: ["Uma cerveja gelada cai bem.", "Pede mais duas cervejas."] },
+  { id: 132, pt: "café", en: "coffee / café", sim: "green", sentences: ["Tomo café todo dia de manhã.", "Vamos num café ali perto?"] },
+  { id: 133, pt: "pão", en: "bread", sim: "yellow", sentences: ["Compra pão na padaria.", "O pão de queijo aqui é incrível."] },
+  { id: 134, pt: "carne", en: "meat / flesh", sim: "green", sentences: ["Essa carne tá no ponto.", "Churrasco sem carne boa não é churrasco."] },
+  { id: 135, pt: "peixe", en: "fish", sim: "yellow", sentences: ["Gosto mais de peixe do que de carne.", "O peixe tá fresco hoje."] },
+  { id: 136, pt: "frango", en: "chicken", sim: "red", note: "Spanish: pollo — completely different", sentences: ["Vou fazer frango grelhado.", "O frango assado da vovó é o melhor."] },
+  { id: 137, pt: "arroz", en: "rice", sim: "green", sentences: ["Arroz com feijão é nosso prato nacional.", "Esqueci de cozinhar o arroz."] },
+  { id: 138, pt: "feijão", en: "beans", sim: "red", note: "Spanish: frijoles/judías — different", sentences: ["Feijão cremoso é difícil de fazer.", "Não tem almoço sem feijão."] },
+  { id: 139, pt: "mercado", en: "market / supermarket", sim: "green", sentences: ["Vou passar no mercado antes de chegar.", "O mercado hoje tá cheio."] },
+  { id: 140, pt: "preço", en: "price", sim: "green", sentences: ["Que preço salgado!", "O preço subiu muito esse mês."] },
+  { id: 141, pt: "dívida", en: "debt", sim: "yellow", sentences: ["Tô cheio de dívida.", "Pagar dívida em dia evita juros."] },
+  { id: 142, pt: "banco", en: "bank / bench", sim: "green", note: "Context distinguishes meaning", sentences: ["Preciso ir ao banco resolver uma coisa.", "Senta naquele banco ali."] },
+  { id: 143, pt: "cartão", en: "card (credit/debit/etc.)", sim: "yellow", sentences: ["Aceita cartão de crédito?", "Perdi meu cartão de débito."] },
+  { id: 144, pt: "celular", en: "cell phone", sim: "yellow", note: "Spain says 'móvil'; Brazil says 'celular'", sentences: ["Tô sem bateria no celular.", "Larga esse celular e conversa comigo."] },
+  { id: 145, pt: "internet", en: "internet", sim: "green", sentences: ["A internet aqui tá lenta demais.", "Consegui o emprego pela internet."] },
+  { id: 146, pt: "aplicativo", en: "app", sim: "yellow", note: "Often shortened to 'app'", sentences: ["Baixa o aplicativo do banco.", "Tem um aplicativo bom pra isso."] },
+  { id: 147, pt: "mensagem", en: "message", sim: "green", sentences: ["Te mando uma mensagem depois.", "Você viu minha mensagem?"] },
+  { id: 148, pt: "notícia", en: "news / piece of news", sim: "green", note: "notícias (plural) = the news", sentences: ["Você viu as notícias hoje?", "Tenho uma notícia boa pra te dar."] },
+  { id: 149, pt: "jornal", en: "newspaper / news broadcast", sim: "green", sentences: ["Vi no jornal da noite.", "Não leio jornal impresso faz anos."] },
+  { id: 150, pt: "reunião", en: "meeting", sim: "yellow", sentences: ["Tenho reunião às duas.", "A reunião durou três horas."] },
+  { id: 151, pt: "viagem", en: "trip / journey", sim: "green", sentences: ["Que viagem incrível foi essa!", "Tô planejando uma viagem pras férias."] },
+  { id: 152, pt: "aeroporto", en: "airport", sim: "green", sentences: ["O aeroporto tá um caos hoje.", "Me leva pro aeroporto?"] },
+  { id: 153, pt: "metrô", en: "subway / metro", sim: "green", sentences: ["Pego o metrô todo dia.", "É mais rápido de metrô."] },
+  { id: 154, pt: "ônibus", en: "bus", sim: "red", note: "Spanish: autobús/camión — different", sentences: ["O ônibus atrasou meia hora.", "Vai de ônibus ou de Uber?"] },
+  { id: 155, pt: "trânsito", en: "traffic", sim: "green", sentences: ["O trânsito em SP é pesado.", "Preso no trânsito, chego atrasado."] },
+  { id: 156, pt: "bairro", en: "neighborhood", sim: "yellow", sentences: ["Moro num bairro tranquilo.", "Qual bairro você mora?"] },
+  { id: 157, pt: "apartamento", en: "apartment", sim: "green", sentences: ["Meu apartamento é pequenininho.", "O apartamento do andar de cima faz barulho."] },
+  { id: 158, pt: "aluguel", en: "rent", sim: "yellow", sentences: ["O aluguel subiu de novo.", "Tô procurando apartamento pra alugar."] },
+  { id: 159, pt: "chave", en: "key", sim: "yellow", sentences: ["Esqueci a chave dentro de casa.", "A chave do sucesso é a consistência."] },
+  { id: 160, pt: "janela", en: "window", sim: "yellow", sentences: ["Abre a janela, tá abafado aqui.", "O quarto tem janela pra rua."] },
+  { id: 161, pt: "cozinha", en: "kitchen / cuisine", sim: "yellow", sentences: ["A cozinha brasileira é riquíssima.", "Vou na cozinha pegar água."] },
+  { id: 162, pt: "banheiro", en: "bathroom", sim: "yellow", note: "Spain uses 'baño'; Brazil uses 'banheiro'", sentences: ["Onde fica o banheiro?", "O banheiro tá ocupado."] },
+  { id: 163, pt: "roupa", en: "clothing / clothes", sim: "red", note: "Spanish: ropa — very similar!", sentences: ["Preciso lavar roupa hoje.", "Que roupa você vai usar na festa?"] },
+  { id: 164, pt: "sapato", en: "shoe", sim: "yellow", sentences: ["Esse sapato tá apertando.", "Comprei um sapato lindo no shopping."] },
+  { id: 165, pt: "bolsa", en: "bag / purse / scholarship", sim: "green", note: "'bolsa de estudos' = scholarship", sentences: ["Não consigo achar nada nessa bolsa.", "Ganhou uma bolsa pra estudar fora."] },
+  { id: 166, pt: "cor", en: "color", sim: "green", sentences: ["Qual é a sua cor favorita?", "Que cor fica melhor nessa parede?"] },
+  { id: 167, pt: "tamanho", en: "size", sim: "yellow", sentences: ["Você tem esse num tamanho maior?", "O tamanho do apartamento é razoável."] },
+  { id: 168, pt: "peso", en: "weight", sim: "green", sentences: ["Não me pergunta sobre o meu peso.", "O peso da responsabilidade é grande."] },
+  { id: 169, pt: "altura", en: "height / altitude", sim: "green", sentences: ["Tenho medo de altura.", "Qual é a sua altura?"] },
+  { id: 170, pt: "temperatura", en: "temperature", sim: "green", sentences: ["Que temperatura tá lá fora?", "A temperatura do forno tem que ser certinha."] },
+  { id: 171, pt: "chuva", en: "rain", sim: "red", note: "Spanish: lluvia — different", sentences: ["Que chuva forte!", "Parece que vai ter chuva à tarde."] },
+  { id: 172, pt: "vento", en: "wind", sim: "green", sentences: ["Tá ventando demais hoje.", "O vento derrubou a árvore."] },
+  { id: 173, pt: "calor", en: "heat / warmth", sim: "green", sentences: ["Que calor absurdo!", "O calor humano faz toda a diferença."] },
+  { id: 174, pt: "frio", en: "cold", sim: "green", sentences: ["Que frio danado hoje!", "Tô com frio, fecha a janela."] },
+  { id: 175, pt: "animal", en: "animal", sim: "green", sentences: ["Que animal mais fofo!", "Ela ama animal, tem três gatos."] },
+  { id: 176, pt: "cachorro", en: "dog", sim: "red", note: "Spanish: perro — completely different", sentences: ["O cachorro latiu a noite toda.", "Você tem cachorro ou gato?"] },
+  { id: 177, pt: "gato", en: "cat / attractive person", sim: "yellow", note: "'Que gato!' = 'How attractive!'", sentences: ["O gato dela dorme no sofá.", "Que gato esse professor!"] },
+  { id: 178, pt: "planta", en: "plant", sim: "green", sentences: ["Preciso regar as plantas.", "Essa planta precisa de muito sol."] },
+  { id: 179, pt: "flor", en: "flower", sim: "green", sentences: ["Ele chegou com um buquê de flores.", "Essa flor tem um cheiro incrível."] },
+  { id: 180, pt: "árvore", en: "tree", sim: "yellow", sentences: ["Tinha uma árvore enorme no quintal.", "Planta uma árvore, faça o bem."] },
+  { id: 181, pt: "mar", en: "sea / ocean", sim: "green", sentences: ["Saudade do mar.", "O mar tava agitado esse fim de semana."] },
+  { id: 182, pt: "praia", en: "beach", sim: "yellow", sentences: ["Vamos pra praia no feriado?", "A praia tava lotada."] },
+  { id: 183, pt: "rio", en: "river", sim: "green", sentences: ["O rio subiu por causa das chuvas.", "Moramos perto do rio."] },
+  { id: 184, pt: "montanha", en: "mountain", sim: "green", sentences: ["Sonho em morar perto de uma montanha.", "A vista da montanha é deslumbrante."] },
+  { id: 185, pt: "time", en: "team / sports team", sim: "red", note: "Borrowed from English 'team'; not 'equipo'", sentences: ["Qual é o seu time de coração?", "O time jogou mal hoje."] },
+  { id: 186, pt: "futebol", en: "soccer / football", sim: "green", sentences: ["Futebol é paixão nacional.", "Vai ter jogo de futebol hoje à noite."] },
+  { id: 187, pt: "gol", en: "goal (sport)", sim: "green", sentences: ["Que gol lindo!", "Fez dois gols no segundo tempo."] },
+  { id: 188, pt: "campeonato", en: "championship", sim: "green", sentences: ["O campeonato começa semana que vem.", "Ganhamos o campeonato!"] },
+  { id: 189, pt: "saída", en: "exit / way out / solution", sim: "green", sentences: ["Onde fica a saída de emergência?", "Não vejo saída pra essa situação."] },
+  { id: 190, pt: "entrada", en: "entrance / starter dish / payment", sim: "green", note: "entrada do restaurante = appetizer", sentences: ["A entrada do prédio fica na lateral.", "Vou pedir uma entrada antes do prato."] },
+  { id: 191, pt: "loja", en: "store / shop", sim: "yellow", sentences: ["A loja fecha às dez.", "Essa loja tem ótimas promoções."] },
+  { id: 192, pt: "produto", en: "product", sim: "green", sentences: ["Esse produto é muito bom.", "Qual produto você recomenda?"] },
+  { id: 193, pt: "marca", en: "brand / mark", sim: "green", sentences: ["Que marca de tênis você usa?", "Deixou marca na parede."] },
+  { id: 194, pt: "objetivo", en: "objective / goal", sim: "green", sentences: ["Meu objetivo é aprender português.", "Qual é o objetivo do projeto?"] },
+  { id: 195, pt: "desafio", en: "challenge", sim: "green", sentences: ["Aprender idioma novo é um desafio.", "Esse trabalho tem sido um grande desafio."] },
+  { id: 196, pt: "solução", en: "solution", sim: "green", sentences: ["Precisamos de uma solução rápida.", "A solução veio de onde menos esperava."] },
+  { id: 197, pt: "opinião", en: "opinion", sim: "green", sentences: ["Na minha opinião, foi um erro.", "Qual é a sua opinião sobre isso?"] },
+  { id: 198, pt: "pergunta", en: "question", sim: "green", note: "pergunta = question you ask; questão = issue/matter", sentences: ["Posso te fazer uma pergunta?", "Essa é uma boa pergunta."] },
+  { id: 199, pt: "resposta", en: "answer / response", sim: "green", sentences: ["Não tenho resposta pra isso agora.", "A resposta dele me surpreendeu."] },
+  { id: 200, pt: "conversa", en: "conversation / talk", sim: "green", sentences: ["Precisa de uma conversa séria.", "Foi uma conversa muito boa."] },
+];
+
+const SIM_CONFIG = {
+  green: { label: "🟢 Very Similar", color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0" },
+  yellow: { label: "🟡 Somewhat Similar", color: "#ca8a04", bg: "#fefce8", border: "#fde68a" },
+  red: { label: "🔴 Different", color: "#dc2626", bg: "#fef2f2", border: "#fecaca" },
+};
+
+export default function App() {
+  const [apiKey, setApiKey] = useState("");
+  const [search, setSearch] = useState("");
+  const [simFilter, setSimFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("frequency");
+  const [expanded, setExpanded] = useState(null);
+  const [loadingAudio, setLoadingAudio] = useState(null);
+  const [showKey, setShowKey] = useState(false);
+
+  const filtered = useMemo(() => {
+    let list = [...NOUNS];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(n => n.pt.toLowerCase().includes(q) || n.en.toLowerCase().includes(q));
+    }
+    if (simFilter !== "all") list = list.filter(n => n.sim === simFilter);
+    if (sortBy === "frequency") list.sort((a, b) => a.id - b.id);
+    else if (sortBy === "alpha") list.sort((a, b) => a.pt.localeCompare(b.pt));
+    else if (sortBy === "similarity") {
+      const order = { green: 0, yellow: 1, red: 2 };
+      list.sort((a, b) => order[a.sim] - order[b.sim]);
+    } else if (sortBy === "length") list.sort((a, b) => a.pt.length - b.pt.length);
+    return list;
+  }, [search, simFilter, sortBy]);
+
+  const speak = async (text, idx) => {
+    if (!apiKey.trim()) { alert("Please enter your Google TTS API key above."); return; }
+    setLoadingAudio(idx);
+    try {
+      const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          input: { text },
+          voice: { languageCode: "pt-BR", name: "pt-BR-Standard-A" },
+          audioConfig: { audioEncoding: "MP3", speakingRate: 0.9 },
+        }),
+      });
+      const data = await res.json();
+      if (data.audioContent) {
+        const audio = new Audio("data:audio/mp3;base64," + data.audioContent);
+        audio.play();
+      } else {
+        alert("TTS error: " + (data.error?.message || "Unknown error"));
+      }
+    } catch (e) { alert("TTS request failed: " + e.message); }
+    setLoadingAudio(null);
+  };
+
+  return (
+    <div style={{ fontFamily: "'Segoe UI', sans-serif", background: "#f5f0e8", minHeight: "100vh" }}>
+      {/* Top nav bar */}
+      <div style={{ background: "#2d5a3d", padding: "10px 20px", display: "flex", alignItems: "center", gap: 12, marginBottom: 0 }}>
+        <a href="index.html" style={{ textDecoration: "none", color: "#fff", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 6, opacity: 0.9 }}>← Home</a>
+      </div>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "24px 16px" }}>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ fontSize: 28, marginBottom: 4 }}>🇧🇷</div>
+          <h1 style={{ margin: 0, fontSize: 24, color: "#1a1a1a", fontWeight: 600 }}>200 Most Common Brazilian Portuguese Nouns</h1>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: "#666" }}>Click any word to see example sentences · 🔊 to hear them in Brazilian Portuguese</p>
+      </div>
+
+
+      {/* API Key */}
+      <div style={{ background: "#fff", border: "1px solid #ddd6c8", borderRadius: 10, padding: "10px 14px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 12, fontWeight: 600, color: "#888", whiteSpace: "nowrap", letterSpacing: "0.05em", textTransform: "uppercase" }}>🔑 Google TTS Key</span>
+        <input
+          type={showKey ? "text" : "password"}
+          placeholder="Paste your API key here..."
+          value={apiKey}
+          onChange={e => setApiKey(e.target.value)}
+          style={{ flex: 1, minWidth: 200, padding: "6px 10px", border: "1px solid #ddd6c8", borderRadius: 7, fontSize: 13, outline: "none", background: "#faf8f4" }}
+        />
+        <button onClick={() => setShowKey(s => !s)} style={{ background: "#faf8f4", border: "1px solid #ddd6c8", borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontSize: 12, color: "#666" }}>{showKey ? "Hide" : "Show"}</button>
+        <span style={{ fontSize: 11, color: "#aaa" }}>Key is never shared — session only</span>
+      </div>
+
+      {/* Search */}
+      <input
+        placeholder="Search verbs, meaning, or Spanish equivalent..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        style={{ width: "100%", boxSizing: "border-box", padding: "9px 14px", border: "1px solid #ddd6c8", borderRadius: 8, fontSize: 14, outline: "none", background: "#fff", marginBottom: 12 }}
+      />
+
+      {/* Filter pills */}
+      {[
+        { label: "SPANISH", options: [["all","All"],["green","Identical"],["yellow","Similar"],["red","Different"]], state: simFilter, set: setSimFilter },
+        { label: "SORT", options: [["frequency","Frequency"],["alpha","A–Z"],["similarity","Similarity"],["length","Length"]], state: sortBy, set: setSortBy },
+      ].map(row => (
+        <div key={row.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#999", letterSpacing: "0.08em", minWidth: 60 }}>{row.label}</span>
+          {row.options.map(([val, lbl]) => (
+            <button key={val} onClick={() => row.set(val)} style={{
+              padding: "4px 14px", borderRadius: 20, fontSize: 13, cursor: "pointer", fontWeight: row.state === val ? 600 : 400,
+              background: row.state === val ? "#2d5a3d" : "#fff",
+              color: row.state === val ? "#fff" : "#444",
+              border: row.state === val ? "1.5px solid #2d5a3d" : "1px solid #ccc6b8",
+              transition: "all 0.15s"
+            }}>{lbl}</button>
+          ))}
+        </div>
+      ))}
+
+      {/* Stats bar */}
+      <div style={{ display: "flex", gap: 16, marginBottom: 14, fontSize: 12, color: "#999", alignItems: "center" }}>
+        <span>Showing <strong style={{ color: "#333" }}>{filtered.length}</strong> of 200 nouns</span>
+        {["green","yellow","red"].map(s => (
+          <span key={s}>{SIM_CONFIG[s].label.split(" ")[0]} {NOUNS.filter(n => n.sim === s).length}</span>
+        ))}
+      </div>
+
+      {/* Noun Cards */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {filtered.map(noun => {
+          const cfg = SIM_CONFIG[noun.sim];
+          const isOpen = expanded === noun.id;
+          return (
+            <div key={noun.id} style={{ background: "#fff", border: `1px solid ${isOpen ? cfg.border : "#e2e8f0"}`, borderRadius: 10, overflow: "hidden", transition: "border-color 0.2s" }}>
+              {/* Card Header */}
+              <div
+                onClick={() => setExpanded(isOpen ? null : noun.id)}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", cursor: "pointer", background: isOpen ? "#faf8f4" : "#fff", transition: "background 0.2s" }}
+              >
+                <span style={{ fontSize: 11, color: "#c4924a", minWidth: 28, fontWeight: 700, letterSpacing: "0.03em" }}>#{noun.id}</span>
+                <span style={{ fontSize: 18, fontWeight: 600, color: "#1a1a1a", minWidth: 130 }}>{noun.pt}</span>
+                <span style={{ fontSize: 13, color: "#666", flex: 1 }}>{noun.en}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}`, borderRadius: 20, padding: "2px 9px", whiteSpace: "nowrap" }}>
+                  {cfg.label.split(" ")[0]} {cfg.label.split(" ").slice(1).join(" ")}
+                </span>
+                <span style={{ fontSize: 13, color: "#bbb" }}>{isOpen ? "▲" : "▼"}</span>
+              </div>
+
+              {/* Expanded */}
+              {isOpen && (
+                <div style={{ padding: "0 14px 14px", borderTop: `1px solid ${cfg.border}`, background: "#faf8f4" }}>
+                  {noun.note && (
+                    <div style={{ fontSize: 12, color: cfg.color, fontStyle: "italic", margin: "10px 0 8px", background: "#fff", padding: "5px 10px", borderRadius: 6, border: `1px solid ${cfg.border}` }}>
+                      💡 {noun.note}
+                    </div>
+                  )}
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 10 }}>
+                    {noun.sentences.map((s, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", borderRadius: 8, padding: "8px 12px", border: "1px solid #e2e8f0" }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#94a3b8", minWidth: 20 }}>{i + 1}.</span>
+                        <span style={{ flex: 1, fontSize: 15, color: "#1e293b" }}>{s}</span>
+                        <button
+                          onClick={() => speak(s, `${noun.id}-${i}`)}
+                          disabled={loadingAudio === `${noun.id}-${i}`}
+                          style={{ background: loadingAudio === `${noun.id}-${i}` ? "#e2e8f0" : "#1e40af", color: "#fff", border: "none", borderRadius: 7, padding: "6px 10px", cursor: "pointer", fontSize: 16, minWidth: 36, transition: "background 0.2s" }}
+                          title="Listen in Brazilian Portuguese"
+                        >
+                          {loadingAudio === `${noun.id}-${i}` ? "⏳" : "🔊"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: 40, color: "#94a3b8", fontSize: 15 }}>No nouns match your search.</div>
+        )}
+      </div>
+      </div>
+    </div>
+  );
+}
